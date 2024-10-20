@@ -28,32 +28,42 @@ export function SwissBracket(numTeams: number = 16, winRequirement: number = 3) 
 		queue = newQueue;
 	}
 
-	levelOrderTraversal(root);
+	const levels = levelOrderTraversal(root);
+	for (let i = 0; i < levels.length; i++) {
+		for (let j = 0; j < levels[i].length; j++) {
+			console.log(levels[i][j].toString());
+		}
+		console.log("\n");
+	}
 }
 
 // prints out swiss rounds level by level
 // will print each RoundNode once
 function levelOrderTraversal(root: RoundNode) {
-	const queue: RoundNode[] = [];
+	let queue: RoundNode[] = [];
 	const visited: string[] = [];
 	queue.push(root);
+	const levels = [];
 	while (queue.length > 0) {
+		const level: RoundNode[] = [];
+		const newQueue: RoundNode[] = [];
 		for (let i = 0; i < queue.length; i++) {
-			const node = queue.shift();
-			if (node) {
-				if (visited.indexOf(node.name) == -1) {
-					console.log(node.toString());
-					visited.push(node.name);
-				}
-				if (node.winningRound) {
-					queue.push(node.winningRound);
-				}
-				if (node.losingRound) {
-					queue.push(node.losingRound);
-				}
+			const node = queue[i];
+			if (visited.indexOf(node.name) == -1) {
+				level.push(node);
+				visited.push(node.name);
+			}
+			if (node.winningRound) {
+				newQueue.push(node.winningRound);
+			}
+			if (node.losingRound) {
+				newQueue.push(node.losingRound);
 			}
 		}
+		queue = newQueue;
+		levels.push(level);
 	}
+	return levels;
 }
 
 function checkAndAddNode(
