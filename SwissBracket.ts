@@ -10,22 +10,12 @@ export function SwissBracket(numTeams: number = 16, winRequirement: number = 3) 
 		const newQueue: RoundNode[] = [];
 		for (let i = 0; i < queue.length; i++) {
 			const node = queue[i];
-			console.log(i);
 			if (node) {
 				const winningNodeRecord = `${node.winRecord + 1}-${node.loseRecord}`;
 				const losingNodeRecord = `${node.winRecord}-${node.loseRecord + 1}`;
-				if (losingNodeRecord === "0-2") {
-					console.log("made");
-				}
-				if (node.numTeams === 8) {
-					console.log(winningNodeRecord);
-					console.log(losingNodeRecord);
-				}
 
-				const res1 = checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0);
-				const res2 = checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1);
-				console.log(res1);
-				console.log(res2);
+				checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0);
+				checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1);
 
 				node.winningRound = existingNodes.get(winningNodeRecord);
 				node.losingRound = existingNodes.get(losingNodeRecord);
@@ -49,6 +39,8 @@ export function SwissBracket(numTeams: number = 16, winRequirement: number = 3) 
 	console.log(root);
 }
 
+// prints out swiss rounds level by level
+// currently prints "middle" rounds (rounds nodes that have 2 parents) twice
 function levelOrderTraversal(root: RoundNode) {
 	const queue: RoundNode[] = [];
 	queue.push(root);
