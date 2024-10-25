@@ -32,13 +32,22 @@ export function SwissBracket(numTeams: number = 16, winRequirement: number = 3) 
 	console.log(root);
 }
 
-function initializeEmptyMatches(root: RoundNode) {
-	const init = (node :RoundNode) => {
+function initializeEmptyMatches(root: RoundNode): Map<string, Match> {
+	const matches: Map<string, Match> = new Map();
+	const init = (node: RoundNode) => {
 		for (let index = 0; index < node.numTeams; index++) {
-			node.matches.push(new Match())
+			const id = getMatchId(node, index);
+			const match = new Match(id);
+			matches.set(id, match);
+			node.matches.push(match);
 		}
-	}
+	};
 	levelOrderTraversal(root, init);
+	return matches;
+}
+
+function getMatchId(node: RoundNode, index: number) {
+	return `${node.name}.${index}`;
 }
 
 function printLevels(root: RoundNode) {

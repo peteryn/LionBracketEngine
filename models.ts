@@ -40,8 +40,8 @@ export class Match {
 	upperTeamWins: number;
 	lowerTeamWins: number;
 
-	constructor() {
-		this.id = `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+	constructor(id: string) {
+		this.id = id;
 		this.upperTeamWins = 0;
 		this.lowerTeamWins = 0;
 	}
