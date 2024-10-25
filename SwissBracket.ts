@@ -83,7 +83,7 @@ export class SwissBracket {
 			}
 			console.log();
 		};
-		this.levelOrderTraversal(this.root, undefined, printLevel);
+		this.levelOrderTraversal(this.rootRound, undefined, printLevel);
 	}
 
 	// prints out swiss rounds level by level
