@@ -28,43 +28,32 @@ export function SwissBracket(numTeams: number = 16, winRequirement: number = 3) 
 		queue = newQueue;
 	}
 
-	const a: string[] = [];
-	const printNode = (node: RoundNode, s: string[]) => {
-		s.push(node.name)
-		console.log(node.name + s)
-	}
+	printLevels(root);
+}
 
-	const simple = (node: RoundNode, s: string) => {
-		console.log(`s is ${s}`);
-	}
-
-	console.log(`a: ${a}`);
-	const b = "test";
-	levelOrderTraversal(root, simple, b)
-
-	const levels = levelOrderTraversal(root);
-	for (let i = 0; i < levels.length; i++) {
-		for (let j = 0; j < levels[i].length; j++) {
-			console.log(levels[i][j].toString());
+function printLevels(root: RoundNode) {
+	const printLevel = (level: RoundNode[]) => {
+		for (let index = 0; index < level.length; index++) {
+			const element = level[index];
+			console.log(element.toString());
 		}
-		console.log("\n");
-	}
-
-	const myFunction =makeFunctionCall("test", "test2")
-	levelOrderTraversal(root, myFunction);
+		console.log();
+	};
+	levelOrderTraversal(root, undefined, printLevel);
 }
 
 function makeFunctionCall(...args: any[]) {
-	function interalFunctionCall(node: RoundNode) {
-		console.log(args[0])
-		console.log(args[1])
-	}
-	return interalFunctionCall
+	function interalFunctionCall(node: RoundNode) {}
+	return interalFunctionCall;
 }
 
 // prints out swiss rounds level by level
 // will print each RoundNode once
-function levelOrderTraversal(root: RoundNode, callBack?: (node: RoundNode) => void,) {
+function levelOrderTraversal(
+	root: RoundNode,
+	perNodeCallBack?: (node: RoundNode) => void,
+	perLevelCallBack?: (level: RoundNode[]) => void
+) {
 	let queue: RoundNode[] = [];
 	const visited: string[] = [];
 	queue.push(root);
@@ -75,11 +64,9 @@ function levelOrderTraversal(root: RoundNode, callBack?: (node: RoundNode) => vo
 		for (let i = 0; i < queue.length; i++) {
 			const node = queue[i];
 
-
-			// if (visited.indexOf(node.name) == -1) {
 			if (!visited.includes(node.name)) {
-				if (callBack) {
-					callBack(node);
+				if (perNodeCallBack) {
+					perNodeCallBack(node);
 				}
 				level.push(node);
 				visited.push(node.name);
@@ -92,6 +79,9 @@ function levelOrderTraversal(root: RoundNode, callBack?: (node: RoundNode) => vo
 			}
 		}
 		queue = newQueue;
+		if (perLevelCallBack) {
+			perLevelCallBack(level);
+		}
 		levels.push(level);
 	}
 	return levels;
