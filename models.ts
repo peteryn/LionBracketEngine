@@ -40,8 +40,8 @@ export class Match {
 	upperTeamWins: number;
 	lowerTeamWins: number;
 
-	constructor(id: string) {
-		this.id = id;
+	constructor(nodeName: string, index: number) {
+		this.id = `${nodeName}.${index}`;
 		this.upperTeamWins = 0;
 		this.lowerTeamWins = 0;
 	}
