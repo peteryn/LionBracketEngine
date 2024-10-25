@@ -33,3 +33,13 @@ export class Match {
 		this.lowerTeamWins = 0;
 	}
 }
+
+export class Team {
+	seed: number;
+	matchHistory: Match[];
+
+	constructor(seed: number) {
+		this.seed = seed;
+		this.matchHistory = [];
+	}
+}

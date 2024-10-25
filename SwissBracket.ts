@@ -1,12 +1,23 @@
-import { Match, RoundNode } from "./models.ts";
+import { Match, RoundNode, Team } from "./models.ts";
 
 export class SwissBracket {
 	rootRound: RoundNode;
 	matches: Map<string, Match>;
+	teams: Team[];
 
 	constructor(numTeams: number = 16, winRequirement: number = 3) {
 		this.rootRound = this.createStructure(numTeams, winRequirement);
 		this.matches = this.initializeEmptyMatches(this.rootRound);
+		this.teams = this.createTeams(numTeams);
+		// populate root round with the teams in the correct matches
+	}
+
+	private createTeams(numTeams: number): Team[] {
+		const teams: Team[] = [];
+		for (let index = 1; index <= numTeams; index++) {
+			teams.push(new Team(index));
+		}
+		return teams;
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
