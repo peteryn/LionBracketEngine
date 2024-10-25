@@ -9,7 +9,32 @@ export class SwissBracket {
 		this.rootRound = this.createStructure(numTeams, winRequirement);
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = this.createTeams(numTeams);
+		this.shuffleTeams();
+		this.evaluationSort(this.teams);
+		this.teams.forEach((element) => {
+			console.log(element);
+		});
 		// populate root round with the teams in the correct matches
+	}
+
+	// evaluate who each team plays against
+	// 1. Match differential
+	// 2. Game differential
+	// 3. Seed
+	// if RoundNode has 2 parents, then upper must play lower
+	// basically, a sort by multiple criteria
+	private evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
+		if (lowerTeams) {
+			// implementation when round node has 2 parents
+		} else {
+			// implementation when round node has 1 parent
+			upperTeams.sort(
+				(a, b) =>
+					b.getMatchDifferential() - a.getMatchDifferential() || // descending
+					b.getGameDifferential() - a.getGameDifferential() || // descending
+					a.seed - b.seed // ascending
+			);
+		}
 	}
 
 	private createTeams(numTeams: number): Team[] {
@@ -135,5 +160,12 @@ export class SwissBracket {
 			levels.push(level);
 		}
 		return levels;
+	}
+
+	private shuffleTeams() {
+		for (let i = this.teams.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[this.teams[i], this.teams[j]] = [this.teams[j], this.teams[i]];
+		}
 	}
 }

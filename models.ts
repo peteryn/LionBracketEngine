@@ -42,4 +42,43 @@ export class Team {
 		this.seed = seed;
 		this.matchHistory = [];
 	}
+
+	getSeed() {
+		return this.seed;
+	}
+
+	getMatchDifferential() {
+		let wins = 0;
+		let losses = 0;
+		for (let index = 0; index < this.matchHistory.length; index++) {
+			const match = this.matchHistory[index];
+			const isUpperSeed = match.upperSeed === this.seed;
+			const isUpperTeamWinner = match.upperTeamWins > match.lowerTeamWins;
+
+			if ((isUpperSeed && isUpperTeamWinner) || (!isUpperSeed && !isUpperTeamWinner)) {
+				wins++;
+			} else {
+				losses++;
+			}
+		}
+		return wins - losses;
+	}
+
+	getGameDifferential() {
+		let gamesWon = 0;
+		let gamesLost = 0;
+		for (let index = 0; index < this.matchHistory.length; index++) {
+			const match = this.matchHistory[index];
+			const isUpperSeed = match.upperSeed === this.seed;
+
+			if (isUpperSeed) {
+				gamesWon += match.upperTeamWins;
+				gamesLost += match.lowerTeamWins;
+			} else {
+				gamesWon += match.lowerTeamWins;
+				gamesLost += match.upperTeamWins;
+			}
+		}
+		return gamesWon - gamesLost;
+	}
 }
