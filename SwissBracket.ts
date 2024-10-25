@@ -1,12 +1,12 @@
 import { Match, RoundNode } from "./models.ts";
 
 export class SwissBracket {
-	root: RoundNode;
+	rootRound: RoundNode;
 	matches: Map<string, Match>;
 
 	constructor(numTeams: number = 16, winRequirement: number = 3) {
-		this.root = this.createStructure(numTeams, winRequirement);
-		this.matches = this.initializeEmptyMatches(this.root);
+		this.rootRound = this.createStructure(numTeams, winRequirement);
+		this.matches = this.initializeEmptyMatches(this.rootRound);
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
