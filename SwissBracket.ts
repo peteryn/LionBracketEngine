@@ -1,4 +1,4 @@
-import { RoundNode } from "./models.ts";
+import { Match, RoundNode } from "./models.ts";
 
 export function SwissBracket(numTeams: number = 16, winRequirement: number = 3) {
 	const root = new RoundNode("0-0", numTeams, 0, 0);
@@ -28,7 +28,17 @@ export function SwissBracket(numTeams: number = 16, winRequirement: number = 3) 
 		queue = newQueue;
 	}
 
-	printLevels(root);
+	initializeEmptyMatches(root);
+	console.log(root);
+}
+
+function initializeEmptyMatches(root: RoundNode) {
+	const init = (node :RoundNode) => {
+		for (let index = 0; index < node.numTeams; index++) {
+			node.matches.push(new Match())
+		}
+	}
+	levelOrderTraversal(root, init);
 }
 
 function printLevels(root: RoundNode) {

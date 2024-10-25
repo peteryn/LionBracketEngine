@@ -10,12 +10,14 @@ export class RoundNode {
 	loseRecord: number;
 	winningRound: RoundNode | undefined;
 	losingRound: RoundNode | undefined;
+	matches: Match[];
 
 	constructor(name: string, numTeams: number, winRecord: number, loseRecord: number) {
 		this.name = name;
 		this.numTeams = numTeams;
 		this.winRecord = winRecord;
 		this.loseRecord = loseRecord;
+		this.matches = [];
 	}
 
 	toString(): string {
@@ -28,5 +30,19 @@ export class Team {
 
 	constructor(name: string) {
 		this.name = name;
+	}
+}
+
+export class Match {
+	id: string;
+	upperSeed: number | undefined;
+	lowerSeed: number | undefined;
+	upperTeamWins: number;
+	lowerTeamWins: number;
+
+	constructor() {
+		this.id = `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+		this.upperTeamWins = 0;
+		this.lowerTeamWins = 0;
 	}
 }
