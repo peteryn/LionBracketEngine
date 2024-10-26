@@ -87,3 +87,8 @@ export class Team {
 		return gamesWon - gamesLost;
 	}
 }
+
+export interface MatchRecordSerialized {
+	upperTeamWins: number;
+	lowerTeamWins: number;
+}

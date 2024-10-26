@@ -9,11 +9,6 @@ export class SwissBracket {
 		this.rootRound = this.createStructure(numTeams, winRequirement);
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = createTeams(numTeams);
-		this.shuffleTeams();
-		SwissBracket.evaluationSort(this.teams);
-		this.teams.forEach((element) => {
-			console.log(element);
-		});
 		// populate root round with the teams in the correct matches
 	}
 
@@ -173,10 +168,10 @@ export function createTeams(numTeams: number): Team[] {
 
 export function populateMatches(matches: Match[], teams: Team[]) {
 	if (teams.length / 2 !== matches.length) {
-		throw new Error("There must twice as many teams as matches")
+		throw new Error("There must twice as many teams as matches");
 	}
 	let i = 0,
-	j = teams.length - 1;
+		j = teams.length - 1;
 	while (i < j) {
 		const team1 = teams[i];
 		const team2 = teams[j];
@@ -193,9 +188,10 @@ export function populateMatches(matches: Match[], teams: Team[]) {
 }
 
 export function createEmptyMatches(numMatches: number, nodeName: string) {
-	const matches: Match[] = []
+	const matches: Match[] = [];
 	for (let index = 0; index < numMatches; index++) {
 		matches.push(new Match(nodeName, index));
 	}
 	return matches;
 }
+
