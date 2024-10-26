@@ -1,4 +1,4 @@
-import { Match, RoundNode, Team } from "./models.ts";
+import { Match, MatchRecord, RoundNode, Team } from "./models.ts";
 
 export class SwissBracket {
 	rootRound: RoundNode;
@@ -180,8 +180,11 @@ export function createMatches(matches: Match[], teams: Team[]) {
 		const team1 = teams[i];
 		const team2 = teams[j];
 
-		matches[i].upperTeam = team1;
-		matches[i].lowerTeam = team2;
+		const record = new MatchRecord(team1, team2);
+		team1.matchHistory.push(record);
+		team2.matchHistory.push(record);
+
+		matches[i].matchRecord = record;
 
 		i++;
 		j--;
