@@ -10,7 +10,7 @@ export class SwissBracket {
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = createTeams(numTeams);
 		this.shuffleTeams();
-		this.evaluationSort(this.teams);
+		SwissBracket.evaluationSort(this.teams);
 		this.teams.forEach((element) => {
 			console.log(element);
 		});
@@ -23,7 +23,8 @@ export class SwissBracket {
 	// 3. Seed
 	// if RoundNode has 2 parents, then upper must play lower
 	// basically, a sort by multiple criteria
-	private evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
+	// TODO: should this be static? should it be private (testing issue)
+	static evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
 		if (lowerTeams) {
 			// implementation when round node has 2 parents
 		} else {
@@ -170,7 +171,7 @@ export function createTeams(numTeams: number): Team[] {
 	return teams;
 }
 
-export function createMatches(matches: Match[], teams: Team[]) {
+export function populateMatches(matches: Match[], teams: Team[]) {
 	if (teams.length / 2 !== matches.length) {
 		throw new Error("There must twice as many teams as matches")
 	}
@@ -189,4 +190,12 @@ export function createMatches(matches: Match[], teams: Team[]) {
 		i++;
 		j--;
 	}
+}
+
+export function createEmptyMatches(numMatches: number, nodeName: string) {
+	const matches: Match[] = []
+	for (let index = 0; index < numMatches; index++) {
+		matches.push(new Match(nodeName, index));
+	}
+	return matches;
 }
