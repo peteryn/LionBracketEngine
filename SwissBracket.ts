@@ -8,7 +8,7 @@ export class SwissBracket {
 	constructor(numTeams: number = 16, winRequirement: number = 3) {
 		this.rootRound = this.createStructure(numTeams, winRequirement);
 		this.matches = this.initializeEmptyMatches(this.rootRound);
-		this.teams = this.createTeams(numTeams);
+		this.teams = createTeams(numTeams);
 		this.shuffleTeams();
 		this.evaluationSort(this.teams);
 		this.teams.forEach((element) => {
@@ -35,14 +35,6 @@ export class SwissBracket {
 					a.seed - b.seed // ascending
 			);
 		}
-	}
-
-	private createTeams(numTeams: number): Team[] {
-		const teams: Team[] = [];
-		for (let index = 1; index <= numTeams; index++) {
-			teams.push(new Team(index));
-		}
-		return teams;
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
@@ -167,5 +159,31 @@ export class SwissBracket {
 			const j = Math.floor(Math.random() * (i + 1));
 			[this.teams[i], this.teams[j]] = [this.teams[j], this.teams[i]];
 		}
+	}
+}
+
+export function createTeams(numTeams: number): Team[] {
+	const teams: Team[] = [];
+	for (let index = 1; index <= numTeams; index++) {
+		teams.push(new Team(index));
+	}
+	return teams;
+}
+
+export function createMatches(matches: Match[], teams: Team[]) {
+	if (teams.length / 2 !== matches.length) {
+		throw new Error("There must twice as many teams as matches")
+	}
+	let i = 0,
+	j = teams.length - 1;
+	while (i < j) {
+		const team1 = teams[i];
+		const team2 = teams[j];
+
+		matches[i].upperTeam = team1;
+		matches[i].lowerTeam = team2;
+
+		i++;
+		j--;
 	}
 }

@@ -22,8 +22,8 @@ export class RoundNode {
 
 export class Match {
 	id: string;
-	upperSeed: number | undefined;
-	lowerSeed: number | undefined;
+	upperTeam: Team | undefined;
+	lowerTeam: Team | undefined;
 	upperTeamWins: number;
 	lowerTeamWins: number;
 
@@ -43,16 +43,14 @@ export class Team {
 		this.matchHistory = [];
 	}
 
-	getSeed() {
-		return this.seed;
-	}
-
 	getMatchDifferential() {
 		let wins = 0;
 		let losses = 0;
 		for (let index = 0; index < this.matchHistory.length; index++) {
 			const match = this.matchHistory[index];
-			const isUpperSeed = match.upperSeed === this.seed;
+			// should we use optional chaining operator here? 
+			// matchHistory should only include matches that have upperSeed/lowerSeed defined
+			const isUpperSeed = match.upperTeam?.seed === this.seed;
 			const isUpperTeamWinner = match.upperTeamWins > match.lowerTeamWins;
 
 			if ((isUpperSeed && isUpperTeamWinner) || (!isUpperSeed && !isUpperTeamWinner)) {
@@ -69,7 +67,7 @@ export class Team {
 		let gamesLost = 0;
 		for (let index = 0; index < this.matchHistory.length; index++) {
 			const match = this.matchHistory[index];
-			const isUpperSeed = match.upperSeed === this.seed;
+			const isUpperSeed = match.upperTeam?.seed === this.seed;
 
 			if (isUpperSeed) {
 				gamesWon += match.upperTeamWins;

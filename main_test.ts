@@ -1,6 +1,8 @@
 import { assertEquals } from "@std/assert";
-import { add } from "./main.ts";
+import { createTeams } from "./SwissBracket.ts";
 
-Deno.test(function addTest() {
-	assertEquals(add(2, 3), 5);
+Deno.test(function createTeamsTest() {
+	const numTeams = 16;
+	const teams = createTeams(numTeams);
+	assertEquals(teams.length, numTeams);
 });
