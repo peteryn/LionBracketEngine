@@ -12,6 +12,47 @@ export class SwissBracket {
 		// populate root round with the teams in the correct matches
 	}
 
+	getMatch(matchId: string): Match | undefined {
+		return this.matches.get(matchId);
+	}
+
+	getMatchRecord(matchId: string): MatchRecord | undefined {
+		return this.getMatch(matchId)?.matchRecord;
+	}
+
+	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean {
+		const match = this.getMatch(matchId);
+		if (match) {
+			match.matchRecord = matchRecord;
+
+			const roundNode = match.roundNode;
+			if (roundNode) {
+				// then traverse starting at that node do the traversal
+				// with a callback that updates the next round
+			}
+
+			return true;
+		}
+		return false;
+	}
+
+	// called on every node in the traversal
+	updateRounds(roundNode: RoundNode) {
+		/*
+		check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
+
+		if it is filled out, then clear out the history of future rounds for teams in this current roundNode
+		if it is not filled out, then we can stop traversing
+
+		get all the teams that won
+		perform a sort on them
+		if there exists a round for them to go to, update the child roundNode
+		else store that round's winner somewhere
+
+		repeat for teams that lost
+		*/
+	}
+
 	// evaluate who each team plays against
 	// 1. Match differential
 	// 2. Game differential
@@ -90,7 +131,7 @@ export class SwissBracket {
 		const matches: Map<string, Match> = new Map();
 		const init = (node: RoundNode) => {
 			for (let index = 0; index < node.numTeams; index++) {
-				const match = new Match(node.name, index);
+				const match = new Match(node.name, index, node);
 				matches.set(match.id, match);
 				node.matches.push(match);
 			}
@@ -194,4 +235,3 @@ export function createEmptyMatches(numMatches: number, nodeName: string) {
 	}
 	return matches;
 }
-
