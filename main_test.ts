@@ -86,13 +86,13 @@ Deno.test(function getMatchDifferentialTest() {
 });
 
 Deno.test(function round1UpperTest1() {
-	const matches = evaluationSortTest(16, "1-0", "./testData/round1UpperTestData1.json");
+	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData1.json");
 
 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 8);
 });
 
 Deno.test(function round1UpperTest2() {
-	const matches = evaluationSortTest(16, "1-0", "./testData/round1UpperTestData2.json");
+	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData2.json");
 
 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 7);
 	assertEquals(matches[1].matchRecord?.upperTeam.seed, 8);
