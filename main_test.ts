@@ -39,6 +39,32 @@ Deno.test(function initialSeedingTest() {
 	assertEquals(matches[7].matchRecord?.lowerTeam.seed, 9);
 });
 
+Deno.test(function structureTest1() {
+	const swissBracket = new SwissBracket(16, 3);
+	const rootRound = swissBracket.rootRound;
+	assertEquals(rootRound.level, 1);
+
+	const round1Upper = rootRound.winningRound;
+	const round2Lower = rootRound.losingRound;
+	assertEquals(round1Upper?.level, 2);
+	assertEquals(round2Lower?.level, 2);
+
+	const round3Upper = round1Upper?.winningRound;
+	const round3Middle = round1Upper?.losingRound;
+	const round3Lower = round2Lower?.losingRound;
+	assertEquals(round3Upper?.level, 3);
+	assertEquals(round3Middle?.level, 3);
+	assertEquals(round3Lower?.level, 3);
+
+	const round4Upper = round3Upper?.losingRound;
+	const round4Lower = round3Lower?.winningRound;
+	assertEquals(round4Upper?.level, 4);
+	assertEquals(round4Lower?.level, 4);
+
+	const round5 = round4Lower?.winningRound;
+	assertEquals(round5?.level, 5);
+});
+
 Deno.test(function getMatchDifferentialTest() {
 	const numTeams = 2;
 	const teams = createTeams(numTeams);

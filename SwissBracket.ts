@@ -51,9 +51,12 @@ export class SwissBracket {
 
 		repeat for teams that lost
 		*/
+		const isFilleldOut = isFilledRound(roundNode.matches);
+		if (!isFilleldOut) {
+			return;
+		}
 	}
 
-	// evaluate who each team plays against
 	// 1. Match differential
 	// 2. Game differential
 	// 3. Seed
@@ -75,7 +78,9 @@ export class SwissBracket {
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
-		const root = new RoundNode("0-0", numTeams, 0, 0);
+		let level = 1;
+		const root = new RoundNode("0-0", numTeams, 0, 0, level);
+		level++;
 		let queue: RoundNode[] = [];
 		queue.push(root);
 		while (queue.length > 0) {
@@ -86,13 +91,13 @@ export class SwissBracket {
 				// update winning child
 				if (node.winRecord + 1 < winRequirement) {
 					const winningNodeRecord = `${node.winRecord + 1}-${node.loseRecord}`;
-					this.checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0);
+					this.checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0, level);
 					node.winningRound = existingNodes.get(winningNodeRecord);
 				}
 				// update losing child
 				if (node.loseRecord + 1 < winRequirement) {
 					const losingNodeRecord = `${node.winRecord}-${node.loseRecord + 1}`;
-					this.checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1);
+					this.checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1, level);
 					node.losingRound = existingNodes.get(losingNodeRecord);
 				}
 			}
@@ -100,6 +105,7 @@ export class SwissBracket {
 				newQueue.push(value);
 			});
 			queue = newQueue;
+			level++;
 		}
 		return root;
 	}
@@ -109,7 +115,8 @@ export class SwissBracket {
 		nodeRecord: string,
 		parentNode: RoundNode,
 		addWinRecord: number,
-		addLoseRecord: number
+		addLoseRecord: number,
+		level: number
 	) {
 		const wNode = existingNodes.get(nodeRecord);
 		if (wNode) {
@@ -120,7 +127,8 @@ export class SwissBracket {
 				nodeRecord,
 				parentNode.numTeams / 2,
 				parentNode.winRecord + addWinRecord,
-				parentNode.loseRecord + addLoseRecord
+				parentNode.loseRecord + addLoseRecord,
+				level
 			);
 			existingNodes.set(nodeRecord, newNode);
 			return true;
@@ -234,4 +242,16 @@ export function createEmptyMatches(numMatches: number, nodeName: string) {
 		matches.push(new Match(nodeName, index));
 	}
 	return matches;
+}
+
+export function isFilledRound(matches: Match[]): boolean {
+	for (let index = 0; index < matches.length; index++) {
+		const matchRecord = matches[index].matchRecord;
+		if (matchRecord) {
+			if (!matchRecord.isFilledOut()) {
+				return false;
+			}
+		}
+	}
+	return true;
 }

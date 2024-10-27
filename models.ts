@@ -6,13 +6,21 @@ export class RoundNode {
 	winningRound: RoundNode | undefined;
 	losingRound: RoundNode | undefined;
 	matches: Match[];
+	level: number;
 
-	constructor(name: string, numTeams: number, winRecord: number, loseRecord: number) {
+	constructor(
+		name: string,
+		numTeams: number,
+		winRecord: number,
+		loseRecord: number,
+		level: number
+	) {
 		this.name = name;
 		this.numTeams = numTeams;
 		this.winRecord = winRecord;
 		this.loseRecord = loseRecord;
 		this.matches = [];
+		this.level = level;
 	}
 
 	toString(): string {
@@ -42,6 +50,10 @@ export class MatchRecord {
 		this.lowerTeam = lowerTeam;
 		this.upperTeamWins = 0;
 		this.lowerTeamWins = 0;
+	}
+
+	isFilledOut() {
+		return this.upperTeamWins - this.lowerTeamWins !== 0;
 	}
 }
 
