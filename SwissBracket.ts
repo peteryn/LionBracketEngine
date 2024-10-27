@@ -36,10 +36,13 @@ export class SwissBracket {
 		return false;
 	}
 
+	// implementation 1: delete future round data because it is not valid anymore
+	// this should only be called on the roundNode that has a match that has been updated
+	// a different implementation will be called on all dependent nodes
 	updateRounds(roundNode: RoundNode) {
 		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
 		const isFilleldOut = isFilledRound(roundNode.matches);
-		// if it is not filled out, then we can stop traversing
+		// if it is not filled out, then we can stop
 		if (!isFilleldOut) {
 			return;
 		}
@@ -52,11 +55,20 @@ export class SwissBracket {
 				return [];
 			}
 		});
-		// TODO: need to also update the match record status in the dependent RoundNodes
-		// this includes updating the what teams are in those future matches
-		// if after regenerating the matchup is the same and at the same position, keep the previous result
-		teams.map((team: Team) => {
+
+		for (let index = 0; index < teams.length; index++) {
+			const team = teams[index];
 			team.matchHistory = team.matchHistory.slice(0, roundNode.level);
+		}
+
+		// update the match record status in the dependent RoundNodes
+		// this includes updating the what teams are in those future matches
+		this.levelOrderTraversal(roundNode, (node) => {
+			const matches = node.matches;
+			for (let index = 0; index < matches.length; index++) {
+				const match = matches[index];
+				match.matchRecord = undefined;
+			}
 		});
 
 		// split teams into winners and losers
@@ -83,6 +95,8 @@ export class SwissBracket {
 			after a round has been edited, should user input for future rounds be kept or deleted?
 			if they are deleted, then evaluate the current round, update the direct children, and be done
 			if they are kept, then need to rerun this function on future rounds that depend on this round
+
+			IDEA: if after regenerating the matchup is the same and at the same position, keep the previous result
 		*/
 	}
 
