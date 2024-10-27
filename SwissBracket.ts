@@ -36,25 +36,54 @@ export class SwissBracket {
 		return false;
 	}
 
-	// called on every node in the traversal
 	updateRounds(roundNode: RoundNode) {
-		/*
-		check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
-
-		if it is filled out, then clear out the history of future rounds for teams in this current roundNode
-		if it is not filled out, then we can stop traversing
-
-		get all the teams that won
-		perform a sort on them
-		if there exists a round for them to go to, update the child roundNode
-		else store that round's winner somewhere
-
-		repeat for teams that lost
-		*/
+		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
 		const isFilleldOut = isFilledRound(roundNode.matches);
+		// if it is not filled out, then we can stop traversing
 		if (!isFilleldOut) {
 			return;
 		}
+
+		// clear out the history of future rounds for teams in this current roundNode
+		const teams: Team[] = roundNode.matches.flatMap((match: Match) => {
+			if (match.matchRecord) {
+				return [match.matchRecord.upperTeam, match.matchRecord.lowerTeam];
+			} else {
+				return [];
+			}
+		});
+		// TODO: need to also update the match record status in the dependent RoundNodes
+		// this includes updating the what teams are in those future matches
+		// if after regenerating the matchup is the same and at the same position, keep the previous result
+		teams.map((team: Team) => {
+			team.matchHistory = team.matchHistory.slice(0, roundNode.level);
+		});
+
+		// split teams into winners and losers
+		const winners: Team[] = [];
+		const losers: Team[] = [];
+		roundNode.matches.map((match: Match) => {
+			const matchRecord = match.matchRecord;
+			if (matchRecord) {
+				if (matchRecord.upperTeamWins > matchRecord.lowerTeamWins) {
+					winners.push(matchRecord.upperTeam);
+					losers.push(matchRecord.lowerTeam);
+				} else {
+					winners.push(matchRecord.lowerTeam);
+					losers.push(matchRecord.upperTeam);
+				}
+			}
+			// TODO: else throw an error?
+		});
+
+		/*
+			need to pass winners/losers to the next node because some nodes have a 2 dependencies (2 parents)
+			need to edit roundNode to support a place to put teams before sorting
+
+			after a round has been edited, should user input for future rounds be kept or deleted?
+			if they are deleted, then evaluate the current round, update the direct children, and be done
+			if they are kept, then need to rerun this function on future rounds that depend on this round
+		*/
 	}
 
 	// 1. Match differential
