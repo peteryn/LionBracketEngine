@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { createEmptyMatches, createTeams, populateMatches, SwissBracket } from "./SwissBracket.ts";
+import { createEmptyMatches, createTeams, populateMatches, SwissBracket, evaluationSort } from "./SwissBracket.ts";
 import { Match, MatchRecord, Team, type MatchRecordSerialized } from "./models.ts";
 
 Deno.test(function createTeamsTest() {
@@ -43,26 +43,35 @@ Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3);
 	const rootRound = swissBracket.rootRound;
 	assertEquals(rootRound.level, 1);
+	assertEquals(rootRound.has2Parents, false);
 
-	const round1Upper = rootRound.winningRound;
+	const round2Upper = rootRound.winningRound;
 	const round2Lower = rootRound.losingRound;
-	assertEquals(round1Upper?.level, 2);
+	assertEquals(round2Upper?.level, 2);
 	assertEquals(round2Lower?.level, 2);
+	assertEquals(round2Upper?.has2Parents, false);
+	assertEquals(round2Lower?.has2Parents, false);
 
-	const round3Upper = round1Upper?.winningRound;
-	const round3Middle = round1Upper?.losingRound;
+	const round3Upper = round2Upper?.winningRound;
+	const round3Middle = round2Upper?.losingRound;
 	const round3Lower = round2Lower?.losingRound;
 	assertEquals(round3Upper?.level, 3);
 	assertEquals(round3Middle?.level, 3);
 	assertEquals(round3Lower?.level, 3);
+	assertEquals(round3Upper?.has2Parents, false);
+	assertEquals(round3Middle?.has2Parents, true);
+	assertEquals(round3Lower?.has2Parents, false);
 
 	const round4Upper = round3Upper?.losingRound;
 	const round4Lower = round3Lower?.winningRound;
 	assertEquals(round4Upper?.level, 4);
 	assertEquals(round4Lower?.level, 4);
+	assertEquals(round4Upper?.has2Parents, true);
+	assertEquals(round4Lower?.has2Parents, true);
 
 	const round5 = round4Lower?.winningRound;
 	assertEquals(round5?.level, 5);
+	assertEquals(round5?.has2Parents, true);
 });
 
 Deno.test(function getMatchDifferentialTest() {
@@ -110,7 +119,7 @@ function evaluationSortTest(numTeams: number, name: string, filePath: string) {
 
 	const f: MatchRecordSerialized[] = getJsonSync(filePath);
 	populateMatchRecords(teams, f);
-	SwissBracket.evaluationSort(teams);
+	evaluationSort(teams);
 	populateMatches(matches, teams);
 	return matches;
 }

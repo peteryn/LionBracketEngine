@@ -12,6 +12,8 @@ export class SwissBracket {
 		// populate root round with the teams in the correct matches
 	}
 
+	// TODO write another function that given round number and match number, get the correct matchRecord
+
 	getMatch(matchId: string): Match | undefined {
 		return this.matches.get(matchId);
 	}
@@ -55,14 +57,13 @@ export class SwissBracket {
 				return [];
 			}
 		});
-
 		for (let index = 0; index < teams.length; index++) {
 			const team = teams[index];
 			team.matchHistory = team.matchHistory.slice(0, roundNode.level);
 		}
 
 		// update the match record status in the dependent RoundNodes
-		// this includes updating the what teams are in those future matches
+		// this includes updating what teams are in those future matches
 		this.levelOrderTraversal(roundNode, (node) => {
 			const matches = node.matches;
 			for (let index = 0; index < matches.length; index++) {
@@ -88,8 +89,51 @@ export class SwissBracket {
 			// TODO: else throw an error?
 		});
 
+		// need to pass winners/losers to the next node because some nodes have a 2 dependencies (2 parents)
+		// after passing them, need to process them at those nodes
+		// for this implementation, we only need to process roundNode.winningRound and roundNode.losingRound
+		const winningRound = roundNode.winningRound;
+		if (winningRound) {
+			if (winningRound.has2Parents) {
+				winningRound.fromLowerParent = winners;
+				// calculate winning round matchups
+				if (
+					winningRound.fromUpperParent.length > 0 &&
+					winningRound.fromLowerParent.length > 0
+				) {
+					// call evaluation sort for 2 teams
+				} else {
+					// do nothing, cant calculate round yet
+				}
+			} else {
+				// process winning round by calling evaluation sort for 1 team
+				evaluationSort(winners);
+				populateMatches(winningRound.matches, winners);
+			}
+		} else {
+			// set these stage winners in a variable somewhere else
+		}
+
+		const losingRound = roundNode.losingRound;
+		if (losingRound) {
+			if (losingRound.has2Parents) {
+				losingRound.fromUpperParent = losers;
+				if (
+					losingRound.fromUpperParent.length > 0 &&
+					losingRound.fromLowerParent.length > 0
+				) {
+					// call evaluation sort for 2 teams
+				}
+			} else {
+				// process losers with sort
+				evaluationSort(losers);
+				populateMatches(losingRound.matches, losers);
+			}
+		} else {
+			// set these stage losers in a variable somewhere else
+		}
+
 		/*
-			need to pass winners/losers to the next node because some nodes have a 2 dependencies (2 parents)
 			need to edit roundNode to support a place to put teams before sorting
 
 			after a round has been edited, should user input for future rounds be kept or deleted?
@@ -98,26 +142,6 @@ export class SwissBracket {
 
 			IDEA: if after regenerating the matchup is the same and at the same position, keep the previous result
 		*/
-	}
-
-	// 1. Match differential
-	// 2. Game differential
-	// 3. Seed
-	// if RoundNode has 2 parents, then upper must play lower
-	// basically, a sort by multiple criteria
-	// TODO: should this be static? should it be private (testing issue)
-	static evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
-		if (lowerTeams) {
-			// implementation when round node has 2 parents
-		} else {
-			// implementation when round node has 1 parent
-			upperTeams.sort(
-				(a, b) =>
-					b.getMatchDifferential() - a.getMatchDifferential() || // descending
-					b.getGameDifferential() - a.getGameDifferential() || // descending
-					a.seed - b.seed // ascending
-			);
-		}
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
@@ -164,6 +188,7 @@ export class SwissBracket {
 		const wNode = existingNodes.get(nodeRecord);
 		if (wNode) {
 			wNode.numTeams += parentNode.numTeams / 2;
+			wNode.has2Parents = true;
 			return false;
 		} else {
 			const newNode = new RoundNode(
@@ -297,4 +322,24 @@ export function isFilledRound(matches: Match[]): boolean {
 		}
 	}
 	return true;
+}
+
+// 1. Match differential
+// 2. Game differential
+// 3. Seed
+// if RoundNode has 2 parents, then upper must play lower
+// basically, a sort by multiple criteria
+// TODO: should this be static? should it be private (testing issue)
+export function evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
+	if (lowerTeams) {
+		// implementation when round node has 2 parents
+	} else {
+		// implementation when round node has 1 parent
+		upperTeams.sort(
+			(a, b) =>
+				b.getMatchDifferential() - a.getMatchDifferential() || // descending
+				b.getGameDifferential() - a.getGameDifferential() || // descending
+				a.seed - b.seed // ascending
+		);
+	}
 }
