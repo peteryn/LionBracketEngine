@@ -12,13 +12,16 @@ export class SwissBracket {
 		// populate root round with the teams in the correct matches
 	}
 
-	// TODO write another function that given round number and match number, get the correct matchRecord
+	// matchNumber is 0-indexed
+	getMatchRecord(roundName: string, matchNumber: number) {
+		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
+	}
 
 	getMatch(matchId: string): Match | undefined {
 		return this.matches.get(matchId);
 	}
 
-	getMatchRecord(matchId: string): MatchRecord | undefined {
+	getMatchRecordById(matchId: string): MatchRecord | undefined {
 		return this.getMatch(matchId)?.matchRecord;
 	}
 
