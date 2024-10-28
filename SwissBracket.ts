@@ -10,11 +10,16 @@ export class SwissBracket {
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = createTeams(numTeams);
 		// populate root round with the teams in the correct matches
+		populateMatches(this.rootRound.matches, this.teams);
 	}
 
-	// matchNumber is 0-indexed
+	// matchNumber is 1-indexed
 	getMatchRecord(roundName: string, matchNumber: number) {
-		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
+		return this.getMatchRecordById(`${roundName}.${matchNumber - 1}`);
+	}
+
+	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord) {
+		return this.setMatchRecordById(`${roundName}.${matchNumber - 1}`, matchRecord);
 	}
 
 	getMatch(matchId: string): Match | undefined {
@@ -25,7 +30,7 @@ export class SwissBracket {
 		return this.getMatch(matchId)?.matchRecord;
 	}
 
-	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean {
+	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
 		const match = this.getMatch(matchId);
 		if (match) {
 			match.matchRecord = matchRecord;
@@ -34,8 +39,8 @@ export class SwissBracket {
 			if (roundNode) {
 				// then traverse starting at that node do the traversal
 				// with a callback that updates the next round
+				this.updateRounds(roundNode);
 			}
-
 			return true;
 		}
 		return false;
@@ -44,12 +49,12 @@ export class SwissBracket {
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated
 	// a different implementation will be called on all dependent nodes
-	updateRounds(roundNode: RoundNode) {
+	updateRounds(roundNode: RoundNode): boolean {
 		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
 		const isFilleldOut = isFilledRound(roundNode.matches);
 		// if it is not filled out, then we can stop
 		if (!isFilleldOut) {
-			return;
+			return false;
 		}
 
 		// clear out the history of future rounds for teams in this current roundNode
@@ -67,13 +72,25 @@ export class SwissBracket {
 
 		// update the match record status in the dependent RoundNodes
 		// this includes updating what teams are in those future matches
-		this.levelOrderTraversal(roundNode, (node) => {
-			const matches = node.matches;
-			for (let index = 0; index < matches.length; index++) {
-				const match = matches[index];
-				match.matchRecord = undefined;
-			}
-		});
+		if (roundNode.winningRound) {
+			this.levelOrderTraversal(roundNode.winningRound, (node) => {
+				const matches = node.matches;
+				for (let index = 0; index < matches.length; index++) {
+					const match = matches[index];
+					match.matchRecord = undefined;
+				}
+			});
+		}
+
+		if (roundNode.losingRound) {
+			this.levelOrderTraversal(roundNode.losingRound, (node) => {
+				const matches = node.matches;
+				for (let index = 0; index < matches.length; index++) {
+					const match = matches[index];
+					match.matchRecord = undefined;
+				}
+			});
+		}
 
 		// split teams into winners and losers
 		const winners: Team[] = [];
@@ -88,8 +105,9 @@ export class SwissBracket {
 					winners.push(matchRecord.lowerTeam);
 					losers.push(matchRecord.upperTeam);
 				}
+			} else {
+				throw new Error("Match record doesn't exist when it should");
 			}
-			// TODO: else throw an error?
 		});
 
 		// need to pass winners/losers to the next node because some nodes have a 2 dependencies (2 parents)
@@ -145,6 +163,7 @@ export class SwissBracket {
 
 			IDEA: if after regenerating the matchup is the same and at the same position, keep the previous result
 		*/
+		return true;
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
@@ -209,7 +228,7 @@ export class SwissBracket {
 	private initializeEmptyMatches(root: RoundNode): Map<string, Match> {
 		const matches: Map<string, Match> = new Map();
 		const init = (node: RoundNode) => {
-			for (let index = 0; index < node.numTeams; index++) {
+			for (let index = 0; index < node.numTeams / 2; index++) {
 				const match = new Match(node.name, index, node);
 				matches.set(match.id, match);
 				node.matches.push(match);
@@ -288,7 +307,9 @@ export function createTeams(numTeams: number): Team[] {
 
 export function populateMatches(matches: Match[], teams: Team[]) {
 	if (teams.length / 2 !== matches.length) {
-		throw new Error("There must twice as many teams as matches");
+		throw new Error(
+			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
+		);
 	}
 	let i = 0,
 		j = teams.length - 1;
