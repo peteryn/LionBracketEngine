@@ -1,12 +1,8 @@
 import { assertEquals } from "@std/assert";
-import {
-	createEmptyMatches,
-	createTeams,
-	populateMatches,
-	SwissBracket,
-	evaluationSort,
-} from "./SwissBracket.ts";
-import { Match, MatchRecord, Team, type MatchRecordSerialized } from "./models.ts";
+import { createEmptyMatches, createTeams, populateMatches, SwissBracket } from "./SwissBracket.ts";
+import { Match, MatchRecord, type MatchRecordSerialized } from "./models.ts";
+import { getJsonSync } from "./util/file.ts";
+import { evaluationSortTest } from "./util/testFunctions.ts";
 
 Deno.test(function createTeamsTest() {
 	const numTeams = 16;
@@ -172,32 +168,3 @@ Deno.test(function computeRound1() {
 	assertEquals(round2Lower?.matches[3].matchRecord?.upperTeam.seed, 12);
 	assertEquals(round2Lower?.matches[3].matchRecord?.lowerTeam.seed, 13);
 });
-
-function evaluationSortTest(numTeams: number, name: string, filePath: string) {
-	const teams = createTeams(numTeams);
-	const matches = createEmptyMatches(numTeams / 2, name);
-
-	const f: MatchRecordSerialized[] = getJsonSync(filePath);
-	populateMatchRecords(teams, f);
-	evaluationSort(teams);
-	populateMatches(matches, teams);
-	return matches;
-}
-
-function getJsonSync(filePath: string) {
-	return JSON.parse(Deno.readTextFileSync(filePath));
-}
-
-function populateMatchRecords(teams: Team[], data: MatchRecordSerialized[]) {
-	let i = 0;
-	let j = teams.length - 1;
-	while (i < j) {
-		const record = new MatchRecord(teams[i], teams[j]);
-		record.upperTeamWins = data[i].upperTeamWins;
-		record.lowerTeamWins = data[i].lowerTeamWins;
-		teams[i].matchHistory.push(record);
-		teams[j].matchHistory.push(record);
-		i++;
-		j--;
-	}
-}
