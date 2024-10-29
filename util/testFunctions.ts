@@ -1,5 +1,5 @@
 import { createEmptyMatches, createTeams } from "../SwissBracket.ts";
-import { MatchRecordSerialized, Team, MatchRecord } from "../models.ts";
+import { MatchRecord, MatchRecordSerialized, Team } from "../models.ts";
 import { getJsonSync } from "./file.ts";
 import { evaluationSort, populateMatches } from "../SwissBracket.ts";
 
