@@ -1,8 +1,7 @@
 import { scrape } from "@panha/scrape/";
 import { MatchRecord, Team } from "../models.ts";
 
-const url =
-	"https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2024/Major_2/North_America/Open_Qualifier_4";
+const url = Deno.args[0];
 const scraper = await scrape(url);
 const res = scraper.text(".brkts-matchlist-cell-content");
 // const res = scraper.html("h3");
@@ -73,11 +72,8 @@ for (let i = 0; i < res.length; i += 4) {
 		round5.push(mr);
 	}
 
-	console.log(`Match Index: ${i / 4}: ${res[i]}: ${res[i + 1]}-${res[i + 2]}: ${res[i + 3]}`);
+	// console.log(`Match Index: ${i / 4}: ${res[i]}: ${res[i + 1]}-${res[i + 2]}: ${res[i + 3]}`);
 }
-console.log(round1);
-console.log();
-console.log(round5);
 
 // const title = scraper.html("#firstHeading");
 // const title = scraper.attr("span", "dir");
