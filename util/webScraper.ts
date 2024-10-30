@@ -30,6 +30,7 @@ const round4Upper: MatchRecord[] = [];
 const round4Lower: MatchRecord[] = [];
 const round5: MatchRecord[] = [];
 const bracketSerialized = {
+	teams: nameToSeed.values(),
 	"0-0": round1,
 	"1-0": round2Upper,
 	"0-1": round2Lower,

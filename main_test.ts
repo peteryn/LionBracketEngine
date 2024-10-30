@@ -3,7 +3,8 @@ import { createEmptyMatches, createTeams, populateMatches, SwissBracket } from "
 import { Match, MatchRecord, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import { evaluationSortTest } from "./util/testFunctions.ts";
-import { RoundNode } from "./models.ts";
+import { RoundNode, Team } from "./models.ts";
+import { evaluationSort } from "./SwissBracket.ts";
 
 Deno.test(function createTeamsTest() {
 	const numTeams = 16;
@@ -60,6 +61,26 @@ Deno.test(function getMatchDifferentialTest() {
 
 	assertEquals(teams[0].getGameDifferential(), 1);
 	assertEquals(teams[1].getGameDifferential(), -1);
+});
+
+Deno.test(function getMatchDifferentialTest2() {
+	const numTeams = 2;
+	const teams = createTeams(numTeams);
+
+	const r1m1 = new MatchRecord(teams[0], teams[15]);
+	r1m1.upperTeamWins = 3;
+	r1m1.lowerTeamWins = 0;
+	teams[0].matchHistory.push(r1m1);
+	teams[1].matchHistory.push(r1m1);
+
+	assertEquals(teams[0].seed, 1);
+	assertEquals(teams[1].seed, 2);
+
+	assertEquals(teams[0].getMatchDifferential(), 1);
+	assertEquals(teams[1].getMatchDifferential(), -1);
+
+	assertEquals(teams[0].getGameDifferential(), 3);
+	assertEquals(teams[1].getGameDifferential(), -3);
 });
 
 Deno.test(function round1UpperTest1() {
@@ -175,23 +196,60 @@ Deno.test(function naRegional4Test1() {
 		"./data/RLCS_2024_-_Major_2:_North_America_Open_Qualifier_4.json"
 	);
 	const swissBracket = new SwissBracket(16, 3);
-	let i = 1;
-	for (const matchRecord of tournament["0-0"]) {
-		const mr = new MatchRecord(matchRecord.upperTeam, matchRecord.lowerTeam);
-		mr.upperTeamWins = matchRecord.upperTeamWins;
-		mr.lowerTeamWins = matchRecord.lowerTeamWins;
-		swissBracket.setMatchRecord("0-0", i, mr);
-		i++;
+	const seedToTeam = new Map<number, Team>();
+	for (let index = 1; index <= 16; index++) {
+		const newTeam = new Team(index);
+		seedToTeam.set(index, newTeam);
 	}
-	console.log(`i: ${i}`);
-	// console.log(swissBracket.rootRound.winningRound?.matches);
+	console.log(seedToTeam);
+	let i = 1;
+	const teamsIteator = seedToTeam.values();
+	const teams = Array.from(teamsIteator);
+	evaluationSort(teams);
+	populateMatches(swissBracket.rootRound.matches, teams);
+	for (let i = 0; i < 8; i++) {
+		const mr = swissBracket.getMatchRecord("0-0", i + 1);
+		if (!mr) {
+			throw new Error("match record DNE when it should");
+		}
+
+		mr.lowerTeamWins = tournament["0-0"][i].lowerTeamWins;
+		mr.upperTeamWins = tournament["0-0"][i].upperTeamWins;
+
+		swissBracket.setMatchRecord("0-0", i + 1, mr);
+	}
+
+	// for (const matchRecord of tournament["0-0"]) {
+	// 	const upperTeam = seedToTeam.get(matchRecord.upperTeam.seed);
+	// 	const lowerTeam = seedToTeam.get(matchRecord.lowerTeam.seed);
+	// 	if (!upperTeam || !lowerTeam) {
+	// 		throw new Error("Team does not exist when it should");
+	// 	}
+	// 	const mr = new MatchRecord(upperTeam, lowerTeam);
+	// 	mr.upperTeamWins = matchRecord.upperTeamWins;
+	// 	mr.lowerTeamWins = matchRecord.lowerTeamWins;
+	// 	mr.upperTeam.matchHistory.push(mr);
+	// 	mr.lowerTeam.matchHistory.push(mr);
+	// 	swissBracket.setMatchRecord("0-0", i, mr);
+	// 	i++;
+	// }
+
+	const arr = swissBracket.rootRound.winningRound?.matches;
+	// for (let match of arr!) {
+	// 	console.log(match.matchRecord);
+	// }
 	for (let j = 0; j < 4; j++) {
-		const calculated = swissBracket.getMatchRecord("1-0", j);
+		const calculated = swissBracket.getMatchRecord("1-0", j + 1);
 		if (calculated) {
-			assertEquals(calculated.upperTeam.seed, tournament["1-0"][j].upperTeam.seed);
-			assertEquals(calculated.lowerTeam.seed, tournament["1-0"][j].lower.seed);
+			console.log(calculated);
+			const actualUpperSeed = calculated.upperTeam.seed;
+			const expectedUpperSeed = tournament["1-0"][j].upperTeam.seed;
+			const actualLowerSeed = calculated.lowerTeam.seed;
+			const expectedLowerSeed = tournament["1-0"][j].lowerTeam.seed;
+			assertEquals(actualUpperSeed, expectedUpperSeed);
+			assertEquals(actualLowerSeed, expectedLowerSeed);
 		} else {
-			throw new Error("match record doesn't exist when it should");
+			throw new Error(`match record doesn't exist when it should`);
 		}
 	}
 });
