@@ -84,6 +84,6 @@ console.log(round5);
 const temp = scraper.text("h1>span");
 const title = temp[0].replaceAll(" ", "_");
 // const path = `./data/${title}.json`;
-const path = "hi.json";
+const path = `./data/${title}.json`;
 // await Deno.writeTextFile(`./data/${title}.json`, JSON.stringify(bracketSerialized));
 await Deno.writeTextFile(path, JSON.stringify(bracketSerialized));
