@@ -63,6 +63,7 @@ export class MatchRecord {
 	}
 }
 
+// TODO potentially change to interface and make methods functional for better serialization
 export class Team {
 	seed: number;
 	matchHistory: MatchRecord[];

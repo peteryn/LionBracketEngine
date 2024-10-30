@@ -56,6 +56,7 @@ export class SwissBracket {
 		if (!isFilleldOut) {
 			return false;
 		}
+		console.log("In update");
 
 		// clear out the history of future rounds for teams in this current roundNode
 		const teams: Team[] = roundNode.matches.flatMap((match: Match) => {
