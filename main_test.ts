@@ -219,25 +219,6 @@ Deno.test(function naRegional4Test1() {
 		swissBracket.setMatchRecord("0-0", i + 1, mr);
 	}
 
-	// for (const matchRecord of tournament["0-0"]) {
-	// 	const upperTeam = seedToTeam.get(matchRecord.upperTeam.seed);
-	// 	const lowerTeam = seedToTeam.get(matchRecord.lowerTeam.seed);
-	// 	if (!upperTeam || !lowerTeam) {
-	// 		throw new Error("Team does not exist when it should");
-	// 	}
-	// 	const mr = new MatchRecord(upperTeam, lowerTeam);
-	// 	mr.upperTeamWins = matchRecord.upperTeamWins;
-	// 	mr.lowerTeamWins = matchRecord.lowerTeamWins;
-	// 	mr.upperTeam.matchHistory.push(mr);
-	// 	mr.lowerTeam.matchHistory.push(mr);
-	// 	swissBracket.setMatchRecord("0-0", i, mr);
-	// 	i++;
-	// }
-
-	const arr = swissBracket.rootRound.winningRound?.matches;
-	// for (let match of arr!) {
-	// 	console.log(match.matchRecord);
-	// }
 	for (let j = 0; j < 4; j++) {
 		const calculated = swissBracket.getMatchRecord("1-0", j + 1);
 		if (calculated) {

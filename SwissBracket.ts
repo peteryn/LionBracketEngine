@@ -1,4 +1,3 @@
-import { setColorEnabled } from "jsr:@std/fmt@0.221.0/colors";
 import { Match, MatchRecord, RoundNode, Team } from "./models.ts";
 
 export class SwissBracket {
@@ -131,11 +130,6 @@ export class SwissBracket {
 			} else {
 				// process winning round by calling evaluation sort for 1 team
 				evaluationSort(winners);
-				console.log("****************");
-				for (let team of winners) {
-					console.log(`SEED: ${team.seed}, GD: ${team.getGameDifferential()}`);
-				}
-				console.log("****************");
 				populateMatches(winningRound.matches, winners);
 			}
 		} else {
