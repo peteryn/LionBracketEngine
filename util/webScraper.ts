@@ -30,6 +30,17 @@ const round3Lower: MatchRecord[] = [];
 const round4Upper: MatchRecord[] = [];
 const round4Lower: MatchRecord[] = [];
 const round5: MatchRecord[] = [];
+const bracketSerialized = {
+	"0-0": round1,
+	"1-0": round2Upper,
+	"0-1": round2Lower,
+	"2-0": round3Upper,
+	"1-1": round3Middle,
+	"0-2": round3Lower,
+	"2-1": round4Upper,
+	"1-2": round4Lower,
+	"2-2": round5,
+};
 for (let i = 0; i < res.length; i += 4) {
 	const t1 = res[i];
 	const t2 = res[i + 3];
@@ -70,5 +81,9 @@ console.log(round5);
 
 // const title = scraper.html("#firstHeading");
 // const title = scraper.attr("span", "dir");
-const title = scraper.text("h1>span");
-console.log(title[0].replaceAll(" ", "_"));
+const temp = scraper.text("h1>span");
+const title = temp[0].replaceAll(" ", "_");
+// const path = `./data/${title}.json`;
+const path = "hi.json";
+// await Deno.writeTextFile(`./data/${title}.json`, JSON.stringify(bracketSerialized));
+await Deno.writeTextFile(path, JSON.stringify(bracketSerialized));
