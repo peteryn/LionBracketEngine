@@ -201,8 +201,6 @@ Deno.test(function naRegional4Test1() {
 		const newTeam = new Team(index);
 		seedToTeam.set(index, newTeam);
 	}
-	console.log(seedToTeam);
-	let i = 1;
 	const teamsIteator = seedToTeam.values();
 	const teams = Array.from(teamsIteator);
 	evaluationSort(teams);
@@ -222,7 +220,6 @@ Deno.test(function naRegional4Test1() {
 	for (let j = 0; j < 4; j++) {
 		const calculated = swissBracket.getMatchRecord("1-0", j + 1);
 		if (calculated) {
-			console.log(calculated);
 			const actualUpperSeed = calculated.upperTeam.seed;
 			const expectedUpperSeed = tournament["1-0"][j].upperTeam.seed;
 			const actualLowerSeed = calculated.lowerTeam.seed;

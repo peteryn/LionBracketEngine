@@ -72,8 +72,6 @@ for (let i = 0; i < res.length; i += 4) {
 	} else {
 		round5.push(mr);
 	}
-
-	// console.log(`Match Index: ${i / 4}: ${res[i]}: ${res[i + 1]}-${res[i + 2]}: ${res[i + 3]}`);
 }
 
 // const title = scraper.html("#firstHeading");
