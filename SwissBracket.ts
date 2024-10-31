@@ -357,6 +357,20 @@ export function isFilledRound(matches: Match[]): boolean {
 export function evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
 	if (lowerTeams) {
 		// implementation when round node has 2 parents
+		// this is when we have to account for history
+		// potentialy need to sort upper and lower teams
+		const upperLowerCross: Team[][] = cartesianProduct(upperTeams, lowerTeams.reverse());
+		const upperLowerCrossCopy: (Team[] | undefined)[] = structuredClone(upperLowerCross);
+		for (let index = 0; index < upperLowerCross.length; index++) {
+			const possibleMatchup = upperLowerCross[index];
+			if (playedAlready(possibleMatchup[0], possibleMatchup[1])) {
+				upperLowerCrossCopy[index] = undefined;
+			}
+		}
+		const teamsCrossClean: Team[][] = upperLowerCross.filter(
+			(teamArray): teamArray is Team[] => teamArray !== undefined
+		);
+
 	} else {
 		// implementation when round node has 1 parent
 		upperTeams.sort(
@@ -366,4 +380,28 @@ export function evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
 				a.seed - b.seed // ascending
 		);
 	}
+}
+
+export function cartesianProduct<Type>(a: Type[], b: Type[]) {
+	return a.flatMap((x) => b.map((y) => [x, y]));
+}
+
+// check if team1 has already played team2
+export function playedAlready(team1: Team, team2: Team) {
+	const team1MatchHistory = team1.matchHistory;
+	for (let index = 0; index < team1MatchHistory.length; index++) {
+		const matchRecord = team1MatchHistory[index];
+		// TODO probably can refactor to be cleaner
+		if (matchRecord.upperTeam === team1) {
+			if (matchRecord.lowerTeam === team2) {
+				return true;
+			}
+		}
+		if (matchRecord.lowerTeam === team1) {
+			if (matchRecord.upperTeam === team2) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
