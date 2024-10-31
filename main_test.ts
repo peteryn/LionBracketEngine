@@ -2,8 +2,12 @@ import { assertEquals } from "@std/assert";
 import { createEmptyMatches, createTeams, populateMatches, SwissBracket } from "./SwissBracket.ts";
 import { Match, MatchRecord, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
-import { evaluationSortTest } from "./util/testFunctions.ts";
-import { RoundNode, Team } from "./models.ts";
+import {
+	checkVersusData,
+	evaluationSortTest,
+	populateMatchRecordFromData,
+} from "./util/testFunctions.ts";
+import { Team } from "./models.ts";
 import { evaluationSort } from "./SwissBracket.ts";
 
 Deno.test(function createTeamsTest() {
@@ -205,29 +209,12 @@ Deno.test(function naRegional4Test1() {
 	const teams = Array.from(teamsIteator);
 	evaluationSort(teams);
 	populateMatches(swissBracket.rootRound.matches, teams);
-	for (let i = 0; i < 8; i++) {
-		const mr = swissBracket.getMatchRecord("0-0", i + 1);
-		if (!mr) {
-			throw new Error("match record DNE when it should");
-		}
 
-		mr.lowerTeamWins = tournament["0-0"][i].lowerTeamWins;
-		mr.upperTeamWins = tournament["0-0"][i].upperTeamWins;
+	populateMatchRecordFromData(swissBracket, tournament, "0-0", 8);
 
-		swissBracket.setMatchRecord("0-0", i + 1, mr);
-	}
+	// 1-0 tests
+	checkVersusData(swissBracket, tournament, "1-0", 4);
 
-	for (let j = 0; j < 4; j++) {
-		const calculated = swissBracket.getMatchRecord("1-0", j + 1);
-		if (calculated) {
-			const actualUpperSeed = calculated.upperTeam.seed;
-			const expectedUpperSeed = tournament["1-0"][j].upperTeam.seed;
-			const actualLowerSeed = calculated.lowerTeam.seed;
-			const expectedLowerSeed = tournament["1-0"][j].lowerTeam.seed;
-			assertEquals(actualUpperSeed, expectedUpperSeed);
-			assertEquals(actualLowerSeed, expectedLowerSeed);
-		} else {
-			throw new Error(`match record doesn't exist when it should`);
-		}
-	}
+	// 0-1 tests
+	checkVersusData(swissBracket, tournament, "0-1", 4);
 });
