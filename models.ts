@@ -113,3 +113,10 @@ export interface MatchRecordSerialized {
 	upperTeamWins: number;
 	lowerTeamWins: number;
 }
+
+export interface MatchTracker {
+	upperTeam: Team;
+	lowerTeam: Team;
+	invalidIndexes: number[];
+	index: number;
+}

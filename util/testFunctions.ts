@@ -10,8 +10,8 @@ export function evaluationSortTest(numTeams: number, name: string, filePath: str
 
 	const f: MatchRecordSerialized[] = getJsonSync(filePath);
 	populateMatchRecords(teams, f);
-	evaluationSort(teams);
-	populateMatches(matches, teams);
+	const matchups = evaluationSort(teams);
+	populateMatches(matches, matchups);
 	return matches;
 }
 

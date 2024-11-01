@@ -1,4 +1,4 @@
-import { Match, MatchRecord, RoundNode, Team } from "./models.ts";
+import { Match, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
 
 export class SwissBracket {
 	rootRound: RoundNode;
@@ -10,7 +10,8 @@ export class SwissBracket {
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = createTeams(numTeams);
 		// populate root round with the teams in the correct matches
-		populateMatches(this.rootRound.matches, this.teams);
+		const matchups = evaluationSort(this.teams);
+		populateMatches(this.rootRound.matches, matchups);
 	}
 
 	// matchNumber is 1-indexed
@@ -128,8 +129,8 @@ export class SwissBracket {
 				}
 			} else {
 				// process winning round by calling evaluation sort for 1 team
-				evaluationSort(winners);
-				populateMatches(winningRound.matches, winners);
+				const matchups = evaluationSort(winners);
+				populateMatches(winningRound.matches, matchups);
 			}
 		} else {
 			// set these stage winners in a variable somewhere else
@@ -147,8 +148,8 @@ export class SwissBracket {
 				}
 			} else {
 				// process losers with sort
-				evaluationSort(losers);
-				populateMatches(losingRound.matches, losers);
+				const matchups = evaluationSort(losers);
+				populateMatches(losingRound.matches, matchups);
 			}
 		} else {
 			// set these stage losers in a variable somewhere else
@@ -305,26 +306,21 @@ export function createTeams(numTeams: number): Team[] {
 	return teams;
 }
 
-export function populateMatches(matches: Match[], teams: Team[]) {
-	if (teams.length / 2 !== matches.length) {
+export function populateMatches(matches: Match[], teams: Team[][]) {
+	if (teams.length !== matches.length) {
 		throw new Error(
 			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
 		);
 	}
-	let i = 0,
-		j = teams.length - 1;
-	while (i < j) {
-		const team1 = teams[i];
-		const team2 = teams[j];
 
+	for (let index = 0; index < teams.length; index++) {
+		const matchup = teams[index];
+		const team1 = matchup[0];
+		const team2 = matchup[1];
 		const record = new MatchRecord(team1, team2);
-		team1.matchHistory.push(record);
-		team2.matchHistory.push(record);
-
-		matches[i].matchRecord = record;
-
-		i++;
-		j--;
+		team1.matchHistory.push(record);	
+		team2.matchHistory.push(record);	
+		matches[index].matchRecord = record;
 	}
 }
 
@@ -354,8 +350,11 @@ export function isFilledRound(matches: Match[]): boolean {
 // if RoundNode has 2 parents, then upper must play lower
 // basically, a sort by multiple criteria
 // TODO: should this be static? should it be private (testing issue)
-export function evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
-	if (lowerTeams) {
+export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]): Team[][] {
+	const upperTeams = swissSort(upperTeamsInput);
+	const matchups: Team[][] = [];
+	if (lowerTeamsInput) {
+		const lowerTeams = swissSort(lowerTeamsInput);
 		// implementation when round node has 2 parents
 		// this is when we have to account for history
 		// potentialy need to sort upper and lower teams
@@ -371,15 +370,73 @@ export function evaluationSort(upperTeams: Team[], lowerTeams?: Team[]) {
 			(teamArray): teamArray is Team[] => teamArray !== undefined
 		);
 
+		const stack: MatchTracker[] = [];
+		let invalidIndexes: number[] = [];
+		let index = 0;
+		const matchLength = (upperTeams.length + lowerTeams.length) / 2;
+		while (stack.length < matchLength) {
+			if (index >= teamsCrossClean.length) {
+				const badMatch = stack.pop();
+				if (badMatch) {
+					invalidIndexes = badMatch.invalidIndexes;
+					invalidIndexes.push(badMatch.index);
+					index = 0;
+				} else {
+					throw new Error("Popped from stack when stack length is 0");
+				}
+			}
+
+			if (invalidIndexes.includes(index)) {
+				index++;
+				continue;
+			}
+
+			const invalidIndexesCopy = structuredClone(invalidIndexes);
+			const match = teamsCrossClean[index];
+			const team1 = match[0];
+			const team2 = match[0];
+			for (let i = 0; i < teamsCrossClean.length; i++) {
+				if (
+					teamsCrossClean[i][0].seed === team1.seed ||
+					teamsCrossClean[i][0].seed === team2.seed ||
+					teamsCrossClean[i][1].seed === team1.seed ||
+					teamsCrossClean[i][1].seed === team2.seed
+				) {
+					invalidIndexes.push(i);
+				}
+			}
+
+			stack.push({
+				upperTeam: team1,
+				lowerTeam: team2,
+				invalidIndexes: invalidIndexesCopy,
+				index: index,
+			});
+		}
+
+		for (const matchTrackerObject of stack) {
+			matchups.push([matchTrackerObject.upperTeam, matchTrackerObject.lowerTeam]);
+		}
 	} else {
 		// implementation when round node has 1 parent
-		upperTeams.sort(
-			(a, b) =>
-				b.getMatchDifferential() - a.getMatchDifferential() || // descending
-				b.getGameDifferential() - a.getGameDifferential() || // descending
-				a.seed - b.seed // ascending
-		);
+		let i = 0;
+		let j = upperTeams.length - 1;
+		while (i < j) {
+			matchups.push([upperTeams[i], upperTeams[j]]);
+			i++;
+			j--;
+		}
 	}
+	return matchups;
+}
+
+export function swissSort(teams: Team[]): Team[] {
+	return [...teams].sort(
+		(a, b) =>
+			b.getMatchDifferential() - a.getMatchDifferential() || // descending
+			b.getGameDifferential() - a.getGameDifferential() || // descending
+			a.seed - b.seed // ascending
+	);
 }
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {

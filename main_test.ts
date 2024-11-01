@@ -21,7 +21,8 @@ Deno.test(function initialSeedingTest() {
 	const teams = createTeams(numTeams);
 	const nodeName = "0-0";
 	const matches: Match[] = createEmptyMatches(numTeams / 2, nodeName);
-	populateMatches(matches, teams);
+	const matchups = evaluationSort(teams);
+	populateMatches(matches, matchups);
 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 1);
 	assertEquals(matches[0].matchRecord?.lowerTeam.seed, 16);
 
@@ -207,8 +208,8 @@ Deno.test(function naRegional4Test1() {
 	}
 	const teamsIteator = seedToTeam.values();
 	const teams = Array.from(teamsIteator);
-	evaluationSort(teams);
-	populateMatches(swissBracket.rootRound.matches, teams);
+	const matchups = evaluationSort(teams);
+	populateMatches(swissBracket.rootRound.matches, matchups);
 
 	populateMatchRecordFromData(swissBracket, tournament, "0-0", 8);
 
