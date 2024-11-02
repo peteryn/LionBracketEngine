@@ -1,3 +1,4 @@
+import { assert } from "@std/assert/assert";
 import { Match, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
 
 export class SwissBracket {
@@ -124,6 +125,25 @@ export class SwissBracket {
 					winningRound.fromLowerParent.length > 0
 				) {
 					// call evaluation sort for 2 teams
+					let topHalf = winningRound.fromUpperParent;
+					// swissSort(topHalf);
+					let botHalf = winningRound.fromLowerParent;
+					// swissSort(botHalf);
+
+					// if (botHalf.length > 0 && topHalf.length == 2) {
+					// 	const firstItem = botHalf.shift();
+					// 	if (firstItem) {
+					// 		topHalf.push(firstItem);
+					// 	}
+					// }
+					if (topHalf.length == 2) {
+						// topHalf.push(botHalf.splice(0, 1)[0]);
+					}
+					console.log(`tophalf ${topHalf.length}`);
+					console.log(`bothalf ${botHalf.length}`);
+					console.log("from winners");
+					const matchups = evaluationSort(topHalf, botHalf);
+					populateMatches(winningRound.matches, matchups);
 				} else {
 					// do nothing, cant calculate round yet
 				}
@@ -145,6 +165,15 @@ export class SwissBracket {
 					losingRound.fromLowerParent.length > 0
 				) {
 					// call evaluation sort for 2 teams
+					let topHalf = losingRound.fromUpperParent;
+					let botHalf = losingRound.fromLowerParent;
+					// botHalf = topHalf.splice(topHalf.length - 1, 1).concat(botHalf);
+					console.log("from losers");
+					const matchups = evaluationSort(
+						losingRound.fromUpperParent,
+						losingRound.fromLowerParent
+					);
+					populateMatches(losingRound.matches, matchups);
 				}
 			} else {
 				// process losers with sort
@@ -318,8 +347,8 @@ export function populateMatches(matches: Match[], teams: Team[][]) {
 		const team1 = matchup[0];
 		const team2 = matchup[1];
 		const record = new MatchRecord(team1, team2);
-		team1.matchHistory.push(record);	
-		team2.matchHistory.push(record);	
+		team1.matchHistory.push(record);
+		team2.matchHistory.push(record);
 		matches[index].matchRecord = record;
 	}
 }
@@ -354,21 +383,69 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 	const upperTeams = swissSort(upperTeamsInput);
 	const matchups: Team[][] = [];
 	if (lowerTeamsInput) {
-		const lowerTeams = swissSort(lowerTeamsInput);
+		console.log("NEW ROUND");
+		let lowerTeams = swissSort(lowerTeamsInput);
+		for (const team of upperTeams) {
+			console.log(team.seed);
+		}
+
+		console.log()
+
+		for (const team of lowerTeams) {
+			console.log(team.seed);
+		}
+		console.log();
+		console.log();
+
+		if (upperTeams.length > lowerTeams.length) {
+			const lastItem = upperTeams.pop();
+			if (lastItem) {
+				lowerTeams = [lastItem, ...lowerTeams];
+			}
+		} else if (upperTeams.length < lowerTeams.length) {
+			const firstItem = lowerTeams.shift();
+			if (firstItem) {
+				upperTeams.push(firstItem);
+			}
+		}
+
+		const err = `LEN NOT MATCH, upper: ${upperTeams.length}, lower: ${lowerTeams.length}`;
+		for (const team of upperTeams) {
+			console.log(team.seed);
+		}
+		console.log();
+		for (const team of lowerTeams) {
+			console.log(team.seed);
+		}
 		// implementation when round node has 2 parents
 		// this is when we have to account for history
 		// potentialy need to sort upper and lower teams
 		const upperLowerCross: Team[][] = cartesianProduct(upperTeams, lowerTeams.reverse());
-		const upperLowerCrossCopy: (Team[] | undefined)[] = structuredClone(upperLowerCross);
+		const nonValidIndex: number[] = [];
 		for (let index = 0; index < upperLowerCross.length; index++) {
 			const possibleMatchup = upperLowerCross[index];
 			if (playedAlready(possibleMatchup[0], possibleMatchup[1])) {
-				upperLowerCrossCopy[index] = undefined;
+				console.log("PLAYED ALEADY");
+				// upperLowerCrossCopy[index] = undefined;
+				nonValidIndex.push(index);
 			}
 		}
-		const teamsCrossClean: Team[][] = upperLowerCross.filter(
-			(teamArray): teamArray is Team[] => teamArray !== undefined
-		);
+		// const teamsCrossClean: Team[][] = upperLowerCross.filter(
+		// 	(teamArray): teamArray is Team[] => teamArray !== undefined
+		// );
+
+		console.log("UPPERLOWER CROSS CLEAN");
+		const teamsCrossClean: Team[][] = [];
+		for (let index = 0; index < upperLowerCross.length; index++) {
+			if (!nonValidIndex.includes(index)) {
+				const matchup = upperLowerCross[index];
+				teamsCrossClean.push(matchup);
+			}
+		}
+
+		for (let blank of teamsCrossClean) {
+			console.log(`(${blank[0].seed}, ${blank[1].seed})`);
+		}
 
 		const stack: MatchTracker[] = [];
 		let invalidIndexes: number[] = [];
@@ -382,11 +459,21 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 					invalidIndexes.push(badMatch.index);
 					index = 0;
 				} else {
-					throw new Error("Popped from stack when stack length is 0");
+					let message = `
+					Popped from stack when stack length is 0 
+					(matchLength: ${matchLength}, stackLength: ${stack.length}, 
+					index: ${index}, teamsCrossCleanLength: ${teamsCrossClean.length})\n
+					`;
+					for (let index = 0; index < teamsCrossClean.length; index++) {
+						const element = teamsCrossClean[index];
+						message = message.concat(`(${element[0].seed}, ${element[1].seed})\n`);
+					}
+					throw new Error(message);
 				}
 			}
 
-			if (invalidIndexes.includes(index)) {
+			// if (invalidIndexes.includes(index)) {
+			if (invalidIndexes.indexOf(index) != -1) {
 				index++;
 				continue;
 			}
@@ -394,7 +481,7 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 			const invalidIndexesCopy = structuredClone(invalidIndexes);
 			const match = teamsCrossClean[index];
 			const team1 = match[0];
-			const team2 = match[0];
+			const team2 = match[1];
 			for (let i = 0; i < teamsCrossClean.length; i++) {
 				if (
 					teamsCrossClean[i][0].seed === team1.seed ||
@@ -413,7 +500,6 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 				index: index,
 			});
 		}
-
 		for (const matchTrackerObject of stack) {
 			matchups.push([matchTrackerObject.upperTeam, matchTrackerObject.lowerTeam]);
 		}
@@ -449,16 +535,18 @@ export function playedAlready(team1: Team, team2: Team) {
 	for (let index = 0; index < team1MatchHistory.length; index++) {
 		const matchRecord = team1MatchHistory[index];
 		// TODO probably can refactor to be cleaner
-		if (matchRecord.upperTeam === team1) {
-			if (matchRecord.lowerTeam === team2) {
-				return true;
-			}
-		}
-		if (matchRecord.lowerTeam === team1) {
-			if (matchRecord.upperTeam === team2) {
-				return true;
-			}
+		if (
+			matchRecord.upperTeam.seed === team2.seed ||
+			matchRecord.lowerTeam.seed === team2.seed
+		) {
+			return true;
 		}
 	}
 	return false;
+}
+
+export function printRound(matches: Match[]) {
+	for (const match of matches) {
+		console.log(`${match.matchRecord?.upperTeam.seed} vs ${match.matchRecord?.lowerTeam.seed}`);
+	}
 }

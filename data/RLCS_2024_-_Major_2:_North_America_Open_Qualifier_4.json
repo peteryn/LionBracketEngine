@@ -157,30 +157,30 @@
 	],
 	"2-1": [
 		{
-			"upperTeam": { "seed": 4, "matchHistory": [] },
-			"lowerTeam": { "seed": 2, "matchHistory": [] },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 2
+			"upperTeam": { "seed": 2, "matchHistory": [] },
+			"lowerTeam": { "seed": 4, "matchHistory": [] },
+			"upperTeamWins": 2,
+			"lowerTeamWins": 3
 		},
 		{
-			"upperTeam": { "seed": 7, "matchHistory": [] },
-			"lowerTeam": { "seed": 6, "matchHistory": [] },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
-		},
-		{
-			"upperTeam": { "seed": 11, "matchHistory": [] },
-			"lowerTeam": { "seed": 10, "matchHistory": [] },
+			"upperTeam": { "seed": 6, "matchHistory": [] },
+			"lowerTeam": { "seed": 7, "matchHistory": [] },
 			"upperTeamWins": 1,
 			"lowerTeamWins": 3
+		},
+		{
+			"upperTeam": { "seed": 10, "matchHistory": [] },
+			"lowerTeam": { "seed": 11, "matchHistory": [] },
+			"upperTeamWins": 3,
+			"lowerTeamWins": 1
 		}
 	],
 	"1-2": [
 		{
-			"upperTeam": { "seed": 13, "matchHistory": [] },
-			"lowerTeam": { "seed": 9, "matchHistory": [] },
-			"upperTeamWins": 0,
-			"lowerTeamWins": 3
+			"upperTeam": { "seed": 9, "matchHistory": [] },
+			"lowerTeam": { "seed": 13, "matchHistory": [] },
+			"upperTeamWins": 3,
+			"lowerTeamWins": 0
 		},
 		{
 			"upperTeam": { "seed": 3, "matchHistory": [] },
@@ -189,10 +189,10 @@
 			"lowerTeamWins": 1
 		},
 		{
-			"upperTeam": { "seed": 5, "matchHistory": [] },
-			"lowerTeam": { "seed": 14, "matchHistory": [] },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 0
+			"upperTeam": { "seed": 14, "matchHistory": [] },
+			"lowerTeam": { "seed": 5, "matchHistory": [] },
+			"upperTeamWins": 0,
+			"lowerTeamWins": 3
 		}
 	],
 	"2-2": [

@@ -1,5 +1,11 @@
 import { assertEquals } from "@std/assert";
-import { createEmptyMatches, createTeams, populateMatches, SwissBracket } from "./SwissBracket.ts";
+import {
+	createEmptyMatches,
+	createTeams,
+	populateMatches,
+	printRound,
+	SwissBracket,
+} from "./SwissBracket.ts";
 import { Match, MatchRecord, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import {
@@ -201,15 +207,17 @@ Deno.test(function naRegional4Test1() {
 		"./data/RLCS_2024_-_Major_2:_North_America_Open_Qualifier_4.json"
 	);
 	const swissBracket = new SwissBracket(16, 3);
-	const seedToTeam = new Map<number, Team>();
-	for (let index = 1; index <= 16; index++) {
-		const newTeam = new Team(index);
-		seedToTeam.set(index, newTeam);
-	}
-	const teamsIteator = seedToTeam.values();
-	const teams = Array.from(teamsIteator);
-	const matchups = evaluationSort(teams);
-	populateMatches(swissBracket.rootRound.matches, matchups);
+	// const seedToTeam = new Map<number, Team>();
+	// for (let index = 1; index <= 16; index++) {
+	// 	const newTeam = new Team(index);
+	// 	seedToTeam.set(index, newTeam);
+	// }
+	// console.log(seedToTeam);
+	// const teamsIteator = seedToTeam.values();
+	// const teams = Array.from(teamsIteator);
+	// const matchups = evaluationSort(teams);
+	// populateMatches(swissBracket.rootRound.matches, matchups);
+	// console.log(swissBracket.rootRound.matches.length);
 
 	populateMatchRecordFromData(swissBracket, tournament, "0-0", 8);
 
@@ -218,4 +226,38 @@ Deno.test(function naRegional4Test1() {
 
 	// 0-1 tests
 	checkVersusData(swissBracket, tournament, "0-1", 4);
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0", 4);
+	populateMatchRecordFromData(swissBracket, tournament, "0-1", 4);
+
+	// const round3Upper = swissBracket.rootRound.winningRound?.losingRound;
+	// for (const match of round3Upper!.matches) {
+	// 	console.log(`${match.matchRecord?.upperTeam.seed} vs ${match.matchRecord?.lowerTeam.seed}`);
+	// }
+	checkVersusData(swissBracket, tournament, "2-0", 2);
+	checkVersusData(swissBracket, tournament, "1-1", 4);
+	checkVersusData(swissBracket, tournament, "0-2", 2);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0", 2);
+	populateMatchRecordFromData(swissBracket, tournament, "1-1", 4); // crashes here
+	populateMatchRecordFromData(swissBracket, tournament, "0-2", 2);
+
+	const round4upper = swissBracket.rootRound.winningRound?.winningRound?.losingRound;
+	printRound(round4upper!.matches);
+
+	console.log();
+	const round4lower = swissBracket.rootRound.winningRound?.losingRound?.losingRound;
+	printRound(round4lower!.matches);
+
+	checkVersusData(swissBracket, tournament, "2-1", 3);
+	checkVersusData(swissBracket, tournament, "1-2", 3);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1", 3);
+	populateMatchRecordFromData(swissBracket, tournament, "1-2", 3);
+
+	console.log();
+	const round5 = swissBracket.rootRound.winningRound?.losingRound?.losingRound?.winningRound;
+	printRound(round5!.matches);
+
+	checkVersusData(swissBracket, tournament, "2-2", 3);
 });
