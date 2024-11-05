@@ -425,8 +425,6 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 		for (let index = 0; index < upperLowerCross.length; index++) {
 			const possibleMatchup = upperLowerCross[index];
 			if (playedAlready(possibleMatchup[0], possibleMatchup[1])) {
-				console.log("PLAYED ALEADY");
-				// upperLowerCrossCopy[index] = undefined;
 				nonValidIndex.push(index);
 			}
 		}
