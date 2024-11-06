@@ -366,6 +366,7 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 	if (lowerTeamsInput) {
 		let lowerTeams = swissSort(lowerTeamsInput);
 
+		// for 2-1 and 1-2 rounds, we need to "promote" or "demote" a team so that the two arrays have an equal number of teams
 		if (upperTeams.length > lowerTeams.length) {
 			const lastItem = upperTeams.pop();
 			if (lastItem) {
@@ -381,7 +382,10 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 		// implementation when round node has 2 parents
 		// this is when we have to account for history
 		// potentialy need to sort upper and lower teams
+
+		// calculate every possible pairing of upper and lower teams
 		const upperLowerCross: Team[][] = cartesianProduct(upperTeams, lowerTeams.reverse());
+		// find the indexes of invalid pairings due to match history
 		const nonValidIndex: number[] = [];
 		for (let index = 0; index < upperLowerCross.length; index++) {
 			const possibleMatchup = upperLowerCross[index];
@@ -389,10 +393,8 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 				nonValidIndex.push(index);
 			}
 		}
-		// const teamsCrossClean: Team[][] = upperLowerCross.filter(
-		// 	(teamArray): teamArray is Team[] => teamArray !== undefined
-		// );
 
+		// using the list of invalid indexes, create a new list that does not have those index values
 		const teamsCrossClean: Team[][] = [];
 		for (let index = 0; index < upperLowerCross.length; index++) {
 			if (!nonValidIndex.includes(index)) {
@@ -401,11 +403,15 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 			}
 		}
 
+		// backtracking algorithm
 		const stack: MatchTracker[] = [];
 		let invalidIndexes: number[] = [];
 		let index = 0;
 		const matchLength = (upperTeams.length + lowerTeams.length) / 2;
 		while (stack.length < matchLength) {
+			// if this condition holds, then we have not generate enough matches for the round
+			// this means that we selected a matchup that causes some other invalidity
+			// we need to get rid of that matchup and restore the state of invalidIndexes
 			if (index >= teamsCrossClean.length) {
 				const badMatch = stack.pop();
 				if (badMatch) {
@@ -426,13 +432,18 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 				}
 			}
 
-			// if (invalidIndexes.includes(index)) {
-			if (invalidIndexes.indexOf(index) != -1) {
+			if (invalidIndexes.includes(index)) {
 				index++;
 				continue;
 			}
 
+			// key line, we need to preserve the state of invalidIndexes for each potential matchup
+			// so that we can backtrack
 			const invalidIndexesCopy = structuredClone(invalidIndexes);
+
+			// if we select this matchup, then those 2 teams can no longer play
+			// so we remove potential pairings with those teams by adding the index of that matchup
+			// to invalidIndexes
 			const match = teamsCrossClean[index];
 			const team1 = match[0];
 			const team2 = match[1];
@@ -454,6 +465,7 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 				index: index,
 			});
 		}
+
 		for (const matchTrackerObject of stack) {
 			matchups.push([matchTrackerObject.upperTeam, matchTrackerObject.lowerTeam]);
 		}
