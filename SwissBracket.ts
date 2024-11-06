@@ -124,25 +124,10 @@ export class SwissBracket {
 					winningRound.fromUpperParent.length > 0 &&
 					winningRound.fromLowerParent.length > 0
 				) {
-					// call evaluation sort for 2 teams
-					let topHalf = winningRound.fromUpperParent;
-					// swissSort(topHalf);
-					let botHalf = winningRound.fromLowerParent;
-					// swissSort(botHalf);
-
-					// if (botHalf.length > 0 && topHalf.length == 2) {
-					// 	const firstItem = botHalf.shift();
-					// 	if (firstItem) {
-					// 		topHalf.push(firstItem);
-					// 	}
-					// }
-					if (topHalf.length == 2) {
-						// topHalf.push(botHalf.splice(0, 1)[0]);
-					}
-					console.log(`tophalf ${topHalf.length}`);
-					console.log(`bothalf ${botHalf.length}`);
-					console.log("from winners");
-					const matchups = evaluationSort(topHalf, botHalf);
+					const matchups = evaluationSort(
+						winningRound.fromUpperParent,
+						winningRound.fromLowerParent
+					);
 					populateMatches(winningRound.matches, matchups);
 				} else {
 					// do nothing, cant calculate round yet
@@ -165,10 +150,6 @@ export class SwissBracket {
 					losingRound.fromLowerParent.length > 0
 				) {
 					// call evaluation sort for 2 teams
-					let topHalf = losingRound.fromUpperParent;
-					let botHalf = losingRound.fromLowerParent;
-					// botHalf = topHalf.splice(topHalf.length - 1, 1).concat(botHalf);
-					console.log("from losers");
 					const matchups = evaluationSort(
 						losingRound.fromUpperParent,
 						losingRound.fromLowerParent
@@ -383,19 +364,7 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 	const upperTeams = swissSort(upperTeamsInput);
 	const matchups: Team[][] = [];
 	if (lowerTeamsInput) {
-		console.log("NEW ROUND");
 		let lowerTeams = swissSort(lowerTeamsInput);
-		for (const team of upperTeams) {
-			console.log(team.seed);
-		}
-
-		console.log()
-
-		for (const team of lowerTeams) {
-			console.log(team.seed);
-		}
-		console.log();
-		console.log();
 
 		if (upperTeams.length > lowerTeams.length) {
 			const lastItem = upperTeams.pop();
@@ -409,14 +378,6 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 			}
 		}
 
-		const err = `LEN NOT MATCH, upper: ${upperTeams.length}, lower: ${lowerTeams.length}`;
-		for (const team of upperTeams) {
-			console.log(team.seed);
-		}
-		console.log();
-		for (const team of lowerTeams) {
-			console.log(team.seed);
-		}
 		// implementation when round node has 2 parents
 		// this is when we have to account for history
 		// potentialy need to sort upper and lower teams
@@ -432,17 +393,12 @@ export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]
 		// 	(teamArray): teamArray is Team[] => teamArray !== undefined
 		// );
 
-		console.log("UPPERLOWER CROSS CLEAN");
 		const teamsCrossClean: Team[][] = [];
 		for (let index = 0; index < upperLowerCross.length; index++) {
 			if (!nonValidIndex.includes(index)) {
 				const matchup = upperLowerCross[index];
 				teamsCrossClean.push(matchup);
 			}
-		}
-
-		for (let blank of teamsCrossClean) {
-			console.log(`(${blank[0].seed}, ${blank[1].seed})`);
 		}
 
 		const stack: MatchTracker[] = [];
