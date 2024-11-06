@@ -81,6 +81,13 @@ export class SwissBracket {
 					const match = matches[index];
 					match.matchRecord = undefined;
 				}
+				// reset the teams that were promoted because future rounds are being calculated
+				if (node.promotionTeams.length > 0) {
+					node.promotionTeams = [];
+				}
+				if (node.eliminatedTeams.length > 0) {
+					node.eliminatedTeams = [];
+				}
 			});
 		}
 
@@ -90,6 +97,12 @@ export class SwissBracket {
 				for (let index = 0; index < matches.length; index++) {
 					const match = matches[index];
 					match.matchRecord = undefined;
+				}
+				if (node.promotionTeams.length > 0) {
+					node.promotionTeams = [];
+				}
+				if (node.eliminatedTeams.length > 0) {
+					node.eliminatedTeams = [];
 				}
 			});
 		}
@@ -138,7 +151,8 @@ export class SwissBracket {
 				populateMatches(winningRound.matches, matchups);
 			}
 		} else {
-			// set these stage winners in a variable somewhere else
+			// set the winners who go on to the next stage
+			roundNode.promotionTeams = swissSort(winners);
 		}
 
 		const losingRound = roundNode.losingRound;
@@ -162,7 +176,8 @@ export class SwissBracket {
 				populateMatches(losingRound.matches, matchups);
 			}
 		} else {
-			// set these stage losers in a variable somewhere else
+			// set the losers who are eliminated
+			roundNode.eliminatedTeams = swissSort(losers);
 		}
 
 		/*
@@ -298,6 +313,26 @@ export class SwissBracket {
 			levels.push(level);
 		}
 		return levels;
+	}
+
+	getPromotedTeams() {
+		let promotedTeams: Team[] = [];
+		this.levelOrderTraversal(this.rootRound, (node) => {
+			if (node.promotionTeams.length > 0) {
+				promotedTeams = promotedTeams.concat(node.promotionTeams);
+			}
+		});
+		return promotedTeams;
+	}
+
+	getEliminatedTeams() {
+		let eliminatedTeams: Team[] = [];
+		this.levelOrderTraversal(this.rootRound, (node) => {
+			if (node.eliminatedTeams.length > 0) {
+				eliminatedTeams = eliminatedTeams.concat(node.eliminatedTeams);
+			}
+		});
+		return swissSort(eliminatedTeams);
 	}
 
 	private shuffleTeams() {

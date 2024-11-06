@@ -10,6 +10,8 @@ export class RoundNode {
 	fromUpperParent: Team[];
 	fromLowerParent: Team[];
 	has2Parents: boolean;
+	promotionTeams: Team[];
+	eliminatedTeams: Team[];
 
 	constructor(
 		name: string,
@@ -27,6 +29,8 @@ export class RoundNode {
 		this.fromUpperParent = [];
 		this.fromLowerParent = [];
 		this.has2Parents = false;
+		this.promotionTeams = [];
+		this.eliminatedTeams = [];
 	}
 
 	toString(): string {
