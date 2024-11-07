@@ -1,5 +1,5 @@
 import { scrape } from "@panha/scrape/";
-import { MatchRecord, Team } from "../models.ts";
+import { MatchRecord, Team, TeamNameMap, TournamentData } from "../models.ts";
 
 const url = Deno.args[0];
 const scraper = await scrape(url);
@@ -7,6 +7,7 @@ const res = scraper.text(".brkts-matchlist-cell-content");
 // const res = scraper.html("h3");
 
 const nameToSeed: Map<string, Team> = new Map();
+const seedToName: TeamNameMap[] = Array.from({ length: 16 }, (_, i) => ({ seed: i + 1, name: "" }));
 let j = 1;
 let k = 16;
 for (let i = 0; i < 8 * 4; i += 4) {
@@ -16,6 +17,8 @@ for (let i = 0; i < 8 * 4; i += 4) {
 	const team2 = new Team(k);
 	nameToSeed.set(t1, team1);
 	nameToSeed.set(t2, team2);
+	seedToName[j - 1].name = t1;
+	seedToName[k - 1].name = t2;
 	j++;
 	k--;
 }
@@ -29,8 +32,8 @@ const round3Lower: MatchRecord[] = [];
 const round4Upper: MatchRecord[] = [];
 const round4Lower: MatchRecord[] = [];
 const round5: MatchRecord[] = [];
-const bracketSerialized = {
-	teams: nameToSeed.values(),
+const bracketSerialized: TournamentData = {
+	teamNames: seedToName,
 	"0-0": round1,
 	"1-0": round2Upper,
 	"0-1": round2Lower,
@@ -74,11 +77,7 @@ for (let i = 0; i < res.length; i += 4) {
 	}
 }
 
-// const title = scraper.html("#firstHeading");
-// const title = scraper.attr("span", "dir");
 const temp = scraper.text("h1>span");
 const title = temp[0].replaceAll(" ", "_");
-// const path = `./data/${title}.json`;
 const path = `./data/${title}.json`;
-// await Deno.writeTextFile(`./data/${title}.json`, JSON.stringify(bracketSerialized));
 await Deno.writeTextFile(path, JSON.stringify(bracketSerialized));

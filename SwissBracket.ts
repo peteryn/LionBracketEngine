@@ -1,4 +1,3 @@
-import { assert } from "@std/assert/assert";
 import { Match, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
 
 export class SwissBracket {

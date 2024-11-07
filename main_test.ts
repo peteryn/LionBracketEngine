@@ -1,19 +1,12 @@
 import { assertEquals } from "@std/assert";
-import {
-	createEmptyMatches,
-	createTeams,
-	populateMatches,
-	printRound,
-	SwissBracket,
-} from "./SwissBracket.ts";
-import { Match, MatchRecord, type MatchRecordSerialized } from "./models.ts";
+import { createEmptyMatches, createTeams, populateMatches, SwissBracket } from "./SwissBracket.ts";
+import { Match, MatchRecord, TournamentData, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import {
 	checkVersusData,
 	evaluationSortTest,
 	populateMatchRecordFromData,
 } from "./util/testFunctions.ts";
-import { Team } from "./models.ts";
 import { evaluationSort } from "./SwissBracket.ts";
 
 Deno.test(function createTeamsTest() {
@@ -203,7 +196,7 @@ Deno.test(function computeRound1() {
 });
 
 Deno.test(function naRegional4Test1() {
-	const tournament = getJsonSync(
+	const tournament: TournamentData = getJsonSync(
 		"./data/RLCS_2024_-_Major_2:_North_America_Open_Qualifier_4.json"
 	);
 	const swissBracket = new SwissBracket(16, 3);
