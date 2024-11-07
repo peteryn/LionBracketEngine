@@ -206,15 +206,12 @@ Deno.test(function computeRound1() {
 
 Deno.test(function naRegional4Test1() {
 	const tournament: TournamentData = getJsonSync(
-		"./data/RLCS_2024_-_Major_2:_North_America_Open_Qualifier_4.json"
+		"./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json"
 	);
 	const swissBracket = new SwissBracket(16, 3);
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
-	// 1-0 tests
 	checkVersusData(swissBracket, tournament, "1-0");
-
-	// 0-1 tests
 	checkVersusData(swissBracket, tournament, "0-1");
 
 	populateMatchRecordFromData(swissBracket, tournament, "1-0");
@@ -237,12 +234,4 @@ Deno.test(function naRegional4Test1() {
 	checkVersusData(swissBracket, tournament, "2-2");
 
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
-
-	const promoted = swissBracket.getPromotedTeams();
-	promoted.forEach((t) => console.log(t.seed));
-
-	console.log();
-
-	const eliminated = swissBracket.getEliminatedTeams();
-	eliminated.forEach((t) => console.log(t.seed));
 });

@@ -1,4 +1,22 @@
 {
+	"teamNames": [
+		{ "seed": 1, "name": "G2" },
+		{ "seed": 2, "name": "GENG" },
+		{ "seed": 3, "name": "LG" },
+		{ "seed": 4, "name": "OG" },
+		{ "seed": 5, "name": "TSM" },
+		{ "seed": 6, "name": "M80" },
+		{ "seed": 7, "name": "SSG" },
+		{ "seed": 8, "name": "MST" },
+		{ "seed": 9, "name": "NRG" },
+		{ "seed": 10, "name": "SR" },
+		{ "seed": 11, "name": "C9" },
+		{ "seed": 12, "name": "SNOW" },
+		{ "seed": 13, "name": "XD" },
+		{ "seed": 14, "name": "NET" },
+		{ "seed": 15, "name": "CHRS" },
+		{ "seed": 16, "name": "COLD" }
+	],
 	"0-0": [
 		{
 			"upperTeam": { "seed": 1, "matchHistory": [] },
