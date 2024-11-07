@@ -34,8 +34,12 @@ export function checkVersusData(
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
 	roundName: string,
-	numMatches: number
 ) {
+	const roundNode = swissBracket.roundNodes.get(roundName);
+	if (!roundNode) {
+		throw new Error("roundNode doesn't exist when it should");
+	}
+	const numMatches = roundNode.matches.length;
 	for (let j = 0; j < numMatches; j++) {
 		const calculated = swissBracket.getMatchRecord(roundName, j + 1);
 		if (calculated) {
@@ -56,8 +60,12 @@ export function populateMatchRecordFromData(
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
 	roundName: string,
-	numMatches: number
 ) {
+	const roundNode = swissBracket.roundNodes.get(roundName);
+	if (!roundNode) {
+		throw new Error("roundNode doesn't exist when it should");
+	}
+	const numMatches = roundNode.matches.length;
 	for (let i = 0; i < numMatches; i++) {
 		const mr = swissBracket.getMatchRecord(roundName, i + 1);
 		if (!mr) {

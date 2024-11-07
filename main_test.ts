@@ -115,9 +115,12 @@ Deno.test(function structureTest1() {
 	assertEquals(rootRound.matches[0].matchRecord?.lowerTeam.seed, 16);
 	assertEquals(rootRound.matches[1].matchRecord?.upperTeam.seed, 2);
 	assertEquals(rootRound.matches[1].matchRecord?.lowerTeam.seed, 15);
+	assertEquals(swissBracket.roundNodes.get("0-0")?.name, swissBracket.rootRound.name);
 
 	const round2Upper = rootRound.winningRound;
 	const round2Lower = rootRound.losingRound;
+	assertEquals(swissBracket.roundNodes.get("1-0")?.name, round2Upper?.name);
+	assertEquals(swissBracket.roundNodes.get("0-1")?.name, round2Lower?.name);
 	assertEquals(round2Upper?.level, 2);
 	assertEquals(round2Lower?.level, 2);
 	assertEquals(round2Upper?.has2Parents, false);
@@ -128,6 +131,9 @@ Deno.test(function structureTest1() {
 	const round3Upper = round2Upper?.winningRound;
 	const round3Middle = round2Upper?.losingRound;
 	const round3Lower = round2Lower?.losingRound;
+	assertEquals(swissBracket.roundNodes.get("2-0")?.name, round3Upper?.name);
+	assertEquals(swissBracket.roundNodes.get("1-1")?.name, round3Middle?.name);
+	assertEquals(swissBracket.roundNodes.get("0-2")?.name, round3Lower?.name);
 	assertEquals(round3Upper?.level, 3);
 	assertEquals(round3Middle?.level, 3);
 	assertEquals(round3Lower?.level, 3);
@@ -140,6 +146,8 @@ Deno.test(function structureTest1() {
 
 	const round4Upper = round3Upper?.losingRound;
 	const round4Lower = round3Lower?.winningRound;
+	assertEquals(swissBracket.roundNodes.get("2-1")?.name, round4Upper?.name);
+	assertEquals(swissBracket.roundNodes.get("1-2")?.name, round4Lower?.name);
 	assertEquals(round4Upper?.level, 4);
 	assertEquals(round4Lower?.level, 4);
 	assertEquals(round4Upper?.has2Parents, true);
@@ -148,6 +156,7 @@ Deno.test(function structureTest1() {
 	assertEquals(round4Lower?.matches.length, 3);
 
 	const round5 = round4Lower?.winningRound;
+	assertEquals(swissBracket.roundNodes.get("2-2")?.name, round5?.name);
 	assertEquals(round5?.level, 5);
 	assertEquals(round5?.has2Parents, true);
 	assertEquals(round5?.matches.length, 3);
@@ -200,34 +209,34 @@ Deno.test(function naRegional4Test1() {
 		"./data/RLCS_2024_-_Major_2:_North_America_Open_Qualifier_4.json"
 	);
 	const swissBracket = new SwissBracket(16, 3);
-	populateMatchRecordFromData(swissBracket, tournament, "0-0", 8);
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	// 1-0 tests
-	checkVersusData(swissBracket, tournament, "1-0", 4);
+	checkVersusData(swissBracket, tournament, "1-0");
 
 	// 0-1 tests
-	checkVersusData(swissBracket, tournament, "0-1", 4);
+	checkVersusData(swissBracket, tournament, "0-1");
 
-	populateMatchRecordFromData(swissBracket, tournament, "1-0", 4);
-	populateMatchRecordFromData(swissBracket, tournament, "0-1", 4);
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
 
-	checkVersusData(swissBracket, tournament, "2-0", 2);
-	checkVersusData(swissBracket, tournament, "1-1", 4);
-	checkVersusData(swissBracket, tournament, "0-2", 2);
+	checkVersusData(swissBracket, tournament, "2-0");
+	checkVersusData(swissBracket, tournament, "1-1");
+	checkVersusData(swissBracket, tournament, "0-2");
 
-	populateMatchRecordFromData(swissBracket, tournament, "2-0", 2);
-	populateMatchRecordFromData(swissBracket, tournament, "1-1", 4);
-	populateMatchRecordFromData(swissBracket, tournament, "0-2", 2);
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
 
-	checkVersusData(swissBracket, tournament, "2-1", 3);
-	checkVersusData(swissBracket, tournament, "1-2", 3);
+	checkVersusData(swissBracket, tournament, "2-1");
+	checkVersusData(swissBracket, tournament, "1-2");
 
-	populateMatchRecordFromData(swissBracket, tournament, "2-1", 3);
-	populateMatchRecordFromData(swissBracket, tournament, "1-2", 3);
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
 
-	checkVersusData(swissBracket, tournament, "2-2", 3);
+	checkVersusData(swissBracket, tournament, "2-2");
 
-	populateMatchRecordFromData(swissBracket, tournament, "2-2", 3);
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 
 	const promoted = swissBracket.getPromotedTeams();
 	promoted.forEach((t) => console.log(t.seed));

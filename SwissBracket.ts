@@ -4,9 +4,12 @@ export class SwissBracket {
 	rootRound: RoundNode;
 	matches: Map<string, Match>;
 	teams: Team[];
+	roundNodes: Map<string, RoundNode>;
 
 	constructor(numTeams: number = 16, winRequirement: number = 3) {
+		this.roundNodes = new Map();
 		this.rootRound = this.createStructure(numTeams, winRequirement);
+		this.roundNodes.set("0-0", this.rootRound);
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = createTeams(numTeams);
 		// populate root round with the teams in the correct matches
@@ -218,6 +221,10 @@ export class SwissBracket {
 			existingNodes.forEach((value) => {
 				newQueue.push(value);
 			});
+			const nodeEntriesIterator = existingNodes.entries();
+			for (const roundNodeVal of nodeEntriesIterator) {
+				this.roundNodes.set(roundNodeVal[0], roundNodeVal[1]);
+			}
 			queue = newQueue;
 			level++;
 		}
