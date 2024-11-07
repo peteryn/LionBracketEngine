@@ -1,5 +1,5 @@
-import { createEmptyMatches, createTeams, SwissBracket } from "../SwissBracket.ts";
-import { MatchRecord, MatchRecordSerialized, Team } from "../models.ts";
+import { createEmptyMatches, createTeams, printRound, SwissBracket } from "../SwissBracket.ts";
+import { MatchRecord, MatchRecordSerialized, Team, TournamentData } from "../models.ts";
 import { getJsonSync } from "./file.ts";
 import { evaluationSort, populateMatches } from "../SwissBracket.ts";
 import { assertEquals } from "@std/assert/equals";
@@ -33,7 +33,7 @@ export function checkVersusData(
 	swissBracket: SwissBracket,
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
-	roundName: string,
+	roundName: string
 ) {
 	const roundNode = swissBracket.roundNodes.get(roundName);
 	if (!roundNode) {
@@ -59,7 +59,7 @@ export function populateMatchRecordFromData(
 	swissBracket: SwissBracket,
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
-	roundName: string,
+	roundName: string
 ) {
 	const roundNode = swissBracket.roundNodes.get(roundName);
 	if (!roundNode) {
@@ -77,4 +77,34 @@ export function populateMatchRecordFromData(
 
 		swissBracket.setMatchRecord(roundName, i + 1, mr);
 	}
+}
+
+export function testTournament(tournamentPath: string) {
+	const tournament: TournamentData = getJsonSync(tournamentPath);
+	const swissBracket = new SwissBracket(16, 3);
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+
+	checkVersusData(swissBracket, tournament, "1-0");
+	checkVersusData(swissBracket, tournament, "0-1");
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData(swissBracket, tournament, "2-0");
+	checkVersusData(swissBracket, tournament, "1-1");
+	checkVersusData(swissBracket, tournament, "0-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	checkVersusData(swissBracket, tournament, "2-1");
+	checkVersusData(swissBracket, tournament, "1-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+
+	checkVersusData(swissBracket, tournament, "2-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 }

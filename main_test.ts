@@ -1,11 +1,12 @@
 import { assertEquals } from "@std/assert";
-import { createEmptyMatches, createTeams, populateMatches, SwissBracket } from "./SwissBracket.ts";
+import { createEmptyMatches, createTeams, populateMatches, printRound, SwissBracket } from "./SwissBracket.ts";
 import { Match, MatchRecord, TournamentData, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import {
 	checkVersusData,
 	evaluationSortTest,
 	populateMatchRecordFromData,
+	testTournament,
 } from "./util/testFunctions.ts";
 import { evaluationSort } from "./SwissBracket.ts";
 
@@ -205,33 +206,13 @@ Deno.test(function computeRound1() {
 });
 
 Deno.test(function naRegional4Test1() {
-	const tournament: TournamentData = getJsonSync(
-		"./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json"
-	);
-	const swissBracket = new SwissBracket(16, 3);
-	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
+});
 
-	checkVersusData(swissBracket, tournament, "1-0");
-	checkVersusData(swissBracket, tournament, "0-1");
+Deno.test(function naRegional5Test1() {
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_5.json");
+});
 
-	populateMatchRecordFromData(swissBracket, tournament, "1-0");
-	populateMatchRecordFromData(swissBracket, tournament, "0-1");
-
-	checkVersusData(swissBracket, tournament, "2-0");
-	checkVersusData(swissBracket, tournament, "1-1");
-	checkVersusData(swissBracket, tournament, "0-2");
-
-	populateMatchRecordFromData(swissBracket, tournament, "2-0");
-	populateMatchRecordFromData(swissBracket, tournament, "1-1");
-	populateMatchRecordFromData(swissBracket, tournament, "0-2");
-
-	checkVersusData(swissBracket, tournament, "2-1");
-	checkVersusData(swissBracket, tournament, "1-2");
-
-	populateMatchRecordFromData(swissBracket, tournament, "2-1");
-	populateMatchRecordFromData(swissBracket, tournament, "1-2");
-
-	checkVersusData(swissBracket, tournament, "2-2");
-
-	populateMatchRecordFromData(swissBracket, tournament, "2-2");
+Deno.test(function naRegional6Test1() {
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json")
 });

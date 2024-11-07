@@ -1,4 +1,4 @@
-import { Match, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
+import { Match, MatchRecord, RoundNode, Team, TeamNameMap, type MatchTracker } from "./models.ts";
 
 export class SwissBracket {
 	rootRound: RoundNode;
@@ -552,8 +552,20 @@ export function playedAlready(team1: Team, team2: Team) {
 	return false;
 }
 
-export function printRound(matches: Match[]) {
-	for (const match of matches) {
-		console.log(`${match.matchRecord?.upperTeam.seed} vs ${match.matchRecord?.lowerTeam.seed}`);
+export function printRound(matches: Match[], teamNameMap?: TeamNameMap[]) {
+	if (teamNameMap) {
+		for (const match of matches) {
+			console.log(
+				`${teamNameMap[match.matchRecord!.upperTeam.seed - 1].name} vs ${
+					teamNameMap[match.matchRecord!.lowerTeam.seed - 1].name
+				}`
+			);
+		}
+	} else {
+		for (const match of matches) {
+			console.log(
+				`${match.matchRecord?.upperTeam.seed} vs ${match.matchRecord?.lowerTeam.seed}`
+			);
+		}
 	}
 }

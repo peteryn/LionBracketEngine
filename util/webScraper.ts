@@ -78,6 +78,7 @@ for (let i = 0; i < res.length; i += 4) {
 }
 
 const temp = scraper.text("h1>span");
-const title = temp[0].replaceAll(" ", "_");
+let title = temp[0].replaceAll(" ", "_");
+title = title.replaceAll(":", "");
 const path = `./data/${title}.json`;
 await Deno.writeTextFile(path, JSON.stringify(bracketSerialized));
