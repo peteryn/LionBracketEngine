@@ -1,5 +1,11 @@
 import { assertEquals } from "@std/assert";
-import { createEmptyMatches, createTeams, populateMatches, printRound, SwissBracket } from "./SwissBracket.ts";
+import {
+	createEmptyMatches,
+	createTeams,
+	populateMatches,
+	printRound,
+	SwissBracket,
+} from "./SwissBracket.ts";
 import { Match, MatchRecord, TournamentData, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import {
@@ -9,6 +15,7 @@ import {
 	testTournament,
 } from "./util/testFunctions.ts";
 import { evaluationSort } from "./SwissBracket.ts";
+import { RoundNode } from "./models.ts";
 
 Deno.test(function createTeamsTest() {
 	const numTeams = 16;
@@ -209,10 +216,169 @@ Deno.test(function naRegional4Test1() {
 	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
 });
 
+Deno.test(function naRegional4Test2() {
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournament: TournamentData = getJsonSync(tournamentPath);
+	const swissBracket = new SwissBracket(16, 3);
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+
+	checkVersusData(swissBracket, tournament, "1-0");
+	checkVersusData(swissBracket, tournament, "0-1");
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData(swissBracket, tournament, "2-0");
+	checkVersusData(swissBracket, tournament, "1-1");
+	checkVersusData(swissBracket, tournament, "0-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	checkVersusData(swissBracket, tournament, "2-1");
+	checkVersusData(swissBracket, tournament, "1-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+
+	checkVersusData(swissBracket, tournament, "2-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
+
+	const mr = swissBracket.getMatchRecord("0-0", 1);
+	mr!.lowerTeamWins = 1;
+	swissBracket.setMatchRecord("0-0", 1, mr!);
+
+	for (const match of swissBracket.rootRound.matches) {
+		const upperTeam = match.matchRecord?.upperTeam;
+		const lowerTeam = match.matchRecord?.lowerTeam;
+
+		assertEquals(upperTeam?.matchHistory.length, 2);
+		assertEquals(lowerTeam?.matchHistory.length, 2);
+	}
+
+	const round3Upper = swissBracket.roundNodes.get("2-0") as RoundNode;
+	assertEquals(round3Upper.matches[0].matchRecord, undefined);
+	assertEquals(round3Upper.matches[1].matchRecord, undefined);
+
+	const round3Middle = swissBracket.roundNodes.get("1-1") as RoundNode;
+	assertEquals(round3Middle.matches[0].matchRecord, undefined);
+	assertEquals(round3Middle.matches[1].matchRecord, undefined);
+	assertEquals(round3Middle.matches[2].matchRecord, undefined);
+	assertEquals(round3Middle.matches[3].matchRecord, undefined);
+
+	const round3Lower = swissBracket.roundNodes.get("0-2") as RoundNode;
+	assertEquals(round3Lower.matches[0].matchRecord, undefined);
+	assertEquals(round3Lower.matches[1].matchRecord, undefined);
+
+	const round4Upper = swissBracket.roundNodes.get("2-1") as RoundNode;
+	assertEquals(round4Upper.matches[0].matchRecord, undefined);
+	assertEquals(round4Upper.matches[1].matchRecord, undefined);
+	assertEquals(round4Upper.matches[2].matchRecord, undefined);
+
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+
+	checkVersusData(swissBracket, tournament, "1-0");
+	checkVersusData(swissBracket, tournament, "0-1");
+
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData(swissBracket, tournament, "2-0");
+
+	swissBracket.rootRound.winningRound!.matches.forEach((m) => {
+		console.log(m.matchRecord?.upperTeam.matchHistory[0].toString());
+	})
+	// printRound(round3Middle.matches, tournament.teamNames);
+	// const sr = round3Middle.matches[1].matchRecord?.lowerTeam;
+	// console.log(tournament.teamNames[sr!.seed - 1]);
+	// console.log(sr!.matchHistory.length);
+	// for (const m of sr!.matchHistory) {
+	// 	console.log(m);
+	// }
+	checkVersusData(swissBracket, tournament, "1-1");
+	// checkVersusData(swissBracket, tournament, "0-2");
+
+	// populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	// populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	// populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	// checkVersusData(swissBracket, tournament, "2-1");
+	// checkVersusData(swissBracket, tournament, "1-2");
+
+	// populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	// populateMatchRecordFromData(swissBracket, tournament, "1-2");
+
+	// checkVersusData(swissBracket, tournament, "2-2");
+
+	// populateMatchRecordFromData(swissBracket, tournament, "2-2");
+});
+
+Deno.test(function naRegional4Test3() {
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournament: TournamentData = getJsonSync(tournamentPath);
+	const swissBracket = new SwissBracket(16, 3);
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+
+	checkVersusData(swissBracket, tournament, "1-0");
+	checkVersusData(swissBracket, tournament, "0-1");
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData(swissBracket, tournament, "2-0");
+	checkVersusData(swissBracket, tournament, "1-1");
+	checkVersusData(swissBracket, tournament, "0-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	checkVersusData(swissBracket, tournament, "2-1");
+	checkVersusData(swissBracket, tournament, "1-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+
+	checkVersusData(swissBracket, tournament, "2-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-2")
+
+	
+
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+
+	checkVersusData(swissBracket, tournament, "1-0");
+	checkVersusData(swissBracket, tournament, "0-1");
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData(swissBracket, tournament, "2-0");
+	checkVersusData(swissBracket, tournament, "1-1");
+	checkVersusData(swissBracket, tournament, "0-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	checkVersusData(swissBracket, tournament, "2-1");
+	checkVersusData(swissBracket, tournament, "1-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+
+	checkVersusData(swissBracket, tournament, "2-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-2")
+})
+
 Deno.test(function naRegional5Test1() {
 	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_5.json");
 });
 
 Deno.test(function naRegional6Test1() {
-	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json")
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json");
 });

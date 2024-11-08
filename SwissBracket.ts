@@ -31,13 +31,24 @@ export class SwissBracket {
 	}
 
 	getMatchRecordById(matchId: string): MatchRecord | undefined {
+		// TODO: returns mutable reference which is BAD
 		return this.getMatch(matchId)?.matchRecord;
 	}
 
 	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
 		const match = this.getMatch(matchId);
 		if (match) {
-			match.matchRecord = matchRecord;
+			// const t1 = match.matchRecord?.upperTeam;
+			// const t2 = match.matchRecord?.lowerTeam;
+			// if (!t1 || !t2) {
+			// 	throw new Error("team does not exist when it should");
+			// }
+
+			// const level = match.roundNode?.level as number;
+
+			// match.matchRecord = matchRecord;
+			// t1.matchHistory[level - 1] = matchRecord;
+			// t2.matchHistory[level - 1] = matchRecord;
 
 			const roundNode = match.roundNode;
 			if (roundNode) {

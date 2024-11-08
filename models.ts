@@ -65,6 +65,10 @@ export class MatchRecord {
 	isFilledOut() {
 		return this.upperTeamWins - this.lowerTeamWins !== 0;
 	}
+
+	toString() {
+		return `${this.upperTeam.seed} vs ${this.lowerTeam.seed}, ${this.upperTeamWins}:${this.lowerTeamWins}`;
+	}
 }
 
 // TODO potentially change to interface and make methods functional for better serialization
