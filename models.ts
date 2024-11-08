@@ -69,11 +69,21 @@ export class MatchRecord {
 	toString() {
 		return `${this.upperTeam.seed} vs ${this.lowerTeam.seed}, ${this.upperTeamWins}:${this.lowerTeamWins}`;
 	}
+
+	equals(other: MatchRecord) {
+		return (
+			this.upperTeamWins === other.upperTeamWins &&
+			this.lowerTeamWins === other.lowerTeamWins &&
+			this.upperTeam.seed === other.upperTeam.seed &&
+			this.lowerTeam.seed === other.lowerTeam.seed
+		);
+	}
 }
 
 // TODO potentially change to interface and make methods functional for better serialization
 export class Team {
 	seed: number;
+	// TODO: remove this and calculate matchHistory on the fly
 	matchHistory: MatchRecord[];
 
 	constructor(seed: number) {
