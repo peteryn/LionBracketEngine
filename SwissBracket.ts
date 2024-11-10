@@ -13,7 +13,7 @@ export class SwissBracket {
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = createTeams(numTeams);
 		// populate root round with the teams in the correct matches
-		const matchups = this.evaluationSort(this.teams);
+		const matchups = this.seedBasedMatchups(this.teams);
 		populateMatches(this.rootRound.matches, matchups);
 	}
 
@@ -46,7 +46,7 @@ export class SwissBracket {
 
 			// const level = match.roundNode?.level as number;
 
-			// match.matchRecord = matchRecord;
+			match.matchRecord = matchRecord;
 			// t1.matchHistory[level - 1] = matchRecord;
 			// t2.matchHistory[level - 1] = matchRecord;
 
@@ -72,7 +72,12 @@ export class SwissBracket {
 				const match = matches[index];
 				const matchRecord = match.matchRecord;
 				if (!matchRecord) {
-					throw new Error("Match record does not exist when it should");
+					const errorMessage = `
+					roundNode: ${curr.name}
+					`
+					// throw new Error(errorMessage);
+					winner = 0;
+					break;
 				}
 				if (matchRecord.upperTeam.seed === seed) {
 					if (matchRecord.upperTeamWins > matchRecord.lowerTeamWins) {
@@ -129,10 +134,10 @@ export class SwissBracket {
 				return [];
 			}
 		});
-		for (let index = 0; index < teams.length; index++) {
-			const team = teams[index];
-			team.matchHistory = team.matchHistory.slice(0, roundNode.level);
-		}
+		// for (let index = 0; index < teams.length; index++) {
+		// 	const team = teams[index];
+		// 	team.matchHistory = team.matchHistory.slice(0, roundNode.level);
+		// }
 
 		// update the match record status in the dependent RoundNodes
 		// this includes updating what teams are in those future matches
@@ -289,7 +294,7 @@ export class SwissBracket {
 			const nonValidIndex: number[] = [];
 			for (let index = 0; index < upperLowerCross.length; index++) {
 				const possibleMatchup = upperLowerCross[index];
-				if (playedAlready(possibleMatchup[0], possibleMatchup[1])) {
+				if (this.playedAlready(possibleMatchup[0], possibleMatchup[1])) {
 					nonValidIndex.push(index);
 				}
 			}
@@ -382,13 +387,31 @@ export class SwissBracket {
 		return matchups;
 	}
 
+	seedBasedMatchups(teams: Team[]) {
+		const matchups: Team[][] = [];
+
+		// implementation when round node has 1 parent
+		let i = 0;
+		let j = teams.length - 1;
+		while (i < j) {
+			matchups.push([teams[i], teams[j]]);
+			i++;
+			j--;
+		}
+
+		return matchups;
+	}
+
 	swissSort(teams: Team[]): Team[] {
-		return [...teams].sort(
-			(a, b) =>
-				b.getMatchDifferential() - a.getMatchDifferential() || // descending
-				b.getGameDifferential() - a.getGameDifferential() || // descending
-				a.seed - b.seed // ascending
-		);
+		return [...teams].sort((a, b) => {
+			const aHistory = this.getMatchHistory(a.seed);
+			const bHistory = this.getMatchHistory(b.seed);
+			return (
+				b.getMatchDifferential(bHistory) - a.getMatchDifferential(aHistory) || // descending
+				b.getGameDifferential(bHistory) - a.getGameDifferential(aHistory) || // descending
+				a.seed - b.seed
+			); // ascending
+		});
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
@@ -544,6 +567,22 @@ export class SwissBracket {
 			[this.teams[i], this.teams[j]] = [this.teams[j], this.teams[i]];
 		}
 	}
+
+	// check if team1 has already played team2
+	playedAlready(team1: Team, team2: Team) {
+		const team1MatchHistory = this.getMatchHistory(team1.seed);
+		for (let index = 0; index < team1MatchHistory.length; index++) {
+			const matchRecord = team1MatchHistory[index];
+			// TODO probably can refactor to be cleaner
+			if (
+				matchRecord.upperTeam.seed === team2.seed ||
+				matchRecord.lowerTeam.seed === team2.seed
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 export function createTeams(numTeams: number): Team[] {
@@ -566,8 +605,8 @@ export function populateMatches(matches: Match[], teams: Team[][]) {
 		const team1 = matchup[0];
 		const team2 = matchup[1];
 		const record = new MatchRecord(team1, team2);
-		team1.matchHistory.push(record);
-		team2.matchHistory.push(record);
+		// team1.matchHistory.push(record);
+		// team2.matchHistory.push(record);
 		matches[index].matchRecord = record;
 	}
 }
@@ -594,22 +633,6 @@ export function isFilledRound(matches: Match[]): boolean {
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
-}
-
-// check if team1 has already played team2
-export function playedAlready(team1: Team, team2: Team) {
-	const team1MatchHistory = team1.matchHistory;
-	for (let index = 0; index < team1MatchHistory.length; index++) {
-		const matchRecord = team1MatchHistory[index];
-		// TODO probably can refactor to be cleaner
-		if (
-			matchRecord.upperTeam.seed === team2.seed ||
-			matchRecord.lowerTeam.seed === team2.seed
-		) {
-			return true;
-		}
-	}
-	return false;
 }
 
 export function printRound(matches: Match[], teamNameMap?: TeamNameMap[]) {

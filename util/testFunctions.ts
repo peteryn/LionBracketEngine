@@ -22,8 +22,8 @@ export function populateMatchRecords(teams: Team[], data: MatchRecordSerialized[
 		const record = new MatchRecord(teams[i], teams[j]);
 		record.upperTeamWins = data[i].upperTeamWins;
 		record.lowerTeamWins = data[i].lowerTeamWins;
-		teams[i].matchHistory.push(record);
-		teams[j].matchHistory.push(record);
+		// teams[i].matchHistory.push(record);
+		// teams[j].matchHistory.push(record);
 		i++;
 		j--;
 	}
