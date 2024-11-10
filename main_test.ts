@@ -295,22 +295,22 @@ Deno.test(function naRegional4Test2() {
 	// for (const m of sr!.matchHistory) {
 	// 	console.log(m);
 	// }
-	// checkVersusData(swissBracket, tournament, "1-1");
-	// checkVersusData(swissBracket, tournament, "0-2");
+	checkVersusData(swissBracket, tournament, "1-1");
+	checkVersusData(swissBracket, tournament, "0-2");
 
-	// populateMatchRecordFromData(swissBracket, tournament, "2-0");
-	// populateMatchRecordFromData(swissBracket, tournament, "1-1");
-	// populateMatchRecordFromData(swissBracket, tournament, "0-2");
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
 
-	// checkVersusData(swissBracket, tournament, "2-1");
-	// checkVersusData(swissBracket, tournament, "1-2");
+	checkVersusData(swissBracket, tournament, "2-1");
+	checkVersusData(swissBracket, tournament, "1-2");
 
-	// populateMatchRecordFromData(swissBracket, tournament, "2-1");
-	// populateMatchRecordFromData(swissBracket, tournament, "1-2");
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
 
-	// checkVersusData(swissBracket, tournament, "2-2");
+	checkVersusData(swissBracket, tournament, "2-2");
 
-	// populateMatchRecordFromData(swissBracket, tournament, "2-2");
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 });
 
 Deno.test(function naRegional4Test3() {
