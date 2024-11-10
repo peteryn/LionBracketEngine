@@ -13,7 +13,7 @@ export class SwissBracket {
 		this.matches = this.initializeEmptyMatches(this.rootRound);
 		this.teams = createTeams(numTeams);
 		// populate root round with the teams in the correct matches
-		const matchups = evaluationSort(this.teams);
+		const matchups = this.evaluationSort(this.teams);
 		populateMatches(this.rootRound.matches, matchups);
 	}
 
@@ -199,7 +199,7 @@ export class SwissBracket {
 					winningRound.fromUpperParent.length > 0 &&
 					winningRound.fromLowerParent.length > 0
 				) {
-					const matchups = evaluationSort(
+					const matchups = this.evaluationSort(
 						winningRound.fromUpperParent,
 						winningRound.fromLowerParent
 					);
@@ -209,12 +209,12 @@ export class SwissBracket {
 				}
 			} else {
 				// process winning round by calling evaluation sort for 1 team
-				const matchups = evaluationSort(winners);
+				const matchups = this.evaluationSort(winners);
 				populateMatches(winningRound.matches, matchups);
 			}
 		} else {
 			// set the winners who go on to the next stage
-			roundNode.promotionTeams = swissSort(winners);
+			roundNode.promotionTeams = this.swissSort(winners);
 		}
 
 		const losingRound = roundNode.losingRound;
@@ -226,7 +226,7 @@ export class SwissBracket {
 					losingRound.fromLowerParent.length > 0
 				) {
 					// call evaluation sort for 2 teams
-					const matchups = evaluationSort(
+					const matchups = this.evaluationSort(
 						losingRound.fromUpperParent,
 						losingRound.fromLowerParent
 					);
@@ -234,12 +234,12 @@ export class SwissBracket {
 				}
 			} else {
 				// process losers with sort
-				const matchups = evaluationSort(losers);
+				const matchups = this.evaluationSort(losers);
 				populateMatches(losingRound.matches, matchups);
 			}
 		} else {
 			// set the losers who are eliminated
-			roundNode.eliminatedTeams = swissSort(losers);
+			roundNode.eliminatedTeams = this.swissSort(losers);
 		}
 
 		/*
@@ -252,6 +252,143 @@ export class SwissBracket {
 			IDEA: if after regenerating the matchup is the same and at the same position, keep the previous result
 		*/
 		return true;
+	}
+
+	// 1. Match differential
+	// 2. Game differential
+	// 3. Seed
+	// if RoundNode has 2 parents, then upper must play lower
+	// basically, a sort by multiple criteria
+	// TODO: should this be static? should it be private (testing issue)
+	evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]): Team[][] {
+		const upperTeams = this.swissSort(upperTeamsInput);
+		const matchups: Team[][] = [];
+		if (lowerTeamsInput) {
+			let lowerTeams = this.swissSort(lowerTeamsInput);
+
+			// for 2-1 and 1-2 rounds, we need to "promote" or "demote" a team so that the two arrays have an equal number of teams
+			if (upperTeams.length > lowerTeams.length) {
+				const lastItem = upperTeams.pop();
+				if (lastItem) {
+					lowerTeams = [lastItem, ...lowerTeams];
+				}
+			} else if (upperTeams.length < lowerTeams.length) {
+				const firstItem = lowerTeams.shift();
+				if (firstItem) {
+					upperTeams.push(firstItem);
+				}
+			}
+
+			// implementation when round node has 2 parents
+			// this is when we have to account for history
+			// potentialy need to sort upper and lower teams
+
+			// calculate every possible pairing of upper and lower teams
+			const upperLowerCross: Team[][] = cartesianProduct(upperTeams, lowerTeams.reverse());
+			// find the indexes of invalid pairings due to match history
+			const nonValidIndex: number[] = [];
+			for (let index = 0; index < upperLowerCross.length; index++) {
+				const possibleMatchup = upperLowerCross[index];
+				if (playedAlready(possibleMatchup[0], possibleMatchup[1])) {
+					nonValidIndex.push(index);
+				}
+			}
+
+			// using the list of invalid indexes, create a new list that does not have those index values
+			const teamsCrossClean: Team[][] = [];
+			for (let index = 0; index < upperLowerCross.length; index++) {
+				if (!nonValidIndex.includes(index)) {
+					const matchup = upperLowerCross[index];
+					teamsCrossClean.push(matchup);
+				}
+			}
+
+			// backtracking algorithm
+			const stack: MatchTracker[] = [];
+			let invalidIndexes: number[] = [];
+			let index = 0;
+			const matchLength = (upperTeams.length + lowerTeams.length) / 2;
+			while (stack.length < matchLength) {
+				// if this condition holds, then we have not generate enough matches for the round
+				// this means that we selected a matchup that causes some other invalidity
+				// we need to get rid of that matchup and restore the state of invalidIndexes
+				if (index >= teamsCrossClean.length) {
+					const badMatch = stack.pop();
+					if (badMatch) {
+						invalidIndexes = badMatch.invalidIndexes;
+						invalidIndexes.push(badMatch.index);
+						index = 0;
+					} else {
+						let message = `
+					Popped from stack when stack length is 0 
+					(matchLength: ${matchLength}, stackLength: ${stack.length}, 
+					index: ${index}, teamsCrossCleanLength: ${teamsCrossClean.length})\n
+					`;
+						for (let index = 0; index < teamsCrossClean.length; index++) {
+							const element = teamsCrossClean[index];
+							message = message.concat(`(${element[0].seed}, ${element[1].seed})\n`);
+						}
+						throw new Error(message);
+					}
+				}
+
+				if (invalidIndexes.includes(index)) {
+					index++;
+					continue;
+				}
+
+				// key line, we need to preserve the state of invalidIndexes for each potential matchup
+				// so that we can backtrack
+				const invalidIndexesCopy = structuredClone(invalidIndexes);
+
+				// if we select this matchup, then those 2 teams can no longer play
+				// so we remove potential pairings with those teams by adding the index of that matchup
+				// to invalidIndexes
+				const match = teamsCrossClean[index];
+				const team1 = match[0];
+				const team2 = match[1];
+				for (let i = 0; i < teamsCrossClean.length; i++) {
+					if (
+						teamsCrossClean[i][0].seed === team1.seed ||
+						teamsCrossClean[i][0].seed === team2.seed ||
+						teamsCrossClean[i][1].seed === team1.seed ||
+						teamsCrossClean[i][1].seed === team2.seed
+					) {
+						invalidIndexes.push(i);
+					}
+				}
+
+				stack.push({
+					upperTeam: team1,
+					lowerTeam: team2,
+					invalidIndexes: invalidIndexesCopy,
+					index: index,
+				});
+			}
+
+			for (const matchTrackerObject of stack) {
+				matchups.push([matchTrackerObject.upperTeam, matchTrackerObject.lowerTeam]);
+			}
+		} else {
+			// implementation when round node has 1 parent
+			let i = 0;
+			let j = upperTeams.length - 1;
+			while (i < j) {
+				matchups.push([upperTeams[i], upperTeams[j]]);
+				i++;
+				j--;
+			}
+		}
+		return matchups;
+	}
+
+	swissSort(teams: Team[]): Team[] {
+		return [...teams].sort(
+			(a, b) =>
+				b.getMatchDifferential() - a.getMatchDifferential() || // descending
+				b.getGameDifferential() - a.getGameDifferential() || // descending
+				a.seed - b.seed // ascending
+		);
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
@@ -398,7 +535,7 @@ export class SwissBracket {
 				eliminatedTeams = eliminatedTeams.concat(node.eliminatedTeams);
 			}
 		});
-		return swissSort(eliminatedTeams);
+		return this.swissSort(eliminatedTeams);
 	}
 
 	private shuffleTeams() {
@@ -453,143 +590,6 @@ export function isFilledRound(matches: Match[]): boolean {
 		}
 	}
 	return true;
-}
-
-// 1. Match differential
-// 2. Game differential
-// 3. Seed
-// if RoundNode has 2 parents, then upper must play lower
-// basically, a sort by multiple criteria
-// TODO: should this be static? should it be private (testing issue)
-export function evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]): Team[][] {
-	const upperTeams = swissSort(upperTeamsInput);
-	const matchups: Team[][] = [];
-	if (lowerTeamsInput) {
-		let lowerTeams = swissSort(lowerTeamsInput);
-
-		// for 2-1 and 1-2 rounds, we need to "promote" or "demote" a team so that the two arrays have an equal number of teams
-		if (upperTeams.length > lowerTeams.length) {
-			const lastItem = upperTeams.pop();
-			if (lastItem) {
-				lowerTeams = [lastItem, ...lowerTeams];
-			}
-		} else if (upperTeams.length < lowerTeams.length) {
-			const firstItem = lowerTeams.shift();
-			if (firstItem) {
-				upperTeams.push(firstItem);
-			}
-		}
-
-		// implementation when round node has 2 parents
-		// this is when we have to account for history
-		// potentialy need to sort upper and lower teams
-
-		// calculate every possible pairing of upper and lower teams
-		const upperLowerCross: Team[][] = cartesianProduct(upperTeams, lowerTeams.reverse());
-		// find the indexes of invalid pairings due to match history
-		const nonValidIndex: number[] = [];
-		for (let index = 0; index < upperLowerCross.length; index++) {
-			const possibleMatchup = upperLowerCross[index];
-			if (playedAlready(possibleMatchup[0], possibleMatchup[1])) {
-				nonValidIndex.push(index);
-			}
-		}
-
-		// using the list of invalid indexes, create a new list that does not have those index values
-		const teamsCrossClean: Team[][] = [];
-		for (let index = 0; index < upperLowerCross.length; index++) {
-			if (!nonValidIndex.includes(index)) {
-				const matchup = upperLowerCross[index];
-				teamsCrossClean.push(matchup);
-			}
-		}
-
-		// backtracking algorithm
-		const stack: MatchTracker[] = [];
-		let invalidIndexes: number[] = [];
-		let index = 0;
-		const matchLength = (upperTeams.length + lowerTeams.length) / 2;
-		while (stack.length < matchLength) {
-			// if this condition holds, then we have not generate enough matches for the round
-			// this means that we selected a matchup that causes some other invalidity
-			// we need to get rid of that matchup and restore the state of invalidIndexes
-			if (index >= teamsCrossClean.length) {
-				const badMatch = stack.pop();
-				if (badMatch) {
-					invalidIndexes = badMatch.invalidIndexes;
-					invalidIndexes.push(badMatch.index);
-					index = 0;
-				} else {
-					let message = `
-					Popped from stack when stack length is 0 
-					(matchLength: ${matchLength}, stackLength: ${stack.length}, 
-					index: ${index}, teamsCrossCleanLength: ${teamsCrossClean.length})\n
-					`;
-					for (let index = 0; index < teamsCrossClean.length; index++) {
-						const element = teamsCrossClean[index];
-						message = message.concat(`(${element[0].seed}, ${element[1].seed})\n`);
-					}
-					throw new Error(message);
-				}
-			}
-
-			if (invalidIndexes.includes(index)) {
-				index++;
-				continue;
-			}
-
-			// key line, we need to preserve the state of invalidIndexes for each potential matchup
-			// so that we can backtrack
-			const invalidIndexesCopy = structuredClone(invalidIndexes);
-
-			// if we select this matchup, then those 2 teams can no longer play
-			// so we remove potential pairings with those teams by adding the index of that matchup
-			// to invalidIndexes
-			const match = teamsCrossClean[index];
-			const team1 = match[0];
-			const team2 = match[1];
-			for (let i = 0; i < teamsCrossClean.length; i++) {
-				if (
-					teamsCrossClean[i][0].seed === team1.seed ||
-					teamsCrossClean[i][0].seed === team2.seed ||
-					teamsCrossClean[i][1].seed === team1.seed ||
-					teamsCrossClean[i][1].seed === team2.seed
-				) {
-					invalidIndexes.push(i);
-				}
-			}
-
-			stack.push({
-				upperTeam: team1,
-				lowerTeam: team2,
-				invalidIndexes: invalidIndexesCopy,
-				index: index,
-			});
-		}
-
-		for (const matchTrackerObject of stack) {
-			matchups.push([matchTrackerObject.upperTeam, matchTrackerObject.lowerTeam]);
-		}
-	} else {
-		// implementation when round node has 1 parent
-		let i = 0;
-		let j = upperTeams.length - 1;
-		while (i < j) {
-			matchups.push([upperTeams[i], upperTeams[j]]);
-			i++;
-			j--;
-		}
-	}
-	return matchups;
-}
-
-export function swissSort(teams: Team[]): Team[] {
-	return [...teams].sort(
-		(a, b) =>
-			b.getMatchDifferential() - a.getMatchDifferential() || // descending
-			b.getGameDifferential() - a.getGameDifferential() || // descending
-			a.seed - b.seed // ascending
-	);
 }
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {

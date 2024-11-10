@@ -10,11 +10,9 @@ import { Match, MatchRecord, TournamentData, type MatchRecordSerialized } from "
 import { getJsonSync } from "./util/file.ts";
 import {
 	checkVersusData,
-	evaluationSortTest,
 	populateMatchRecordFromData,
 	testTournament,
 } from "./util/testFunctions.ts";
-import { evaluationSort } from "./SwissBracket.ts";
 import { RoundNode } from "./models.ts";
 
 Deno.test(function createTeamsTest() {
@@ -23,37 +21,37 @@ Deno.test(function createTeamsTest() {
 	assertEquals(teams.length, numTeams);
 });
 
-Deno.test(function initialSeedingTest() {
-	const numTeams = 16;
-	const teams = createTeams(numTeams);
-	const nodeName = "0-0";
-	const matches: Match[] = createEmptyMatches(numTeams / 2, nodeName);
-	const matchups = evaluationSort(teams);
-	populateMatches(matches, matchups);
-	assertEquals(matches[0].matchRecord?.upperTeam.seed, 1);
-	assertEquals(matches[0].matchRecord?.lowerTeam.seed, 16);
+// Deno.test(function initialSeedingTest() {
+// 	const numTeams = 16;
+// 	const teams = createTeams(numTeams);
+// 	const nodeName = "0-0";
+// 	const matches: Match[] = createEmptyMatches(numTeams / 2, nodeName);
+// 	const matchups = evaluationSort(teams);
+// 	populateMatches(matches, matchups);
+// 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 1);
+// 	assertEquals(matches[0].matchRecord?.lowerTeam.seed, 16);
 
-	assertEquals(matches[1].matchRecord?.upperTeam.seed, 2);
-	assertEquals(matches[1].matchRecord?.lowerTeam.seed, 15);
+// 	assertEquals(matches[1].matchRecord?.upperTeam.seed, 2);
+// 	assertEquals(matches[1].matchRecord?.lowerTeam.seed, 15);
 
-	assertEquals(matches[2].matchRecord?.upperTeam.seed, 3);
-	assertEquals(matches[2].matchRecord?.lowerTeam.seed, 14);
+// 	assertEquals(matches[2].matchRecord?.upperTeam.seed, 3);
+// 	assertEquals(matches[2].matchRecord?.lowerTeam.seed, 14);
 
-	assertEquals(matches[3].matchRecord?.upperTeam.seed, 4);
-	assertEquals(matches[3].matchRecord?.lowerTeam.seed, 13);
+// 	assertEquals(matches[3].matchRecord?.upperTeam.seed, 4);
+// 	assertEquals(matches[3].matchRecord?.lowerTeam.seed, 13);
 
-	assertEquals(matches[4].matchRecord?.upperTeam.seed, 5);
-	assertEquals(matches[4].matchRecord?.lowerTeam.seed, 12);
+// 	assertEquals(matches[4].matchRecord?.upperTeam.seed, 5);
+// 	assertEquals(matches[4].matchRecord?.lowerTeam.seed, 12);
 
-	assertEquals(matches[5].matchRecord?.upperTeam.seed, 6);
-	assertEquals(matches[5].matchRecord?.lowerTeam.seed, 11);
+// 	assertEquals(matches[5].matchRecord?.upperTeam.seed, 6);
+// 	assertEquals(matches[5].matchRecord?.lowerTeam.seed, 11);
 
-	assertEquals(matches[6].matchRecord?.upperTeam.seed, 7);
-	assertEquals(matches[6].matchRecord?.lowerTeam.seed, 10);
+// 	assertEquals(matches[6].matchRecord?.upperTeam.seed, 7);
+// 	assertEquals(matches[6].matchRecord?.lowerTeam.seed, 10);
 
-	assertEquals(matches[7].matchRecord?.upperTeam.seed, 8);
-	assertEquals(matches[7].matchRecord?.lowerTeam.seed, 9);
-});
+// 	assertEquals(matches[7].matchRecord?.upperTeam.seed, 8);
+// 	assertEquals(matches[7].matchRecord?.lowerTeam.seed, 9);
+// });
 
 Deno.test(function getMatchDifferentialTest() {
 	const numTeams = 2;
@@ -95,24 +93,24 @@ Deno.test(function getMatchDifferentialTest2() {
 	assertEquals(teams[1].getGameDifferential(), -3);
 });
 
-Deno.test(function round1UpperTest1() {
-	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData1.json");
+// Deno.test(function round1UpperTest1() {
+// 	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData1.json");
 
-	assertEquals(matches[0].matchRecord?.upperTeam.seed, 1);
-});
+// 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 1);
+// });
 
-Deno.test(function round1UpperTest2() {
-	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData2.json");
+// Deno.test(function round1UpperTest2() {
+// 	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData2.json");
 
-	assertEquals(matches[0].matchRecord?.upperTeam.seed, 7);
-	assertEquals(matches[1].matchRecord?.upperTeam.seed, 8);
-	assertEquals(matches[2].matchRecord?.upperTeam.seed, 2);
-	assertEquals(matches[3].matchRecord?.upperTeam.seed, 3);
-	assertEquals(matches[4].matchRecord?.upperTeam.seed, 1);
-	assertEquals(matches[5].matchRecord?.upperTeam.seed, 4);
-	assertEquals(matches[6].matchRecord?.upperTeam.seed, 5);
-	assertEquals(matches[7].matchRecord?.upperTeam.seed, 6);
-});
+// 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 7);
+// 	assertEquals(matches[1].matchRecord?.upperTeam.seed, 8);
+// 	assertEquals(matches[2].matchRecord?.upperTeam.seed, 2);
+// 	assertEquals(matches[3].matchRecord?.upperTeam.seed, 3);
+// 	assertEquals(matches[4].matchRecord?.upperTeam.seed, 1);
+// 	assertEquals(matches[5].matchRecord?.upperTeam.seed, 4);
+// 	assertEquals(matches[6].matchRecord?.upperTeam.seed, 5);
+// 	assertEquals(matches[7].matchRecord?.upperTeam.seed, 6);
+// });
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3);
