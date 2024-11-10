@@ -61,6 +61,55 @@ export class SwissBracket {
 		return false;
 	}
 
+	getMatchHistory(seed: number) {
+		let curr: RoundNode | undefined = this.rootRound;
+		const matchHistory: MatchRecord[] = [];
+		while (curr) {
+			const matches = curr.matches;
+			// may need to check if round is filled out or not
+			let winner = 0;
+			for (let index = 0; index < matches.length; index++) {
+				const match = matches[index];
+				const matchRecord = match.matchRecord;
+				if (!matchRecord) {
+					throw new Error("Match record does not exist when it should");
+				}
+				if (matchRecord.upperTeam.seed === seed) {
+					if (matchRecord.upperTeamWins > matchRecord.lowerTeamWins) {
+						winner = 1;
+					} else if (matchRecord.upperTeamWins < matchRecord.lowerTeamWins) {
+						winner = -1;
+					} else {
+						winner = 0;
+					}
+					matchHistory.push(matchRecord);
+				}
+				if (matchRecord.lowerTeam.seed === seed) {
+					if (matchRecord.lowerTeamWins > matchRecord.upperTeamWins) {
+						winner = 1;
+					} else if (matchRecord.lowerTeamWins < matchRecord.upperTeamWins) {
+						winner = -1;
+					} else {
+						winner = 0;
+					}
+					matchHistory.push(matchRecord);
+				}
+			}
+			switch (winner) {
+				case -1:
+					curr = curr.losingRound;
+					break;
+				case 1:
+					curr = curr.winningRound;
+					break;
+				case 0:
+					curr = undefined;
+					break;
+			}
+		}
+		return matchHistory;
+	}
+
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated
 	// a different implementation will be called on all dependent nodes
