@@ -84,18 +84,16 @@ export class MatchRecord {
 export class Team {
 	seed: number;
 	// TODO: remove this and calculate matchHistory on the fly
-	matchHistory: MatchRecord[];
 
 	constructor(seed: number) {
 		this.seed = seed;
-		this.matchHistory = [];
 	}
 
-	getMatchDifferential() {
+	getMatchDifferential(matchHistory: MatchRecord[]) {
 		let wins = 0;
 		let losses = 0;
-		for (let index = 0; index < this.matchHistory.length; index++) {
-			const match = this.matchHistory[index];
+		for (let index = 0; index < matchHistory.length; index++) {
+			const match = matchHistory[index];
 			const isUpperSeed = match.upperTeam.seed === this.seed;
 			const isUpperTeamWinner = match.upperTeamWins > match.lowerTeamWins;
 
@@ -108,11 +106,11 @@ export class Team {
 		return wins - losses;
 	}
 
-	getGameDifferential() {
+	getGameDifferential(matchHistory: MatchRecord[]) {
 		let gamesWon = 0;
 		let gamesLost = 0;
-		for (let index = 0; index < this.matchHistory.length; index++) {
-			const match = this.matchHistory[index];
+		for (let index = 0; index < matchHistory.length; index++) {
+			const match = matchHistory[index];
 			const isUpperSeed = match.upperTeam.seed === this.seed;
 
 			if (isUpperSeed) {

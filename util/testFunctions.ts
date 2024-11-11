@@ -1,19 +1,19 @@
 import { createEmptyMatches, createTeams, printRound, SwissBracket } from "../SwissBracket.ts";
 import { MatchRecord, MatchRecordSerialized, Team, TournamentData } from "../models.ts";
 import { getJsonSync } from "./file.ts";
-import { evaluationSort, populateMatches } from "../SwissBracket.ts";
+import {  populateMatches } from "../SwissBracket.ts";
 import { assertEquals } from "@std/assert/equals";
 
-export function evaluationSortTest(numTeams: number, name: string, filePath: string) {
-	const teams = createTeams(numTeams);
-	const matches = createEmptyMatches(numTeams / 2, name);
+// export function evaluationSortTest(numTeams: number, name: string, filePath: string) {
+// 	const teams = createTeams(numTeams);
+// 	const matches = createEmptyMatches(numTeams / 2, name);
 
-	const f: MatchRecordSerialized[] = getJsonSync(filePath);
-	populateMatchRecords(teams, f);
-	const matchups = evaluationSort(teams);
-	populateMatches(matches, matchups);
-	return matches;
-}
+// 	const f: MatchRecordSerialized[] = getJsonSync(filePath);
+// 	populateMatchRecords(teams, f);
+// 	const matchups = evaluationSort(teams);
+// 	populateMatches(matches, matchups);
+// 	return matches;
+// }
 
 export function populateMatchRecords(teams: Team[], data: MatchRecordSerialized[]) {
 	let i = 0;
@@ -22,8 +22,8 @@ export function populateMatchRecords(teams: Team[], data: MatchRecordSerialized[
 		const record = new MatchRecord(teams[i], teams[j]);
 		record.upperTeamWins = data[i].upperTeamWins;
 		record.lowerTeamWins = data[i].lowerTeamWins;
-		teams[i].matchHistory.push(record);
-		teams[j].matchHistory.push(record);
+		// teams[i].matchHistory.push(record);
+		// teams[j].matchHistory.push(record);
 		i++;
 		j--;
 	}
