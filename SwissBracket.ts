@@ -31,8 +31,11 @@ export class SwissBracket {
 	}
 
 	getMatchRecordById(matchId: string): MatchRecord | undefined {
-		// TODO: returns mutable reference whic	h is BAD
-		return this.getMatch(matchId)?.matchRecord;
+		const matchRecord = this.getMatch(matchId)?.matchRecord;
+		if (!matchRecord) {
+			return undefined;
+		}
+		return MatchRecord.createClone(matchRecord);
 	}
 
 	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
@@ -103,61 +106,18 @@ export class SwissBracket {
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated
 	// a different implementation will be called on all dependent nodes
-	updateRounds(roundNode: RoundNode): boolean {
+	updateRounds(roundNode: RoundNode) {
 		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
 		const isFilleldOut = isFilledRound(roundNode.matches);
 		// if it is not filled out, then we can stop
 		if (!isFilleldOut) {
-			return false;
+			return;
 		}
-
-		// clear out the history of future rounds for teams in this current roundNode
-		const teams: Team[] = roundNode.matches.flatMap((match: Match) => {
-			if (match.matchRecord) {
-				return [match.matchRecord.upperTeam, match.matchRecord.lowerTeam];
-			} else {
-				return [];
-			}
-		});
-		// for (let index = 0; index < teams.length; index++) {
-		// 	const team = teams[index];
-		// 	team.matchHistory = team.matchHistory.slice(0, roundNode.level);
-		// }
 
 		// update the match record status in the dependent RoundNodes
 		// this includes updating what teams are in those future matches
-		if (roundNode.winningRound) {
-			this.levelOrderTraversal(roundNode.winningRound, (node) => {
-				const matches = node.matches;
-				for (let index = 0; index < matches.length; index++) {
-					const match = matches[index];
-					match.matchRecord = undefined;
-				}
-				// reset the teams that were promoted because future rounds are being calculated
-				if (node.promotionTeams.length > 0) {
-					node.promotionTeams = [];
-				}
-				if (node.eliminatedTeams.length > 0) {
-					node.eliminatedTeams = [];
-				}
-			});
-		}
-
-		if (roundNode.losingRound) {
-			this.levelOrderTraversal(roundNode.losingRound, (node) => {
-				const matches = node.matches;
-				for (let index = 0; index < matches.length; index++) {
-					const match = matches[index];
-					match.matchRecord = undefined;
-				}
-				if (node.promotionTeams.length > 0) {
-					node.promotionTeams = [];
-				}
-				if (node.eliminatedTeams.length > 0) {
-					node.eliminatedTeams = [];
-				}
-			});
-		}
+		this.updateDependents(roundNode.winningRound);
+		this.updateDependents(roundNode.losingRound);
 
 		// split teams into winners and losers
 		const winners: Team[] = [];
@@ -241,7 +201,25 @@ export class SwissBracket {
 
 			IDEA: if after regenerating the matchup is the same and at the same position, keep the previous result
 		*/
-		return true;
+	}
+
+	private updateDependents(round: RoundNode | undefined) {
+		if (round) {
+			this.levelOrderTraversal(round, (node) => {
+				const matches = node.matches;
+				for (let index = 0; index < matches.length; index++) {
+					const match = matches[index];
+					match.matchRecord = undefined;
+				}
+				// reset the teams that were promoted because future rounds are being calculated
+				if (node.promotionTeams.length > 0) {
+					node.promotionTeams = [];
+				}
+				if (node.eliminatedTeams.length > 0) {
+					node.eliminatedTeams = [];
+				}
+			});
+		}
 	}
 
 	// 1. Match differential

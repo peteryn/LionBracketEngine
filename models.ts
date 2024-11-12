@@ -62,6 +62,13 @@ export class MatchRecord {
 		this.lowerTeamWins = 0;
 	}
 
+	static createClone(matchRecord: MatchRecord) {
+		const cloneRecord = new MatchRecord(matchRecord.upperTeam, matchRecord.lowerTeam);
+		cloneRecord.upperTeamWins = matchRecord.upperTeamWins;
+		cloneRecord.lowerTeamWins = matchRecord.lowerTeamWins;
+		return cloneRecord;
+	}
+
 	isFilledOut() {
 		return this.upperTeamWins - this.lowerTeamWins !== 0;
 	}
