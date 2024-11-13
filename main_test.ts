@@ -1,12 +1,6 @@
 import { assertEquals } from "@std/assert";
-import {
-	createEmptyMatches,
-	createTeams,
-	populateMatches,
-	printRound,
-	SwissBracket,
-} from "./SwissBracket.ts";
-import { Match, MatchRecord, TournamentData, type MatchRecordSerialized } from "./models.ts";
+import { createTeams, SwissBracket } from "./SwissBracket.ts";
+import { TournamentData, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import {
 	checkVersusData,
@@ -20,97 +14,6 @@ Deno.test(function createTeamsTest() {
 	const teams = createTeams(numTeams);
 	assertEquals(teams.length, numTeams);
 });
-
-// Deno.test(function initialSeedingTest() {
-// 	const numTeams = 16;
-// 	const teams = createTeams(numTeams);
-// 	const nodeName = "0-0";
-// 	const matches: Match[] = createEmptyMatches(numTeams / 2, nodeName);
-// 	const matchups = evaluationSort(teams);
-// 	populateMatches(matches, matchups);
-// 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 1);
-// 	assertEquals(matches[0].matchRecord?.lowerTeam.seed, 16);
-
-// 	assertEquals(matches[1].matchRecord?.upperTeam.seed, 2);
-// 	assertEquals(matches[1].matchRecord?.lowerTeam.seed, 15);
-
-// 	assertEquals(matches[2].matchRecord?.upperTeam.seed, 3);
-// 	assertEquals(matches[2].matchRecord?.lowerTeam.seed, 14);
-
-// 	assertEquals(matches[3].matchRecord?.upperTeam.seed, 4);
-// 	assertEquals(matches[3].matchRecord?.lowerTeam.seed, 13);
-
-// 	assertEquals(matches[4].matchRecord?.upperTeam.seed, 5);
-// 	assertEquals(matches[4].matchRecord?.lowerTeam.seed, 12);
-
-// 	assertEquals(matches[5].matchRecord?.upperTeam.seed, 6);
-// 	assertEquals(matches[5].matchRecord?.lowerTeam.seed, 11);
-
-// 	assertEquals(matches[6].matchRecord?.upperTeam.seed, 7);
-// 	assertEquals(matches[6].matchRecord?.lowerTeam.seed, 10);
-
-// 	assertEquals(matches[7].matchRecord?.upperTeam.seed, 8);
-// 	assertEquals(matches[7].matchRecord?.lowerTeam.seed, 9);
-// });
-
-// Deno.test(function getMatchDifferentialTest() {
-// 	const numTeams = 2;
-// 	const teams = createTeams(numTeams);
-
-// 	const r1m1 = new MatchRecord(teams[0], teams[15]);
-// 	r1m1.upperTeamWins = 3;
-// 	r1m1.lowerTeamWins = 2;
-// 	teams[0].matchHistory.push(r1m1);
-// 	teams[1].matchHistory.push(r1m1);
-
-// 	assertEquals(teams[0].seed, 1);
-// 	assertEquals(teams[1].seed, 2);
-
-// 	assertEquals(teams[0].getMatchDifferential(), 1);
-// 	assertEquals(teams[1].getMatchDifferential(), -1);
-
-// 	assertEquals(teams[0].getGameDifferential(), 1);
-// 	assertEquals(teams[1].getGameDifferential(), -1);
-// });
-
-// Deno.test(function getMatchDifferentialTest2() {
-// 	const numTeams = 2;
-// 	const teams = createTeams(numTeams);
-
-// 	const r1m1 = new MatchRecord(teams[0], teams[15]);
-// 	r1m1.upperTeamWins = 3;
-// 	r1m1.lowerTeamWins = 0;
-// 	teams[0].matchHistory.push(r1m1);
-// 	teams[1].matchHistory.push(r1m1);
-
-// 	assertEquals(teams[0].seed, 1);
-// 	assertEquals(teams[1].seed, 2);
-
-// 	assertEquals(teams[0].getMatchDifferential(), 1);
-// 	assertEquals(teams[1].getMatchDifferential(), -1);
-
-// 	assertEquals(teams[0].getGameDifferential(), 3);
-// 	assertEquals(teams[1].getGameDifferential(), -3);
-// });
-
-// Deno.test(function round1UpperTest1() {
-// 	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData1.json");
-
-// 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 1);
-// });
-
-// Deno.test(function round1UpperTest2() {
-// 	const matches = evaluationSortTest(16, "1-0", "./data/round1UpperTestData2.json");
-
-// 	assertEquals(matches[0].matchRecord?.upperTeam.seed, 7);
-// 	assertEquals(matches[1].matchRecord?.upperTeam.seed, 8);
-// 	assertEquals(matches[2].matchRecord?.upperTeam.seed, 2);
-// 	assertEquals(matches[3].matchRecord?.upperTeam.seed, 3);
-// 	assertEquals(matches[4].matchRecord?.upperTeam.seed, 1);
-// 	assertEquals(matches[5].matchRecord?.upperTeam.seed, 4);
-// 	assertEquals(matches[6].matchRecord?.upperTeam.seed, 5);
-// 	assertEquals(matches[7].matchRecord?.upperTeam.seed, 6);
-// });
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3);
@@ -244,18 +147,12 @@ Deno.test(function naRegional4Test2() {
 
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 
+	// change record in round 1
 	const mr = swissBracket.getMatchRecord("0-0", 1);
 	mr!.lowerTeamWins = 1;
 	swissBracket.setMatchRecord("0-0", 1, mr!);
 
-	for (const match of swissBracket.rootRound.matches) {
-		const upperTeam = match.matchRecord?.upperTeam;
-		const lowerTeam = match.matchRecord?.lowerTeam;
-
-		// assertEquals(upperTeam?.matchHistory.length, 2);
-		// assertEquals(lowerTeam?.matchHistory.length, 2);
-	}
-
+	// make sure that future rounds are now undefined
 	const round3Upper = swissBracket.roundNodes.get("2-0") as RoundNode;
 	assertEquals(round3Upper.matches[0].matchRecord, undefined);
 	assertEquals(round3Upper.matches[1].matchRecord, undefined);
@@ -275,6 +172,7 @@ Deno.test(function naRegional4Test2() {
 	assertEquals(round4Upper.matches[1].matchRecord, undefined);
 	assertEquals(round4Upper.matches[2].matchRecord, undefined);
 
+	// start filling out from beginning
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	checkVersusData(swissBracket, tournament, "1-0");
@@ -285,16 +183,6 @@ Deno.test(function naRegional4Test2() {
 
 	checkVersusData(swissBracket, tournament, "2-0");
 
-	// swissBracket.rootRound.winningRound!.matches.forEach((m) => {
-	// 	console.log(m.matchRecord?.upperTeam.matchHistory[0].toString());
-	// })
-	// printRound(round3Middle.matches, tournament.teamNames);
-	// const sr = round3Middle.matches[1].matchRecord?.lowerTeam;
-	// console.log(tournament.teamNames[sr!.seed - 1]);
-	// console.log(sr!.matchHistory.length);
-	// for (const m of sr!.matchHistory) {
-	// 	console.log(m);
-	// }
 	checkVersusData(swissBracket, tournament, "1-1");
 	checkVersusData(swissBracket, tournament, "0-2");
 
@@ -317,6 +205,8 @@ Deno.test(function naRegional4Test3() {
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
 	const swissBracket = new SwissBracket(16, 3);
+
+	// fill out bracket
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	checkVersusData(swissBracket, tournament, "1-0");
@@ -343,89 +233,13 @@ Deno.test(function naRegional4Test3() {
 
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 
-	const swiss2 = new SwissBracket(16, 3);
-	populateMatchRecordFromData(swiss2, tournament, "0-0");
-	checkVersusData(swiss2, tournament, "1-0");
-	checkVersusData(swiss2, tournament, "0-1");
-	populateMatchRecordFromData(swiss2, tournament, "1-0");
-	populateMatchRecordFromData(swiss2, tournament, "0-1");
-	// checkVersusData(swiss2, tournament, "2-0");
-	// checkVersusData(swiss2, tournament, "1-1");
-	// checkVersusData(swiss2, tournament, "0-2");
-
+	// fill it out again
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 	checkVersusData(swissBracket, tournament, "1-0");
 	checkVersusData(swissBracket, tournament, "0-1");
 	populateMatchRecordFromData(swissBracket, tournament, "1-0");
 	populateMatchRecordFromData(swissBracket, tournament, "0-1");
-	// checkVersusData(swissBracket, tournament, "2-0");
-
-	const swiss1Round1 = swissBracket.rootRound;
-	const swiss2Round1 = swiss2.rootRound;
-
-	const swiss1Round2Upper = swissBracket.roundNodes.get("1-0") as RoundNode;
-	const swiss2Round2Upper = swiss2.roundNodes.get("1-0") as RoundNode;
-
-	const swiss1Round2Lower = swissBracket.roundNodes.get("0-1") as RoundNode;
-	const swiss2Round2Lower = swiss2.roundNodes.get("0-1") as RoundNode;
-
-	// swiss1Round1.matches.forEach((m) => {
-	// 	const u1 = m.matchRecord!.upperTeam.matchHistory.length;
-	// 	const u2 = m.matchRecord!.lowerTeam.matchHistory.length;
-	// 	console.log(`${u1}, ${u2}`);
-	// });
-
-	for (let index = 0; index < 8; index++) {
-		const mr1 = swiss1Round1.matches[index].matchRecord as MatchRecord;
-		const mr2 = swiss2Round1.matches[index].matchRecord as MatchRecord;
-		if (!mr1!.equals(mr2)) {
-			console.log("REALLY BAD");
-		}
-	}
-
-	for (let index = 0; index < 4; index++) {
-		const mr1 = swiss1Round2Upper.matches[index].matchRecord as MatchRecord;
-		const mr2 = swiss2Round2Upper.matches[index].matchRecord as MatchRecord;
-		if (!mr1!.equals(mr2)) {
-			console.log("REALLY BAD");
-		}
-	}
-
-	for (let index = 0; index < 4; index++) {
-		const mr1 = swiss1Round2Lower.matches[index].matchRecord as MatchRecord;
-		const mr2 = swiss2Round2Lower.matches[index].matchRecord as MatchRecord;
-		if (!mr1!.equals(mr2)) {
-			console.log("REALLY BAD");
-		}
-	}
-
-	// console.log(swiss1Round1.matches[3].matchRecord?.upperTeam.matchHistory);
-	// console.log();
-	// console.log(swiss2Round1.matches[3].matchRecord?.upperTeam.matchHistory);
-
-	// console.log();
-	// console.log(swiss2Round1.matches[2].matchRecord?.lowerTeam.matchHistory);
-	// console.log(swiss2Round1.matches[2].matchRecord?.lowerTeam.matchHistory[3]);
-	// const bad = swiss1Round1.matches[2].matchRecord?.lowerTeam.matchHistory as MatchRecord[];
-	// bad.forEach((b) => {
-	// 	console.log(b);
-	// });
-
-	// for (let index = 0; index < 8; index++) {
-	// 	const h1 = swiss1Round1.matches[index].matchRecord?.lowerTeam.matchHistory;
-	// 	const h2 = swiss2Round1.matches[index].matchRecord?.lowerTeam.matchHistory;
-
-	// 	console.log("WOW: " + h1!.length);
-	// 	for (let j = 0; j < h1!.length; j++) {
-	// 		console.log(`${index}, ${j}`);
-	// 		if (h1![j].upperTeam.seed !== h2![j].upperTeam.seed) {
-	// 			console.log(`${index}, ${j}`);
-	// 		}
-	// 		if (h1![j].lowerTeam.seed !== h2![j].lowerTeam.seed) {
-	// 			console.log(`${index}, ${j}`);
-	// 		}
-	// 	}
-	// }
+	checkVersusData(swissBracket, tournament, "2-0");
 
 	checkVersusData(swissBracket, tournament, "1-1");
 	checkVersusData(swissBracket, tournament, "0-2");
@@ -442,7 +256,7 @@ Deno.test(function naRegional4Test3() {
 
 	checkVersusData(swissBracket, tournament, "2-2");
 
-	populateMatchRecordFromData(swissBracket, tournament, "2-2")
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 });
 
 Deno.test(function naRegional5Test1() {
