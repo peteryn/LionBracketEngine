@@ -1,4 +1,5 @@
-import { Match, MatchRecord, RoundNode, Team, TeamNameMap, type MatchTracker } from "./models.ts";
+import { Match, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
+import { cartesianProduct } from "./util/util.ts";
 
 export class SwissBracket {
 	rootRound: RoundNode;
@@ -11,10 +12,10 @@ export class SwissBracket {
 		this.rootRound = this.createStructure(numTeams, winRequirement);
 		this.roundNodes.set("0-0", this.rootRound);
 		this.matches = this.initializeEmptyMatches(this.rootRound);
-		this.teams = createTeams(numTeams);
+		this.teams = this.createTeams(numTeams);
 		// populate root round with the teams in the correct matches
 		const matchups = this.seedBasedMatchups(this.teams);
-		populateMatches(this.rootRound.matches, matchups);
+		this.populateMatches(this.rootRound.matches, matchups);
 	}
 
 	// matchNumber is 1-indexed
@@ -108,7 +109,7 @@ export class SwissBracket {
 	// a different implementation will be called on all dependent nodes
 	updateRounds(roundNode: RoundNode) {
 		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
-		const isFilleldOut = isFilledRound(roundNode.matches);
+		const isFilleldOut = this.isFilledRound(roundNode.matches);
 		// if it is not filled out, then we can stop
 		if (!isFilleldOut) {
 			return;
@@ -153,14 +154,14 @@ export class SwissBracket {
 						winningRound.fromUpperParent,
 						winningRound.fromLowerParent
 					);
-					populateMatches(winningRound.matches, matchups);
+					this.populateMatches(winningRound.matches, matchups);
 				} else {
 					// do nothing, cant calculate round yet
 				}
 			} else {
 				// process winning round by calling evaluation sort for 1 team
 				const matchups = this.evaluationSort(winners);
-				populateMatches(winningRound.matches, matchups);
+				this.populateMatches(winningRound.matches, matchups);
 			}
 		} else {
 			// set the winners who go on to the next stage
@@ -180,12 +181,12 @@ export class SwissBracket {
 						losingRound.fromUpperParent,
 						losingRound.fromLowerParent
 					);
-					populateMatches(losingRound.matches, matchups);
+					this.populateMatches(losingRound.matches, matchups);
 				}
 			} else {
 				// process losers with sort
 				const matchups = this.evaluationSort(losers);
-				populateMatches(losingRound.matches, matchups);
+				this.populateMatches(losingRound.matches, matchups);
 			}
 		} else {
 			// set the losers who are eliminated
@@ -546,72 +547,40 @@ export class SwissBracket {
 		}
 		return false;
 	}
-}
 
-export function createTeams(numTeams: number): Team[] {
-	const teams: Team[] = [];
-	for (let index = 1; index <= numTeams; index++) {
-		teams.push(new Team(index));
-	}
-	return teams;
-}
-
-export function populateMatches(matches: Match[], teams: Team[][]) {
-	if (teams.length !== matches.length) {
-		throw new Error(
-			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
-		);
+	private createTeams(numTeams: number): Team[] {
+		const teams: Team[] = [];
+		for (let index = 1; index <= numTeams; index++) {
+			teams.push(new Team(index));
+		}
+		return teams;
 	}
 
-	for (let index = 0; index < teams.length; index++) {
-		const matchup = teams[index];
-		const team1 = matchup[0];
-		const team2 = matchup[1];
-		const record = new MatchRecord(team1, team2);
-		// team1.matchHistory.push(record);
-		// team2.matchHistory.push(record);
-		matches[index].matchRecord = record;
-	}
-}
+	private populateMatches(matches: Match[], teams: Team[][]) {
+		if (teams.length !== matches.length) {
+			throw new Error(
+				`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
+			);
+		}
 
-export function createEmptyMatches(numMatches: number, nodeName: string) {
-	const matches: Match[] = [];
-	for (let index = 0; index < numMatches; index++) {
-		matches.push(new Match(nodeName, index));
+		for (let index = 0; index < teams.length; index++) {
+			const matchup = teams[index];
+			const team1 = matchup[0];
+			const team2 = matchup[1];
+			const record = new MatchRecord(team1, team2);
+			matches[index].matchRecord = record;
+		}
 	}
-	return matches;
-}
 
-export function isFilledRound(matches: Match[]): boolean {
-	for (let index = 0; index < matches.length; index++) {
-		const matchRecord = matches[index].matchRecord;
-		if (matchRecord) {
-			if (!matchRecord.isFilledOut()) {
-				return false;
+	private isFilledRound(matches: Match[]): boolean {
+		for (let index = 0; index < matches.length; index++) {
+			const matchRecord = matches[index].matchRecord;
+			if (matchRecord) {
+				if (!matchRecord.isFilledOut()) {
+					return false;
+				}
 			}
 		}
-	}
-	return true;
-}
-
-export function cartesianProduct<Type>(a: Type[], b: Type[]) {
-	return a.flatMap((x) => b.map((y) => [x, y]));
-}
-
-export function printRound(matches: Match[], teamNameMap?: TeamNameMap[]) {
-	if (teamNameMap) {
-		for (const match of matches) {
-			console.log(
-				`${teamNameMap[match.matchRecord!.upperTeam.seed - 1].name} vs ${
-					teamNameMap[match.matchRecord!.lowerTeam.seed - 1].name
-				}`
-			);
-		}
-	} else {
-		for (const match of matches) {
-			console.log(
-				`${match.matchRecord?.upperTeam.seed} vs ${match.matchRecord?.lowerTeam.seed}`
-			);
-		}
+		return true;
 	}
 }

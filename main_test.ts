@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { createTeams, SwissBracket } from "./SwissBracket.ts";
+import { SwissBracket } from "./SwissBracket.ts";
 import { TournamentData, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import {
@@ -8,12 +8,6 @@ import {
 	testTournament,
 } from "./util/testFunctions.ts";
 import { RoundNode } from "./models.ts";
-
-Deno.test(function createTeamsTest() {
-	const numTeams = 16;
-	const teams = createTeams(numTeams);
-	assertEquals(teams.length, numTeams);
-});
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3);

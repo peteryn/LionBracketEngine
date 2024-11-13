@@ -4,7 +4,6 @@ import { MatchRecord, Team, TeamNameMap, TournamentData } from "../models.ts";
 const url = Deno.args[0];
 const scraper = await scrape(url);
 const res = scraper.text(".brkts-matchlist-cell-content");
-// const res = scraper.html("h3");
 
 const nameToSeed: Map<string, Team> = new Map();
 const seedToName: TeamNameMap[] = Array.from({ length: 16 }, (_, i) => ({ seed: i + 1, name: "" }));
