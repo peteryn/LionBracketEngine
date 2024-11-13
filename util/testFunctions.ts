@@ -27,7 +27,7 @@ export function checkVersusData(
 	}
 	const numMatches = roundNode.matches.length;
 	for (let j = 0; j < numMatches; j++) {
-		const calculated = swissBracket.getMatchRecord(roundName, j + 1);
+		const calculated = swissBracket.getMatchRecord(roundName, j);
 		if (calculated) {
 			const actualUpperSeed = calculated.upperTeam.seed;
 			const expectedUpperSeed = tournament[roundName][j].upperTeam.seed;
@@ -53,7 +53,7 @@ export function populateMatchRecordFromData(
 	}
 	const numMatches = roundNode.matches.length;
 	for (let i = 0; i < numMatches; i++) {
-		const mr = swissBracket.getMatchRecord(roundName, i + 1);
+		const mr = swissBracket.getMatchRecord(roundName, i);
 		if (!mr) {
 			throw new Error("match record DNE when it should");
 		}
@@ -61,7 +61,7 @@ export function populateMatchRecordFromData(
 		mr.lowerTeamWins = tournament[roundName][i].lowerTeamWins;
 		mr.upperTeamWins = tournament[roundName][i].upperTeamWins;
 
-		swissBracket.setMatchRecord(roundName, i + 1, mr);
+		swissBracket.setMatchRecord(roundName, i, mr);
 	}
 }
 

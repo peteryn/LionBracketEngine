@@ -18,13 +18,12 @@ export class SwissBracket {
 		this.populateMatches(this.rootRound.matches, matchups);
 	}
 
-	// matchNumber is 1-indexed
 	getMatchRecord(roundName: string, matchNumber: number) {
-		return this.getMatchRecordById(`${roundName}.${matchNumber - 1}`);
+		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
 	}
 
 	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord) {
-		return this.setMatchRecordById(`${roundName}.${matchNumber - 1}`, matchRecord);
+		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
 	}
 
 	getMatch(matchId: string): Match | undefined {
@@ -228,7 +227,6 @@ export class SwissBracket {
 	// 3. Seed
 	// if RoundNode has 2 parents, then upper must play lower
 	// basically, a sort by multiple criteria
-	// TODO: should this be static? should it be private (testing issue)
 	evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]): Team[][] {
 		const upperTeams = this.swissSort(upperTeamsInput);
 		const matchups: Team[][] = [];
@@ -289,10 +287,10 @@ export class SwissBracket {
 						index = 0;
 					} else {
 						let message = `
-					Popped from stack when stack length is 0 
-					(matchLength: ${matchLength}, stackLength: ${stack.length}, 
-					index: ${index}, teamsCrossCleanLength: ${teamsCrossClean.length})\n
-					`;
+							Popped from stack when stack length is 0 
+							(matchLength: ${matchLength}, stackLength: ${stack.length}, 
+							index: ${index}, teamsCrossCleanLength: ${teamsCrossClean.length})\n
+							`;
 						for (let index = 0; index < teamsCrossClean.length; index++) {
 							const element = teamsCrossClean[index];
 							message = message.concat(`(${element[0].seed}, ${element[1].seed})\n`);
@@ -537,7 +535,6 @@ export class SwissBracket {
 		const team1MatchHistory = this.getMatchHistory(team1.seed);
 		for (let index = 0; index < team1MatchHistory.length; index++) {
 			const matchRecord = team1MatchHistory[index];
-			// TODO probably can refactor to be cleaner
 			if (
 				matchRecord.upperTeam.seed === team2.seed ||
 				matchRecord.lowerTeam.seed === team2.seed

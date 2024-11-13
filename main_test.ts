@@ -70,11 +70,11 @@ Deno.test(function computeRound1() {
 	const f: MatchRecordSerialized[] = getJsonSync("./data/round1UpperTestData1.json");
 	for (let index = 0; index < f.length; index++) {
 		const matchRecordS = f[index];
-		const mr = swissBracket.getMatchRecord("0-0", index + 1);
+		const mr = swissBracket.getMatchRecord("0-0", index);
 		if (mr) {
 			mr.lowerTeamWins = matchRecordS.lowerTeamWins;
 			mr.upperTeamWins = matchRecordS.upperTeamWins;
-			swissBracket.setMatchRecord("0-0", index + 1, mr);
+			swissBracket.setMatchRecord("0-0", index, mr);
 		} else {
 			throw new Error("Match record doesn't exist when it should");
 		}
