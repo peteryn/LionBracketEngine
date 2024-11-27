@@ -262,6 +262,35 @@ Deno.test(function naRegional6Test1() {
 	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json");
 });
 
+Deno.test(function drawTest1() {
+	const swissBracket = new SwissBracket(16, 3);
+	const numMatches = swissBracket.rootRound.matches.length;
+	for (let i = 0; i < numMatches; i++) {
+		const mr = swissBracket.getMatchRecord("0-0", i);
+		if (!mr) {
+			throw new Error("match record DNE when it should");
+		}
+
+		mr.upperTeamWins = 1;
+
+		swissBracket.setMatchRecord("0-0", i, mr);
+	}
+
+	const round2Upper = swissBracket.roundNodes.get("1-0");
+	assertEquals(round2Upper!.matches[0].matchRecord?.upperTeam.seed, 1);
+	assertEquals(round2Upper!.matches[0].matchRecord?.lowerTeam.seed, 8);
+
+	const mr = swissBracket.getMatchRecord("0-0", 0);
+	const round1 = swissBracket.roundNodes.get("0-0");
+	mr!.lowerTeamWins = 1;
+	swissBracket.setMatchRecord("0-0", 0, mr!);
+	assertEquals(round1?.matches[0].matchRecord?.upperTeamWins, 1);
+	assertEquals(round1?.matches[0].matchRecord?.lowerTeamWins, 1);
+	// TODO, when a user enters data that causes a draw, future rounds should be erased because they are no longer valid
+	// since they cannot be calculated until the current round is filled out.
+	console.log(round2Upper!.matches[0].matchRecord);
+});
+
 // For some reason, the initial matchups are created using a different seeding system.
 // traditionally, round1 match1 is seed 1 vs seed 16.
 // in this tournament it is seed 1 vs seed 15.
