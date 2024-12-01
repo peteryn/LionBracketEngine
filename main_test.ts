@@ -288,7 +288,29 @@ Deno.test(function drawTest1() {
 	assertEquals(round1?.matches[0].matchRecord?.lowerTeamWins, 1);
 	// TODO, when a user enters data that causes a draw, future rounds should be erased because they are no longer valid
 	// since they cannot be calculated until the current round is filled out.
-	console.log(round2Upper!.matches[0].matchRecord);
+	// console.log(round2Upper!.matches[0].matchRecord);
+});
+
+Deno.test(function matchRecordTest1() {
+	const swissBracket = new SwissBracket(16, 3);
+	const numMatches = swissBracket.rootRound.matches.length;
+	for (let i = 0; i < numMatches; i++) {
+		const mr = swissBracket.getMatchRecord("0-0", i);
+		if (!mr) {
+			throw new Error("match record DNE when it should");
+		}
+
+		mr.upperTeamWins = 2;
+
+		swissBracket.setMatchRecord("0-0", i, mr);
+	}
+
+	const seed1 = swissBracket.rootRound.matches[0].matchRecord!.upperTeam;
+	const seed1History = swissBracket.getMatchHistory(seed1.seed);
+	const seed1MatchDiff = seed1.getMatchDifferential(seed1History);
+	const seed1GameDiff = seed1.getGameDifferential(seed1History);
+	assertEquals(seed1MatchDiff, 1);
+	assertEquals(seed1GameDiff, 2);
 });
 
 // For some reason, the initial matchups are created using a different seeding system.
@@ -314,7 +336,7 @@ Deno.test(function euRegional1Test1() {
 	// TODO match differential is not calculated correctly here.
 	console.log(swissBracket.getMatchHistory(red!.seed));
 	// TODO match differential else clause for when record is tied is not handeled correctly
-	// console.log(red?.getMatchDifferential(swissBracket.getMatchHistory(red.seed)));
+	console.log(red?.getMatchDifferential(swissBracket.getMatchHistory(red.seed)));
 	// checkVersusData(swissBracket, tournament, "1-0");
 	// checkVersusData(swissBracket, tournament, "0-1");
 

@@ -100,6 +100,10 @@ export class Team {
 		for (let index = 0; index < matchHistory.length; index++) {
 			const match = matchHistory[index];
 			const isUpperSeed = match.upperTeam.seed === this.seed;
+			// if the match is a draw, do not count it as a win or loss
+			if (match.upperTeamWins === match.lowerTeamWins) {
+				continue;
+			}
 			const isUpperTeamWinner = match.upperTeamWins > match.lowerTeamWins;
 
 			if ((isUpperSeed && isUpperTeamWinner) || (!isUpperSeed && !isUpperTeamWinner)) {
