@@ -1,21 +1,12 @@
 import { Match, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
+import { SwissBracketData } from "./SwissBracketData.ts";
 import { cartesianProduct } from "./util/util.ts";
 
 export class SwissBracket {
-	rootRound: RoundNode;
-	matches: Map<string, Match>;
-	teams: Team[];
-	roundNodes: Map<string, RoundNode>;
+	data: SwissBracketData;
 
 	constructor(numTeams: number = 16, winRequirement: number = 3) {
-		this.roundNodes = new Map();
-		this.rootRound = this.createStructure(numTeams, winRequirement);
-		this.roundNodes.set("0-0", this.rootRound);
-		this.matches = this.initializeEmptyMatches(this.rootRound);
-		this.teams = this.createTeams(numTeams);
-		// populate root round with the teams in the correct matches
-		const matchups = this.seedBasedMatchups(this.teams);
-		this.populateMatches(this.rootRound.matches, matchups);
+		this.data = new SwissBracketData(numTeams, winRequirement);
 	}
 
 	getMatchRecord(roundName: string, matchNumber: number) {
@@ -27,7 +18,7 @@ export class SwissBracket {
 	}
 
 	getMatch(matchId: string): Match | undefined {
-		return this.matches.get(matchId);
+		return this.data.matches.get(matchId);
 	}
 
 	getMatchRecordById(matchId: string): MatchRecord | undefined {
@@ -54,7 +45,7 @@ export class SwissBracket {
 	}
 
 	getMatchHistory(seed: number) {
-		let curr: RoundNode | undefined = this.rootRound;
+		let curr: RoundNode | undefined = this.data.rootRound;
 		const matchHistory: MatchRecord[] = [];
 		while (curr) {
 			const matches = curr.matches;
@@ -369,14 +360,14 @@ export class SwissBracket {
 			}
 			console.log();
 		};
-		levelOrderTraversal(this.rootRound, undefined, printLevel);
+		levelOrderTraversal(this.data.rootRound, undefined, printLevel);
 	}
 
 	// prints out swiss rounds level by level
 	// will print each RoundNode once
 	getPromotedTeams() {
 		let promotedTeams: Team[] = [];
-		levelOrderTraversal(this.rootRound, (node) => {
+		levelOrderTraversal(this.data.rootRound, (node) => {
 			if (node.promotionTeams.length > 0) {
 				promotedTeams = promotedTeams.concat(node.promotionTeams);
 			}
@@ -386,7 +377,7 @@ export class SwissBracket {
 
 	getEliminatedTeams() {
 		let eliminatedTeams: Team[] = [];
-		levelOrderTraversal(this.rootRound, (node) => {
+		levelOrderTraversal(this.data.rootRound, (node) => {
 			if (node.eliminatedTeams.length > 0) {
 				eliminatedTeams = eliminatedTeams.concat(node.eliminatedTeams);
 			}

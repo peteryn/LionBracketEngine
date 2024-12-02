@@ -21,7 +21,7 @@ export function checkVersusData(
 	tournament: any,
 	roundName: string
 ) {
-	const roundNode = swissBracket.roundNodes.get(roundName);
+	const roundNode = swissBracket.data.roundNodes.get(roundName);
 	if (!roundNode) {
 		throw new Error("roundNode doesn't exist when it should");
 	}
@@ -47,7 +47,7 @@ export function populateMatchRecordFromData(
 	tournament: any,
 	roundName: string
 ) {
-	const roundNode = swissBracket.roundNodes.get(roundName);
+	const roundNode = swissBracket.data.roundNodes.get(roundName);
 	if (!roundNode) {
 		throw new Error("roundNode doesn't exist when it should");
 	}

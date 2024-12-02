@@ -12,19 +12,19 @@ import { printRound } from "./util/util.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3);
-	const rootRound = swissBracket.rootRound;
+	const rootRound = swissBracket.data.rootRound;
 	assertEquals(rootRound.level, 1);
 	assertEquals(rootRound.has2Parents, false);
 	assertEquals(rootRound.matches[0].matchRecord?.upperTeam.seed, 1);
 	assertEquals(rootRound.matches[0].matchRecord?.lowerTeam.seed, 16);
 	assertEquals(rootRound.matches[1].matchRecord?.upperTeam.seed, 2);
 	assertEquals(rootRound.matches[1].matchRecord?.lowerTeam.seed, 15);
-	assertEquals(swissBracket.roundNodes.get("0-0")?.name, swissBracket.rootRound.name);
+	assertEquals(swissBracket.data.roundNodes.get("0-0")?.name, swissBracket.data.rootRound.name);
 
 	const round2Upper = rootRound.winningRound;
 	const round2Lower = rootRound.losingRound;
-	assertEquals(swissBracket.roundNodes.get("1-0")?.name, round2Upper?.name);
-	assertEquals(swissBracket.roundNodes.get("0-1")?.name, round2Lower?.name);
+	assertEquals(swissBracket.data.roundNodes.get("1-0")?.name, round2Upper?.name);
+	assertEquals(swissBracket.data.roundNodes.get("0-1")?.name, round2Lower?.name);
 	assertEquals(round2Upper?.level, 2);
 	assertEquals(round2Lower?.level, 2);
 	assertEquals(round2Upper?.has2Parents, false);
@@ -35,9 +35,9 @@ Deno.test(function structureTest1() {
 	const round3Upper = round2Upper?.winningRound;
 	const round3Middle = round2Upper?.losingRound;
 	const round3Lower = round2Lower?.losingRound;
-	assertEquals(swissBracket.roundNodes.get("2-0")?.name, round3Upper?.name);
-	assertEquals(swissBracket.roundNodes.get("1-1")?.name, round3Middle?.name);
-	assertEquals(swissBracket.roundNodes.get("0-2")?.name, round3Lower?.name);
+	assertEquals(swissBracket.data.roundNodes.get("2-0")?.name, round3Upper?.name);
+	assertEquals(swissBracket.data.roundNodes.get("1-1")?.name, round3Middle?.name);
+	assertEquals(swissBracket.data.roundNodes.get("0-2")?.name, round3Lower?.name);
 	assertEquals(round3Upper?.level, 3);
 	assertEquals(round3Middle?.level, 3);
 	assertEquals(round3Lower?.level, 3);
@@ -50,8 +50,8 @@ Deno.test(function structureTest1() {
 
 	const round4Upper = round3Upper?.losingRound;
 	const round4Lower = round3Lower?.winningRound;
-	assertEquals(swissBracket.roundNodes.get("2-1")?.name, round4Upper?.name);
-	assertEquals(swissBracket.roundNodes.get("1-2")?.name, round4Lower?.name);
+	assertEquals(swissBracket.data.roundNodes.get("2-1")?.name, round4Upper?.name);
+	assertEquals(swissBracket.data.roundNodes.get("1-2")?.name, round4Lower?.name);
 	assertEquals(round4Upper?.level, 4);
 	assertEquals(round4Lower?.level, 4);
 	assertEquals(round4Upper?.has2Parents, true);
@@ -60,7 +60,7 @@ Deno.test(function structureTest1() {
 	assertEquals(round4Lower?.matches.length, 3);
 
 	const round5 = round4Lower?.winningRound;
-	assertEquals(swissBracket.roundNodes.get("2-2")?.name, round5?.name);
+	assertEquals(swissBracket.data.roundNodes.get("2-2")?.name, round5?.name);
 	assertEquals(round5?.level, 5);
 	assertEquals(round5?.has2Parents, true);
 	assertEquals(round5?.matches.length, 3);
@@ -80,7 +80,7 @@ Deno.test(function computeRound1() {
 			throw new Error("Match record doesn't exist when it should");
 		}
 	}
-	const round1 = swissBracket.rootRound;
+	const round1 = swissBracket.data.rootRound;
 	const round2Upper = round1.winningRound;
 	const round2Lower = round1.losingRound;
 	assertEquals(round2Upper?.matches[0].matchRecord?.upperTeam.seed, 1);
@@ -148,21 +148,21 @@ Deno.test(function naRegional4Test2() {
 	swissBracket.setMatchRecord("0-0", 1, mr!);
 
 	// make sure that future rounds are now undefined
-	const round3Upper = swissBracket.roundNodes.get("2-0") as RoundNode;
+	const round3Upper = swissBracket.data.roundNodes.get("2-0") as RoundNode;
 	assertEquals(round3Upper.matches[0].matchRecord, undefined);
 	assertEquals(round3Upper.matches[1].matchRecord, undefined);
 
-	const round3Middle = swissBracket.roundNodes.get("1-1") as RoundNode;
+	const round3Middle = swissBracket.data.roundNodes.get("1-1") as RoundNode;
 	assertEquals(round3Middle.matches[0].matchRecord, undefined);
 	assertEquals(round3Middle.matches[1].matchRecord, undefined);
 	assertEquals(round3Middle.matches[2].matchRecord, undefined);
 	assertEquals(round3Middle.matches[3].matchRecord, undefined);
 
-	const round3Lower = swissBracket.roundNodes.get("0-2") as RoundNode;
+	const round3Lower = swissBracket.data.roundNodes.get("0-2") as RoundNode;
 	assertEquals(round3Lower.matches[0].matchRecord, undefined);
 	assertEquals(round3Lower.matches[1].matchRecord, undefined);
 
-	const round4Upper = swissBracket.roundNodes.get("2-1") as RoundNode;
+	const round4Upper = swissBracket.data.roundNodes.get("2-1") as RoundNode;
 	assertEquals(round4Upper.matches[0].matchRecord, undefined);
 	assertEquals(round4Upper.matches[1].matchRecord, undefined);
 	assertEquals(round4Upper.matches[2].matchRecord, undefined);
@@ -264,7 +264,7 @@ Deno.test(function naRegional6Test1() {
 
 Deno.test(function drawTest1() {
 	const swissBracket = new SwissBracket(16, 3);
-	const numMatches = swissBracket.rootRound.matches.length;
+	const numMatches = swissBracket.data.rootRound.matches.length;
 	for (let i = 0; i < numMatches; i++) {
 		const mr = swissBracket.getMatchRecord("0-0", i);
 		if (!mr) {
@@ -276,12 +276,12 @@ Deno.test(function drawTest1() {
 		swissBracket.setMatchRecord("0-0", i, mr);
 	}
 
-	const round2Upper = swissBracket.roundNodes.get("1-0");
+	const round2Upper = swissBracket.data.roundNodes.get("1-0");
 	assertEquals(round2Upper!.matches[0].matchRecord?.upperTeam.seed, 1);
 	assertEquals(round2Upper!.matches[0].matchRecord?.lowerTeam.seed, 8);
 
 	const mr = swissBracket.getMatchRecord("0-0", 0);
-	const round1 = swissBracket.roundNodes.get("0-0");
+	const round1 = swissBracket.data.roundNodes.get("0-0");
 	mr!.lowerTeamWins = 1;
 	swissBracket.setMatchRecord("0-0", 0, mr!);
 	assertEquals(round1?.matches[0].matchRecord?.upperTeamWins, 1);
@@ -293,7 +293,7 @@ Deno.test(function drawTest1() {
 
 Deno.test(function matchRecordTest1() {
 	const swissBracket = new SwissBracket(16, 3);
-	const numMatches = swissBracket.rootRound.matches.length;
+	const numMatches = swissBracket.data.rootRound.matches.length;
 	for (let i = 0; i < numMatches; i++) {
 		const mr = swissBracket.getMatchRecord("0-0", i);
 		if (!mr) {
@@ -305,7 +305,7 @@ Deno.test(function matchRecordTest1() {
 		swissBracket.setMatchRecord("0-0", i, mr);
 	}
 
-	const seed1 = swissBracket.rootRound.matches[0].matchRecord!.upperTeam;
+	const seed1 = swissBracket.data.rootRound.matches[0].matchRecord!.upperTeam;
 	const seed1History = swissBracket.getMatchHistory(seed1.seed);
 	const seed1MatchDiff = seed1.getMatchDifferential(seed1History);
 	const seed1GameDiff = seed1.getGameDifferential(seed1History);
