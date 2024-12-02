@@ -1,4 +1,12 @@
-import { Match, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
+import {
+	getGameDifferential,
+	getMatchDifferential,
+	Match,
+	MatchRecord,
+	RoundNode,
+	Team,
+	type MatchTracker,
+} from "./models.ts";
 import { SwissBracketData } from "./SwissBracketData.ts";
 import { cartesianProduct } from "./util/util.ts";
 
@@ -26,7 +34,7 @@ export class SwissBracket {
 		if (!matchRecord) {
 			return undefined;
 		}
-		return MatchRecord.createClone(matchRecord);
+		return structuredClone(matchRecord);
 	}
 
 	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
@@ -345,8 +353,8 @@ export class SwissBracket {
 			const aHistory = this.getMatchHistory(a.seed);
 			const bHistory = this.getMatchHistory(b.seed);
 			return (
-				b.getMatchDifferential(bHistory) - a.getMatchDifferential(aHistory) || // descending
-				b.getGameDifferential(bHistory) - a.getGameDifferential(aHistory) || // descending
+				getMatchDifferential(b, bHistory) - getMatchDifferential(a, aHistory) || // descending
+				getGameDifferential(b, bHistory) - getGameDifferential(a, aHistory) || // descending
 				a.seed - b.seed
 			); // ascending
 		});

@@ -61,30 +61,6 @@ export class MatchRecord {
 		this.upperTeamWins = 0;
 		this.lowerTeamWins = 0;
 	}
-
-	static createClone(matchRecord: MatchRecord) {
-		const cloneRecord = new MatchRecord(matchRecord.upperTeam, matchRecord.lowerTeam);
-		cloneRecord.upperTeamWins = matchRecord.upperTeamWins;
-		cloneRecord.lowerTeamWins = matchRecord.lowerTeamWins;
-		return cloneRecord;
-	}
-
-	isFilledOut() {
-		return this.upperTeamWins - this.lowerTeamWins !== 0;
-	}
-
-	toString() {
-		return `${this.upperTeam.seed} vs ${this.lowerTeam.seed}, ${this.upperTeamWins}:${this.lowerTeamWins}`;
-	}
-
-	equals(other: MatchRecord) {
-		return (
-			this.upperTeamWins === other.upperTeamWins &&
-			this.lowerTeamWins === other.lowerTeamWins &&
-			this.upperTeam.seed === other.upperTeam.seed &&
-			this.lowerTeam.seed === other.lowerTeam.seed
-		);
-	}
 }
 
 export class Team {
@@ -93,45 +69,45 @@ export class Team {
 	constructor(seed: number) {
 		this.seed = seed;
 	}
+}
 
-	getMatchDifferential(matchHistory: MatchRecord[]) {
-		let wins = 0;
-		let losses = 0;
-		for (let index = 0; index < matchHistory.length; index++) {
-			const match = matchHistory[index];
-			const isUpperSeed = match.upperTeam.seed === this.seed;
-			// if the match is a draw, do not count it as a win or loss
-			if (match.upperTeamWins === match.lowerTeamWins) {
-				continue;
-			}
-			const isUpperTeamWinner = match.upperTeamWins > match.lowerTeamWins;
-
-			if ((isUpperSeed && isUpperTeamWinner) || (!isUpperSeed && !isUpperTeamWinner)) {
-				wins++;
-			} else {
-				losses++;
-			}
+export function getMatchDifferential(team: Team, matchHistory: MatchRecord[]) {
+	let wins = 0;
+	let losses = 0;
+	for (let index = 0; index < matchHistory.length; index++) {
+		const match = matchHistory[index];
+		const isUpperSeed = match.upperTeam.seed === team.seed;
+		// if the match is a draw, do not count it as a win or loss
+		if (match.upperTeamWins === match.lowerTeamWins) {
+			continue;
 		}
-		return wins - losses;
-	}
+		const isUpperTeamWinner = match.upperTeamWins > match.lowerTeamWins;
 
-	getGameDifferential(matchHistory: MatchRecord[]) {
-		let gamesWon = 0;
-		let gamesLost = 0;
-		for (let index = 0; index < matchHistory.length; index++) {
-			const match = matchHistory[index];
-			const isUpperSeed = match.upperTeam.seed === this.seed;
-
-			if (isUpperSeed) {
-				gamesWon += match.upperTeamWins;
-				gamesLost += match.lowerTeamWins;
-			} else {
-				gamesWon += match.lowerTeamWins;
-				gamesLost += match.upperTeamWins;
-			}
+		if ((isUpperSeed && isUpperTeamWinner) || (!isUpperSeed && !isUpperTeamWinner)) {
+			wins++;
+		} else {
+			losses++;
 		}
-		return gamesWon - gamesLost;
 	}
+	return wins - losses;
+}
+
+export function getGameDifferential(team: Team, matchHistory: MatchRecord[]) {
+	let gamesWon = 0;
+	let gamesLost = 0;
+	for (let index = 0; index < matchHistory.length; index++) {
+		const match = matchHistory[index];
+		const isUpperSeed = match.upperTeam.seed === team.seed;
+
+		if (isUpperSeed) {
+			gamesWon += match.upperTeamWins;
+			gamesLost += match.lowerTeamWins;
+		} else {
+			gamesWon += match.lowerTeamWins;
+			gamesLost += match.upperTeamWins;
+		}
+	}
+	return gamesWon - gamesLost;
 }
 
 export interface MatchRecordSerialized {
