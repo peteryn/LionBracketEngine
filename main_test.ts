@@ -8,7 +8,6 @@ import {
 	testTournament,
 } from "./util/testFunctions.ts";
 import { RoundNode } from "./models.ts";
-import { printRound } from "./util/util.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3);

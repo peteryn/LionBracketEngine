@@ -404,7 +404,8 @@ export class SwissBracket {
 		for (let index = 0; index < matches.length; index++) {
 			const matchRecord = matches[index].matchRecord;
 			if (matchRecord) {
-				if (!matchRecord.isFilledOut()) {
+				const isFilledOut = matchRecord.upperTeamWins - matchRecord.lowerTeamWins !== 0;
+				if (!isFilledOut) {
 					return false;
 				}
 			}
