@@ -153,14 +153,14 @@ export class SwissBracket {
 						winningRound.fromUpperParent,
 						winningRound.fromLowerParent
 					);
-					this.populateMatches(winningRound.matches, matchups);
+					populateMatches(winningRound.matches, matchups);
 				} else {
 					// do nothing, cant calculate round yet
 				}
 			} else {
 				// process winning round by calling evaluation sort for 1 team
 				const matchups = this.evaluationSort(winners);
-				this.populateMatches(winningRound.matches, matchups);
+				populateMatches(winningRound.matches, matchups);
 			}
 		} else {
 			// set the winners who go on to the next stage
@@ -180,12 +180,12 @@ export class SwissBracket {
 						losingRound.fromUpperParent,
 						losingRound.fromLowerParent
 					);
-					this.populateMatches(losingRound.matches, matchups);
+					populateMatches(losingRound.matches, matchups);
 				}
 			} else {
 				// process losers with sort
 				const matchups = this.evaluationSort(losers);
-				this.populateMatches(losingRound.matches, matchups);
+				populateMatches(losingRound.matches, matchups);
 			}
 		} else {
 			// set the losers who are eliminated
@@ -205,7 +205,7 @@ export class SwissBracket {
 
 	private updateDependents(round: RoundNode | undefined) {
 		if (round) {
-			this.levelOrderTraversal(round, (node) => {
+			levelOrderTraversal(round, (node) => {
 				const matches = node.matches;
 				for (let index = 0; index < matches.length; index++) {
 					const match = matches[index];
@@ -349,21 +349,6 @@ export class SwissBracket {
 		return matchups;
 	}
 
-	seedBasedMatchups(teams: Team[]) {
-		const matchups: Team[][] = [];
-
-		// implementation when round node has 1 parent
-		let i = 0;
-		let j = teams.length - 1;
-		while (i < j) {
-			matchups.push([teams[i], teams[j]]);
-			i++;
-			j--;
-		}
-
-		return matchups;
-	}
-
 	swissSort(teams: Team[]): Team[] {
 		return [...teams].sort((a, b) => {
 			const aHistory = this.getMatchHistory(a.seed);
@@ -376,82 +361,6 @@ export class SwissBracket {
 		});
 	}
 
-	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
-		let level = 1;
-		const root = new RoundNode("0-0", numTeams, 0, 0, level);
-		level++;
-		let queue: RoundNode[] = [];
-		queue.push(root);
-		while (queue.length > 0) {
-			const existingNodes: Map<string, RoundNode> = new Map();
-			const newQueue: RoundNode[] = [];
-			for (let i = 0; i < queue.length; i++) {
-				const node = queue[i];
-				// update winning child
-				if (node.winRecord + 1 < winRequirement) {
-					const winningNodeRecord = `${node.winRecord + 1}-${node.loseRecord}`;
-					this.checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0, level);
-					node.winningRound = existingNodes.get(winningNodeRecord);
-				}
-				// update losing child
-				if (node.loseRecord + 1 < winRequirement) {
-					const losingNodeRecord = `${node.winRecord}-${node.loseRecord + 1}`;
-					this.checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1, level);
-					node.losingRound = existingNodes.get(losingNodeRecord);
-				}
-			}
-			existingNodes.forEach((value) => {
-				newQueue.push(value);
-			});
-			const nodeEntriesIterator = existingNodes.entries();
-			for (const roundNodeVal of nodeEntriesIterator) {
-				this.roundNodes.set(roundNodeVal[0], roundNodeVal[1]);
-			}
-			queue = newQueue;
-			level++;
-		}
-		return root;
-	}
-
-	private checkAndAddNode(
-		existingNodes: Map<string, RoundNode>,
-		nodeRecord: string,
-		parentNode: RoundNode,
-		addWinRecord: number,
-		addLoseRecord: number,
-		level: number
-	) {
-		const wNode = existingNodes.get(nodeRecord);
-		if (wNode) {
-			wNode.numTeams += parentNode.numTeams / 2;
-			wNode.has2Parents = true;
-			return false;
-		} else {
-			const newNode = new RoundNode(
-				nodeRecord,
-				parentNode.numTeams / 2,
-				parentNode.winRecord + addWinRecord,
-				parentNode.loseRecord + addLoseRecord,
-				level
-			);
-			existingNodes.set(nodeRecord, newNode);
-			return true;
-		}
-	}
-
-	private initializeEmptyMatches(root: RoundNode): Map<string, Match> {
-		const matches: Map<string, Match> = new Map();
-		const init = (node: RoundNode) => {
-			for (let index = 0; index < node.numTeams / 2; index++) {
-				const match = new Match(node.name, index, node);
-				matches.set(match.id, match);
-				node.matches.push(match);
-			}
-		};
-		this.levelOrderTraversal(root, init);
-		return matches;
-	}
-
 	printLevels() {
 		const printLevel = (level: RoundNode[]) => {
 			for (let index = 0; index < level.length; index++) {
@@ -460,52 +369,14 @@ export class SwissBracket {
 			}
 			console.log();
 		};
-		this.levelOrderTraversal(this.rootRound, undefined, printLevel);
+		levelOrderTraversal(this.rootRound, undefined, printLevel);
 	}
 
 	// prints out swiss rounds level by level
 	// will print each RoundNode once
-	levelOrderTraversal(
-		root: RoundNode,
-		perNodeCallBack?: (node: RoundNode) => void,
-		perLevelCallBack?: (level: RoundNode[]) => void
-	) {
-		let queue: RoundNode[] = [];
-		const visited: string[] = [];
-		queue.push(root);
-		const levels = [];
-		while (queue.length > 0) {
-			const level: RoundNode[] = [];
-			const newQueue: RoundNode[] = [];
-			for (let i = 0; i < queue.length; i++) {
-				const node = queue[i];
-
-				if (!visited.includes(node.name)) {
-					if (perNodeCallBack) {
-						perNodeCallBack(node);
-					}
-					level.push(node);
-					visited.push(node.name);
-				}
-				if (node.winningRound) {
-					newQueue.push(node.winningRound);
-				}
-				if (node.losingRound) {
-					newQueue.push(node.losingRound);
-				}
-			}
-			queue = newQueue;
-			if (perLevelCallBack) {
-				perLevelCallBack(level);
-			}
-			levels.push(level);
-		}
-		return levels;
-	}
-
 	getPromotedTeams() {
 		let promotedTeams: Team[] = [];
-		this.levelOrderTraversal(this.rootRound, (node) => {
+		levelOrderTraversal(this.rootRound, (node) => {
 			if (node.promotionTeams.length > 0) {
 				promotedTeams = promotedTeams.concat(node.promotionTeams);
 			}
@@ -515,19 +386,12 @@ export class SwissBracket {
 
 	getEliminatedTeams() {
 		let eliminatedTeams: Team[] = [];
-		this.levelOrderTraversal(this.rootRound, (node) => {
+		levelOrderTraversal(this.rootRound, (node) => {
 			if (node.eliminatedTeams.length > 0) {
 				eliminatedTeams = eliminatedTeams.concat(node.eliminatedTeams);
 			}
 		});
 		return this.swissSort(eliminatedTeams);
-	}
-
-	private shuffleTeams() {
-		for (let i = this.teams.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[this.teams[i], this.teams[j]] = [this.teams[j], this.teams[i]];
-		}
 	}
 
 	// check if team1 has already played team2
@@ -545,30 +409,6 @@ export class SwissBracket {
 		return false;
 	}
 
-	private createTeams(numTeams: number): Team[] {
-		const teams: Team[] = [];
-		for (let index = 1; index <= numTeams; index++) {
-			teams.push(new Team(index));
-		}
-		return teams;
-	}
-
-	private populateMatches(matches: Match[], teams: Team[][]) {
-		if (teams.length !== matches.length) {
-			throw new Error(
-				`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
-			);
-		}
-
-		for (let index = 0; index < teams.length; index++) {
-			const matchup = teams[index];
-			const team1 = matchup[0];
-			const team2 = matchup[1];
-			const record = new MatchRecord(team1, team2);
-			matches[index].matchRecord = record;
-		}
-	}
-
 	private isFilledRound(matches: Match[]): boolean {
 		for (let index = 0; index < matches.length; index++) {
 			const matchRecord = matches[index].matchRecord;
@@ -579,5 +419,59 @@ export class SwissBracket {
 			}
 		}
 		return true;
+	}
+}
+
+export function levelOrderTraversal(
+	root: RoundNode,
+	perNodeCallBack?: (node: RoundNode) => void,
+	perLevelCallBack?: (level: RoundNode[]) => void
+) {
+	let queue: RoundNode[] = [];
+	const visited: string[] = [];
+	queue.push(root);
+	const levels = [];
+	while (queue.length > 0) {
+		const level: RoundNode[] = [];
+		const newQueue: RoundNode[] = [];
+		for (let i = 0; i < queue.length; i++) {
+			const node = queue[i];
+
+			if (!visited.includes(node.name)) {
+				if (perNodeCallBack) {
+					perNodeCallBack(node);
+				}
+				level.push(node);
+				visited.push(node.name);
+			}
+			if (node.winningRound) {
+				newQueue.push(node.winningRound);
+			}
+			if (node.losingRound) {
+				newQueue.push(node.losingRound);
+			}
+		}
+		queue = newQueue;
+		if (perLevelCallBack) {
+			perLevelCallBack(level);
+		}
+		levels.push(level);
+	}
+	return levels;
+}
+
+export function populateMatches(matches: Match[], teams: Team[][]) {
+	if (teams.length !== matches.length) {
+		throw new Error(
+			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
+		);
+	}
+
+	for (let index = 0; index < teams.length; index++) {
+		const matchup = teams[index];
+		const team1 = matchup[0];
+		const team2 = matchup[1];
+		const record = new MatchRecord(team1, team2);
+		matches[index].matchRecord = record;
 	}
 }
