@@ -85,7 +85,7 @@ export class SwissBracketData {
 		const matches: Map<string, Match> = new Map();
 		const init = (node: RoundNode) => {
 			for (let index = 0; index < node.numTeams / 2; index++) {
-				const match = new Match(node.name, index, node);
+				const match = new Match(node.name, index);
 				matches.set(match.id, match);
 				node.matches.push(match);
 			}

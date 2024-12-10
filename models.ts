@@ -40,12 +40,10 @@ export class RoundNode {
 
 export class Match {
 	id: string;
-	roundNode: RoundNode | undefined;
 	matchRecord: MatchRecord | undefined;
 
-	constructor(nodeName: string, index: number, node?: RoundNode) {
+	constructor(nodeName: string, index: number) {
 		this.id = `${nodeName}.${index}`;
-		this.roundNode = node;
 	}
 }
 

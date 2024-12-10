@@ -41,7 +41,8 @@ export class SwissBracket {
 		const match = this.getMatch(matchId);
 		if (match) {
 			match.matchRecord = matchRecord;
-			const roundNode = match.roundNode;
+			const roundNodeName = match.id.split(".")[0];
+			const roundNode = this.data.roundNodes.get(roundNodeName);
 			if (roundNode) {
 				// then traverse starting at that node do the traversal
 				// with a callback that updates the next round
