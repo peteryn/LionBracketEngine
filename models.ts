@@ -61,12 +61,8 @@ export class MatchRecord {
 	}
 }
 
-export class Team {
+export interface Team {
 	seed: number;
-
-	constructor(seed: number) {
-		this.seed = seed;
-	}
 }
 
 export function getMatchDifferential(team: Team, matchHistory: MatchRecord[]) {
