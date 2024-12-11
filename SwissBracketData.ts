@@ -3,12 +3,11 @@ import { levelOrderTraversal, populateMatches } from "./SwissBracket.ts";
 
 export class SwissBracketData {
 	rootRound: RoundNode;
-	matches: Map<string, Match>;
 	teams: Team[];
 
 	constructor(numTeams: number = 16, winRequirement: number = 3) {
 		this.rootRound = this.createStructure(numTeams, winRequirement);
-		this.matches = this.initializeEmptyMatches(this.rootRound);
+		this.initializeEmptyMatches(this.rootRound);
 		this.teams = this.createTeams(numTeams);
 		// populate root round with the teams in the correct matches
 		const matchups = this.seedBasedMatchups(this.teams);
@@ -74,17 +73,14 @@ export class SwissBracketData {
 		}
 	}
 
-	private initializeEmptyMatches(root: RoundNode): Map<string, Match> {
-		const matches: Map<string, Match> = new Map();
+	private initializeEmptyMatches(root: RoundNode) {
 		const init = (node: RoundNode) => {
 			for (let index = 0; index < node.numTeams / 2; index++) {
 				const match = new Match(node.name, index);
-				matches.set(match.id, match);
 				node.matches.push(match);
 			}
 		};
 		levelOrderTraversal(root, init);
-		return matches;
 	}
 
 	private createTeams(numTeams: number): Team[] {

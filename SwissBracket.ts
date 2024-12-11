@@ -25,8 +25,12 @@ export class SwissBracket {
 		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
 	}
 
-	getMatch(matchId: string): Match | undefined {
-		return this.data.matches.get(matchId);
+	getMatch(matchId: string) {
+		const [roundName, matchIndexString] = matchId.split(".");
+		const matchIndex = parseInt(matchIndexString);
+		const roundNode = this.getRoundNode(roundName);
+		const matches = roundNode.matches;
+		return matches[matchIndex];
 	}
 
 	getMatchRecordById(matchId: string): MatchRecord | undefined {
