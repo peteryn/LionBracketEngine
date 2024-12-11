@@ -57,10 +57,6 @@ export class MatchRecord {
 	}
 }
 
-// export interface Team {
-// 	seed: number;
-// }
-
 export type Team = number;
 
 export function getMatchDifferential(team: Team, matchHistory: MatchRecord[]) {
