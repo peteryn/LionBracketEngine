@@ -22,7 +22,7 @@ export function checkVersusData(
 	roundName: string
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
-	const roundNode = swissBracket.getRoundNode(roundName)
+	const roundNode = swissBracket.getRoundNode(roundName);
 	if (!roundNode) {
 		throw new Error("roundNode doesn't exist when it should");
 	}
@@ -30,9 +30,9 @@ export function checkVersusData(
 	for (let j = 0; j < numMatches; j++) {
 		const calculated = swissBracket.getMatchRecord(roundName, j);
 		if (calculated) {
-			const actualUpperSeed = calculated.upperTeam.seed;
+			const actualUpperSeed = calculated.upperTeam;
 			const expectedUpperSeed = tournament[roundName][j].upperTeam.seed;
-			const actualLowerSeed = calculated.lowerTeam.seed;
+			const actualLowerSeed = calculated.lowerTeam;
 			const expectedLowerSeed = tournament[roundName][j].lowerTeam.seed;
 			assertEquals(actualUpperSeed, expectedUpperSeed);
 			assertEquals(actualLowerSeed, expectedLowerSeed);
@@ -49,7 +49,7 @@ export function populateMatchRecordFromData(
 	roundName: string
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
-	const roundNode = swissBracket.getRoundNode(roundName)
+	const roundNode = swissBracket.getRoundNode(roundName);
 	if (!roundNode) {
 		throw new Error("roundNode doesn't exist when it should");
 	}

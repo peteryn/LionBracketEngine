@@ -12,8 +12,8 @@ let k = 16;
 for (let i = 0; i < 8 * 4; i += 4) {
 	const t1 = res[i];
 	const t2 = res[i + 3];
-	const team1 = { seed: j };
-	const team2 = { seed: k };
+	const team1 = j;
+	const team2 = k;
 	nameToSeed.set(t1, team1);
 	nameToSeed.set(t2, team2);
 	seedToName[j - 1].name = t1;

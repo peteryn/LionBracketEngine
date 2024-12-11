@@ -57,16 +57,18 @@ export class MatchRecord {
 	}
 }
 
-export interface Team {
-	seed: number;
-}
+// export interface Team {
+// 	seed: number;
+// }
+
+export type Team = number;
 
 export function getMatchDifferential(team: Team, matchHistory: MatchRecord[]) {
 	let wins = 0;
 	let losses = 0;
 	for (let index = 0; index < matchHistory.length; index++) {
 		const match = matchHistory[index];
-		const isUpperSeed = match.upperTeam.seed === team.seed;
+		const isUpperSeed = match.upperTeam === team;
 		// if the match is a draw, do not count it as a win or loss
 		if (match.upperTeamWins === match.lowerTeamWins) {
 			continue;
@@ -87,7 +89,7 @@ export function getGameDifferential(team: Team, matchHistory: MatchRecord[]) {
 	let gamesLost = 0;
 	for (let index = 0; index < matchHistory.length; index++) {
 		const match = matchHistory[index];
-		const isUpperSeed = match.upperTeam.seed === team.seed;
+		const isUpperSeed = match.upperTeam === team;
 
 		if (isUpperSeed) {
 			gamesWon += match.upperTeamWins;

@@ -70,7 +70,7 @@ export class SwissBracket {
 		return roundNode as RoundNode;
 	}
 
-	getMatchHistory(seed: number) {
+	getMatchHistory(seed: Team) {
 		let curr: RoundNode | undefined = this.data.rootRound;
 		const matchHistory: MatchRecord[] = [];
 		while (curr) {
@@ -84,7 +84,7 @@ export class SwissBracket {
 					winner = 0;
 					break;
 				}
-				if (matchRecord.upperTeam.seed === seed) {
+				if (matchRecord.upperTeam === seed) {
 					if (matchRecord.upperTeamWins > matchRecord.lowerTeamWins) {
 						winner = 1;
 					} else if (matchRecord.upperTeamWins < matchRecord.lowerTeamWins) {
@@ -94,7 +94,7 @@ export class SwissBracket {
 					}
 					matchHistory.push(matchRecord);
 				}
-				if (matchRecord.lowerTeam.seed === seed) {
+				if (matchRecord.lowerTeam === seed) {
 					if (matchRecord.lowerTeamWins > matchRecord.upperTeamWins) {
 						winner = 1;
 					} else if (matchRecord.lowerTeamWins < matchRecord.upperTeamWins) {
@@ -310,7 +310,7 @@ export class SwissBracket {
 							`;
 						for (let index = 0; index < teamsCrossClean.length; index++) {
 							const element = teamsCrossClean[index];
-							message = message.concat(`(${element[0].seed}, ${element[1].seed})\n`);
+							message = message.concat(`(${element[0]}, ${element[1]})\n`);
 						}
 						throw new Error(message);
 					}
@@ -333,10 +333,10 @@ export class SwissBracket {
 				const team2 = match[1];
 				for (let i = 0; i < teamsCrossClean.length; i++) {
 					if (
-						teamsCrossClean[i][0].seed === team1.seed ||
-						teamsCrossClean[i][0].seed === team2.seed ||
-						teamsCrossClean[i][1].seed === team1.seed ||
-						teamsCrossClean[i][1].seed === team2.seed
+						teamsCrossClean[i][0] === team1 ||
+						teamsCrossClean[i][0] === team2 ||
+						teamsCrossClean[i][1] === team1 ||
+						teamsCrossClean[i][1] === team2
 					) {
 						invalidIndexes.push(i);
 					}
@@ -368,12 +368,12 @@ export class SwissBracket {
 
 	swissSort(teams: Team[]): Team[] {
 		return [...teams].sort((a, b) => {
-			const aHistory = this.getMatchHistory(a.seed);
-			const bHistory = this.getMatchHistory(b.seed);
+			const aHistory = this.getMatchHistory(a);
+			const bHistory = this.getMatchHistory(b);
 			return (
 				getMatchDifferential(b, bHistory) - getMatchDifferential(a, aHistory) || // descending
 				getGameDifferential(b, bHistory) - getGameDifferential(a, aHistory) || // descending
-				a.seed - b.seed
+				a - b
 			); // ascending
 		});
 	}
@@ -413,12 +413,12 @@ export class SwissBracket {
 
 	// check if team1 has already played team2
 	playedAlready(team1: Team, team2: Team) {
-		const team1MatchHistory = this.getMatchHistory(team1.seed);
+		const team1MatchHistory = this.getMatchHistory(team1);
 		for (let index = 0; index < team1MatchHistory.length; index++) {
 			const matchRecord = team1MatchHistory[index];
 			if (
-				matchRecord.upperTeam.seed === team2.seed ||
-				matchRecord.lowerTeam.seed === team2.seed
+				matchRecord.upperTeam === team2 ||
+				matchRecord.lowerTeam === team2
 			) {
 				return true;
 			}

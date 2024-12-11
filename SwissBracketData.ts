@@ -86,7 +86,7 @@ export class SwissBracketData {
 		const teams: Team[] = [];
 		for (let index = 1; index <= numTeams; index++) {
 			// teams.push(new Team(index));
-			teams.push({ seed: index });
+			teams.push(index);
 		}
 		return teams;
 	}

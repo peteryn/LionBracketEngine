@@ -19,10 +19,10 @@ Deno.test(function structureTest1() {
 	const rootRound = swissBracket.data.rootRound;
 	assertEquals(rootRound.level, 1);
 	assertEquals(rootRound.has2Parents, false);
-	assertEquals(rootRound.matches[0].matchRecord?.upperTeam.seed, 1);
-	assertEquals(rootRound.matches[0].matchRecord?.lowerTeam.seed, 16);
-	assertEquals(rootRound.matches[1].matchRecord?.upperTeam.seed, 2);
-	assertEquals(rootRound.matches[1].matchRecord?.lowerTeam.seed, 15);
+	assertEquals(rootRound.matches[0].matchRecord?.upperTeam, 1);
+	assertEquals(rootRound.matches[0].matchRecord?.lowerTeam, 16);
+	assertEquals(rootRound.matches[1].matchRecord?.upperTeam, 2);
+	assertEquals(rootRound.matches[1].matchRecord?.lowerTeam, 15);
 	assertEquals(swissBracket.getRoundNode("0-0")?.name, swissBracket.data.rootRound.name);
 
 	const round2Upper = rootRound.winningRound;
@@ -87,29 +87,29 @@ Deno.test(function computeRound1() {
 	const round1 = swissBracket.data.rootRound;
 	const round2Upper = round1.winningRound;
 	const round2Lower = round1.losingRound;
-	assertEquals(round2Upper?.matches[0].matchRecord?.upperTeam.seed, 1);
-	assertEquals(round2Upper?.matches[0].matchRecord?.lowerTeam.seed, 8);
+	assertEquals(round2Upper?.matches[0].matchRecord?.upperTeam, 1);
+	assertEquals(round2Upper?.matches[0].matchRecord?.lowerTeam, 8);
 
-	assertEquals(round2Upper?.matches[1].matchRecord?.upperTeam.seed, 2);
-	assertEquals(round2Upper?.matches[1].matchRecord?.lowerTeam.seed, 7);
+	assertEquals(round2Upper?.matches[1].matchRecord?.upperTeam, 2);
+	assertEquals(round2Upper?.matches[1].matchRecord?.lowerTeam, 7);
 
-	assertEquals(round2Upper?.matches[2].matchRecord?.upperTeam.seed, 3);
-	assertEquals(round2Upper?.matches[2].matchRecord?.lowerTeam.seed, 6);
+	assertEquals(round2Upper?.matches[2].matchRecord?.upperTeam, 3);
+	assertEquals(round2Upper?.matches[2].matchRecord?.lowerTeam, 6);
 
-	assertEquals(round2Upper?.matches[3].matchRecord?.upperTeam.seed, 4);
-	assertEquals(round2Upper?.matches[3].matchRecord?.lowerTeam.seed, 5);
+	assertEquals(round2Upper?.matches[3].matchRecord?.upperTeam, 4);
+	assertEquals(round2Upper?.matches[3].matchRecord?.lowerTeam, 5);
 
-	assertEquals(round2Lower?.matches[0].matchRecord?.upperTeam.seed, 9);
-	assertEquals(round2Lower?.matches[0].matchRecord?.lowerTeam.seed, 16);
+	assertEquals(round2Lower?.matches[0].matchRecord?.upperTeam, 9);
+	assertEquals(round2Lower?.matches[0].matchRecord?.lowerTeam, 16);
 
-	assertEquals(round2Lower?.matches[1].matchRecord?.upperTeam.seed, 10);
-	assertEquals(round2Lower?.matches[1].matchRecord?.lowerTeam.seed, 15);
+	assertEquals(round2Lower?.matches[1].matchRecord?.upperTeam, 10);
+	assertEquals(round2Lower?.matches[1].matchRecord?.lowerTeam, 15);
 
-	assertEquals(round2Lower?.matches[2].matchRecord?.upperTeam.seed, 11);
-	assertEquals(round2Lower?.matches[2].matchRecord?.lowerTeam.seed, 14);
+	assertEquals(round2Lower?.matches[2].matchRecord?.upperTeam, 11);
+	assertEquals(round2Lower?.matches[2].matchRecord?.lowerTeam, 14);
 
-	assertEquals(round2Lower?.matches[3].matchRecord?.upperTeam.seed, 12);
-	assertEquals(round2Lower?.matches[3].matchRecord?.lowerTeam.seed, 13);
+	assertEquals(round2Lower?.matches[3].matchRecord?.upperTeam, 12);
+	assertEquals(round2Lower?.matches[3].matchRecord?.lowerTeam, 13);
 });
 
 Deno.test(function naRegional4Test1() {
@@ -281,8 +281,8 @@ Deno.test(function drawTest1() {
 	}
 
 	const round2Upper = swissBracket.getRoundNode("1-0");
-	assertEquals(round2Upper!.matches[0].matchRecord?.upperTeam.seed, 1);
-	assertEquals(round2Upper!.matches[0].matchRecord?.lowerTeam.seed, 8);
+	assertEquals(round2Upper!.matches[0].matchRecord?.upperTeam, 1);
+	assertEquals(round2Upper!.matches[0].matchRecord?.lowerTeam, 8);
 
 	const mr = swissBracket.getMatchRecord("0-0", 0);
 	const round1 = swissBracket.getRoundNode("0-0");
@@ -310,7 +310,7 @@ Deno.test(function matchRecordTest1() {
 	}
 
 	const seed1 = swissBracket.data.rootRound.matches[0].matchRecord!.upperTeam;
-	const seed1History = swissBracket.getMatchHistory(seed1.seed);
+	const seed1History = swissBracket.getMatchHistory(seed1);
 	const seed1MatchDiff = getMatchDifferential(seed1, seed1History);
 	const seed1GameDiff = getGameDifferential(seed1, seed1History);
 	assertEquals(seed1MatchDiff, 1);
