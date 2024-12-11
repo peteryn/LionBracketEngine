@@ -32,10 +32,6 @@ export class RoundNode {
 		this.promotionTeams = [];
 		this.eliminatedTeams = [];
 	}
-
-	toString(): string {
-		return `RoundNode: { name: ${this.name}, numTeams: ${this.numTeams}, winRecord: ${this.winRecord}, loseRecord: ${this.loseRecord} }`;
-	}
 }
 
 export class Match {
