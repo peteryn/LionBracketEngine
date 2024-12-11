@@ -42,7 +42,7 @@ export class SwissBracket {
 		if (match) {
 			match.matchRecord = matchRecord;
 			const roundNodeName = match.id.split(".")[0];
-			const roundNode = this.data.roundNodes.get(roundNodeName);
+			const roundNode = this.getRoundNode(roundNodeName);
 			if (roundNode) {
 				// then traverse starting at that node do the traversal
 				// with a callback that updates the next round
@@ -51,6 +51,19 @@ export class SwissBracket {
 			return true;
 		}
 		return false;
+	}
+
+	getRoundNode(roundNodeName: string): RoundNode {
+		let roundNode: RoundNode | undefined = undefined;
+		levelOrderTraversal(this.data.rootRound, (node: RoundNode) => {
+			if (node.name === roundNodeName) {
+				roundNode = node;
+			}
+		});
+		if (roundNode === undefined) {
+			throw new Error("invalid round node id")
+		}
+		return roundNode as RoundNode;
 	}
 
 	getMatchHistory(seed: number) {
