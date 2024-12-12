@@ -294,6 +294,7 @@ Deno.test(function naRegional4BuchholzTest1() {
 Deno.test(function drawTest1() {
 	const swissBracket = new SwissBracket(16, 3);
 	const numMatches = swissBracket.data.rootRound.matches.length;
+	// set all round 1 matches to 1-0
 	for (let i = 0; i < numMatches; i++) {
 		const mr = swissBracket.getMatchRecord("0-0", i);
 		if (!mr) {
@@ -305,19 +306,28 @@ Deno.test(function drawTest1() {
 		swissBracket.setMatchRecord("0-0", i, mr);
 	}
 
+	// check r2 was generated correctly
 	const round2Upper = swissBracket.getRoundNode("1-0");
 	assertEquals(round2Upper!.matches[0].matchRecord?.upperTeam, 1);
 	assertEquals(round2Upper!.matches[0].matchRecord?.lowerTeam, 8);
 
+	// now get first match from round 1
 	const mr = swissBracket.getMatchRecord("0-0", 0);
 	const round1 = swissBracket.getRoundNode("0-0");
+	// set it to 1-1 aka a draw
 	mr!.lowerTeamWins = 1;
 	swissBracket.setMatchRecord("0-0", 0, mr!);
+	// check that the draw exists
 	assertEquals(round1?.matches[0].matchRecord?.upperTeamWins, 1);
 	assertEquals(round1?.matches[0].matchRecord?.lowerTeamWins, 1);
 	// TODO, when a user enters data that causes a draw, future rounds should be erased because they are no longer valid
 	// since they cannot be calculated until the current round is filled out.
-	// console.log(round2Upper!.matches[0].matchRecord);
+	const r2UpperMatch1Mr = round2Upper!.matches[0].matchRecord;
+	assertEquals(
+		r2UpperMatch1Mr,
+		undefined,
+		"Since r1 has a draw, all future match records should not exist"
+	);
 });
 
 Deno.test(function matchRecordTest1() {

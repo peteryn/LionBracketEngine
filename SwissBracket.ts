@@ -124,6 +124,12 @@ export class SwissBracket {
 	// this should only be called on the roundNode that has a match that has been updated
 	// a different implementation will be called on all dependent nodes
 	updateRounds(roundNode: RoundNode) {
+		// we need to remove match records in future rounds because changing the current round
+		// may invalidate future rounds
+		// we will then repopulate future rounds if necessary
+		this.clearDependents(roundNode.winningRound);
+		this.clearDependents(roundNode.losingRound);
+
 		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
 		const isFilleldOut = this.isFilledRound(roundNode.matches);
 		// if it is not filled out, then we can stop
@@ -131,10 +137,6 @@ export class SwissBracket {
 			return;
 		}
 
-		// update the match record status in the dependent RoundNodes
-		// this includes updating what teams are in those future matches
-		this.updateDependents(roundNode.winningRound);
-		this.updateDependents(roundNode.losingRound);
 
 		// split teams into winners and losers
 		const winners: Team[] = [];
@@ -220,7 +222,7 @@ export class SwissBracket {
 		*/
 	}
 
-	private updateDependents(round: RoundNode | undefined) {
+	private clearDependents(round: RoundNode | undefined) {
 		if (round) {
 			levelOrderTraversal(round, (node) => {
 				const matches = node.matches;
