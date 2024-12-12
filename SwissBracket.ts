@@ -65,7 +65,7 @@ export class SwissBracket {
 			}
 		});
 		if (roundNode === undefined) {
-			throw new Error("invalid round node id")
+			throw new Error("invalid round node id");
 		}
 		return roundNode as RoundNode;
 	}
@@ -378,6 +378,26 @@ export class SwissBracket {
 		});
 	}
 
+	// to calculate Buchholz score, you need the match differential of every team
+	// you faced in your match history
+	getBuchholzScore(seed: Team) {
+		let score = 0;
+		const matchHistory = this.getMatchHistory(seed);
+
+		// 	for each team faced
+		//		get that team's match differential
+		//		and add it to score
+		for (let index = 0; index < matchHistory.length; index++) {
+			const match = matchHistory[index];
+			const isUpperSeed = match.upperTeam === seed;
+			const opponent = isUpperSeed ? match.lowerTeam : match.upperTeam;
+			const opponentMatchHistory = this.getMatchHistory(opponent);
+			score += getMatchDifferential(opponent, opponentMatchHistory);
+		}
+		
+		return score;
+	}
+
 	printLevels() {
 		const printLevel = (level: RoundNode[]) => {
 			for (let index = 0; index < level.length; index++) {
@@ -416,10 +436,7 @@ export class SwissBracket {
 		const team1MatchHistory = this.getMatchHistory(team1);
 		for (let index = 0; index < team1MatchHistory.length; index++) {
 			const matchRecord = team1MatchHistory[index];
-			if (
-				matchRecord.upperTeam === team2 ||
-				matchRecord.lowerTeam === team2
-			) {
+			if (matchRecord.upperTeam === team2 || matchRecord.lowerTeam === team2) {
 				return true;
 			}
 		}
