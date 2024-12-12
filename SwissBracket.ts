@@ -398,6 +398,8 @@ export class SwissBracket {
 		return score;
 	}
 
+	// prints out swiss rounds level by level
+	// will print each RoundNode once
 	printLevels() {
 		const printLevel = (level: RoundNode[]) => {
 			for (let index = 0; index < level.length; index++) {
@@ -409,8 +411,6 @@ export class SwissBracket {
 		levelOrderTraversal(this.data.rootRound, undefined, printLevel);
 	}
 
-	// prints out swiss rounds level by level
-	// will print each RoundNode once
 	getPromotedTeams() {
 		let promotedTeams: Team[] = [];
 		levelOrderTraversal(this.data.rootRound, (node) => {
