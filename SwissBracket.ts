@@ -1,5 +1,4 @@
 import {
-	getGameDifferential,
 	getMatchDifferential,
 	Match,
 	MatchRecord,
@@ -10,11 +9,29 @@ import {
 import { SwissBracketData } from "./SwissBracketData.ts";
 import { cartesianProduct } from "./util/util.ts";
 
+type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
+
 export class SwissBracket {
 	data: SwissBracketData;
+	tieBreaker: (seed: Team) => number;
 
-	constructor(numTeams: number = 16, winRequirement: number = 3) {
+	constructor(
+		numTeams: number = 16,
+		winRequirement: number = 3,
+		tieBreaker: tieBreaker = "GAME_DIFF"
+	) {
 		this.data = new SwissBracketData(numTeams, winRequirement);
+		switch (tieBreaker) {
+			case "GAME_DIFF":
+				this.tieBreaker = this.getGameDifferential;
+				break;
+			case "BUCCHOLZ":
+				this.tieBreaker = this.getBuchholzScore;
+				break;
+			default:
+				console.log("you may have set an incorrect tie breaker method");
+				this.tieBreaker = this.getGameDifferential;
+		}
 	}
 
 	getMatchRecord(roundName: string, matchNumber: number) {
@@ -136,7 +153,6 @@ export class SwissBracket {
 		if (!isFilleldOut) {
 			return;
 		}
-
 
 		// split teams into winners and losers
 		const winners: Team[] = [];
@@ -374,7 +390,7 @@ export class SwissBracket {
 			const bHistory = this.getMatchHistory(b);
 			return (
 				getMatchDifferential(b, bHistory) - getMatchDifferential(a, aHistory) || // descending
-				getGameDifferential(b, bHistory) - getGameDifferential(a, aHistory) || // descending
+				this.tieBreaker(b) - this.tieBreaker(a) || // descending
 				a - b
 			); // ascending
 		});
@@ -396,8 +412,27 @@ export class SwissBracket {
 			const opponentMatchHistory = this.getMatchHistory(opponent);
 			score += getMatchDifferential(opponent, opponentMatchHistory);
 		}
-		
+
 		return score;
+	}
+
+	getGameDifferential(seed: Team) {
+		const matchHistory = this.getMatchHistory(seed);
+		let gamesWon = 0;
+		let gamesLost = 0;
+		for (let index = 0; index < matchHistory.length; index++) {
+			const match = matchHistory[index];
+			const isUpperSeed = match.upperTeam === seed;
+
+			if (isUpperSeed) {
+				gamesWon += match.upperTeamWins;
+				gamesLost += match.lowerTeamWins;
+			} else {
+				gamesWon += match.lowerTeamWins;
+				gamesLost += match.upperTeamWins;
+			}
+		}
+		return gamesWon - gamesLost;
 	}
 
 	// prints out swiss rounds level by level
