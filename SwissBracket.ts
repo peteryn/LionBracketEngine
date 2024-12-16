@@ -75,13 +75,17 @@ export class SwissBracket {
 	}
 
 	setMatchRecordWithValue(roundName: string, matchNumber: number, upperTeamWins: number, lowerTeamWins: number) {
-		const mr = this.getMatchRecord(roundName, matchNumber);
+		this.setMatchRecordWithValueById(`${roundName}.${matchNumber}`, upperTeamWins, lowerTeamWins)
+	}
+
+	setMatchRecordWithValueById(matchId: string, upperTeamWins: number, lowerTeamWins: number) {
+		const mr = this.getMatchRecordById(matchId);
 		if (!mr) {
 			return undefined;
 		}
 		mr.upperTeamWins = upperTeamWins;
 		mr.lowerTeamWins = lowerTeamWins
-		this.setMatchRecord(roundName, matchNumber, mr);
+		this.setMatchRecordById(matchId, mr);
 	}
 
 	getRoundNode(roundNodeName: string): RoundNode {
