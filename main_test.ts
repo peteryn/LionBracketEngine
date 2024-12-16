@@ -351,3 +351,28 @@ Deno.test(function matchRecordTest1() {
 	assertEquals(seed1MatchDiff, 1);
 	assertEquals(seed1GameDiff, 2);
 });
+
+Deno.test(function round3Test1() {
+	const swissBracket = new SwissBracket(16, 3);
+	swissBracket.setMatchRecordWithValue("0-0", 0, 3, 0);
+	swissBracket.setMatchRecordWithValue("0-0", 1, 0, 2);
+	swissBracket.setMatchRecordWithValue("0-0", 2, 4, 3);
+	swissBracket.setMatchRecordWithValue("0-0", 3, 2, 3);
+	swissBracket.setMatchRecordWithValue("0-0", 4, 1, 0);
+	swissBracket.setMatchRecordWithValue("0-0", 5, 1, 0);
+	swissBracket.setMatchRecordWithValue("0-0", 6, 1, 0);
+	swissBracket.setMatchRecordWithValue("0-0", 7, 1, 0);
+
+	swissBracket.setMatchRecordWithValue("1-0", 0, 1, 0);
+	swissBracket.setMatchRecordWithValue("1-0", 1, 1, 0);
+	swissBracket.setMatchRecordWithValue("1-0", 2, 1, 0);
+	swissBracket.setMatchRecordWithValue("1-0", 3, 1, 0);
+
+	swissBracket.setMatchRecordWithValue("0-1", 0, 3, 0);
+	swissBracket.setMatchRecordWithValue("0-1", 1, 0, 2);
+	swissBracket.setMatchRecordWithValue("0-1", 2, 0, 3);
+	swissBracket.setMatchRecordWithValue("0-1", 3, 0, 1);
+	
+	const round3middle = swissBracket.getRoundNode("1-1");
+	round3middle.matches.forEach((match) => console.log(match))
+})

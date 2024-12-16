@@ -74,6 +74,16 @@ export class SwissBracket {
 		return false;
 	}
 
+	setMatchRecordWithValue(roundName: string, matchNumber: number, upperTeamWins: number, lowerTeamWins: number) {
+		const mr = this.getMatchRecord(roundName, matchNumber);
+		if (!mr) {
+			return undefined;
+		}
+		mr.upperTeamWins = upperTeamWins;
+		mr.lowerTeamWins = lowerTeamWins
+		this.setMatchRecord(roundName, matchNumber, mr);
+	}
+
 	getRoundNode(roundNodeName: string): RoundNode {
 		let roundNode: RoundNode | undefined = undefined;
 		levelOrderTraversal(this.data.rootRound, (node: RoundNode) => {
