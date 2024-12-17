@@ -373,12 +373,21 @@ Deno.test(function round3Test1() {
 	swissBracket.setMatchRecordWithValue("0-1", 2, 0, 3);
 	swissBracket.setMatchRecordWithValue("0-1", 3, 0, 1);
 
-	const round3middle = swissBracket.getRoundNode("1-1");
-	round3middle.matches.forEach((match) => console.log(match));
+	const round1 = swissBracket.getRoundNode("0-0");
+	round1.matches.forEach((match) => console.log(match));
+
+	const round2Upper = swissBracket.getRoundNode("1-0");
+	round2Upper.matches.forEach((match) => console.log(match));
+
+	const round2Lower = swissBracket.getRoundNode("0-1");
+	round2Lower.matches.forEach((match) => console.log(match));
 
 	const round3Upper = swissBracket.getRoundNode("2-0");
 	round3Upper.matches.forEach((match) => console.log(match));
 
-	const round3Lower = swissBracket.getRoundNode("0-2")
+	const round3middle = swissBracket.getRoundNode("1-1");
+	round3middle.matches.forEach((match) => console.log(match));
+
+	const round3Lower = swissBracket.getRoundNode("0-2");
 	round3Lower.matches.forEach((match) => console.log(match));
 });
