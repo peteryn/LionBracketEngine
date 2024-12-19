@@ -7,8 +7,6 @@ export class RoundNode {
 	losingRound: RoundNode | undefined;
 	matches: Match[];
 	level: number;
-	// fromUpperParent: Team[];
-	// fromLowerParent: Team[];
 	has2Parents: boolean;
 	promotionTeams: Team[];
 	eliminatedTeams: Team[];
@@ -26,8 +24,6 @@ export class RoundNode {
 		this.loseRecord = loseRecord;
 		this.matches = [];
 		this.level = level;
-		// this.fromUpperParent = [];
-		// this.fromLowerParent = [];
 		this.has2Parents = false;
 		this.promotionTeams = [];
 		this.eliminatedTeams = [];
