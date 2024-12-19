@@ -267,6 +267,13 @@ export class SwissBracket {
 				if (node.eliminatedTeams.length > 0) {
 					node.eliminatedTeams = [];
 				}
+				// naive solution to round3Test2
+				// if (node.fromUpperParent.length > 0) {
+				// 	node.fromUpperParent = [];
+				// }
+				// if (node.fromLowerParent.length > 0) {
+				// 	node.fromUpperParent = [];
+				// }
 			});
 		}
 	}
