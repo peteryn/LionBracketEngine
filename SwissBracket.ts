@@ -7,7 +7,7 @@ import {
 	type MatchTracker,
 } from "./models.ts";
 import { SwissBracketData } from "./SwissBracketData.ts";
-import { cartesianProduct } from "./util/util.ts";
+import { cartesianProduct, getWinners, getLosers } from "./util/util.ts";
 
 type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
 
@@ -192,15 +192,29 @@ export class SwissBracket {
 		const winningRound = roundNode.winningRound;
 		if (winningRound) {
 			if (winningRound.has2Parents) {
-				winningRound.fromLowerParent = winners;
+				// winningRound.fromLowerParent = winners;
 				// calculate winning round matchups
+				const [wRoundWins, wRoundLosses] = winningRound.name.split("-");
+				const upperParentNode = this.getRoundNode(`${wRoundWins}-${parseInt(wRoundLosses)-1}`)
+				const lowerParentNode = this.getRoundNode(`${parseInt(wRoundWins)-1}-${wRoundLosses}`)
+
+				// since we are in the winning round
+				// we want upperLosers
+				// and lowerWinners
+				const upperLosers = getLosers(upperParentNode.matches);
+				const lowerWinners = getWinners(lowerParentNode.matches);
+
 				if (
-					winningRound.fromUpperParent.length > 0 &&
-					winningRound.fromLowerParent.length > 0
+					// winningRound.fromUpperParent.length > 0 &&
+					// winningRound.fromLowerParent.length > 0
+					upperLosers.length === upperParentNode.numTeams / 2 &&
+					lowerWinners.length === lowerParentNode.numTeams / 2
 				) {
 					const matchups = this.evaluationSort(
-						winningRound.fromUpperParent,
-						winningRound.fromLowerParent
+						upperLosers,
+						lowerWinners
+						// winningRound.fromUpperParent,
+						// winningRound.fromLowerParent
 					);
 					populateMatches(winningRound.matches, matchups);
 				} else {
@@ -219,15 +233,28 @@ export class SwissBracket {
 		const losingRound = roundNode.losingRound;
 		if (losingRound) {
 			if (losingRound.has2Parents) {
-				losingRound.fromUpperParent = losers;
+				// losingRound.fromUpperParent = losers;
+				const [lRoundWins, lRoundLosses] = losingRound.name.split("-");
+				const upperParentNode = this.getRoundNode(`${lRoundWins}-${parseInt(lRoundLosses)-1}`)
+				const lowerParentNode = this.getRoundNode(`${parseInt(lRoundWins)-1}-${lRoundLosses}`)
+				// since we are in the losing round
+				// we want lowerWinners
+				// and upperLosers
+				const upperLosers = getLosers(upperParentNode.matches);
+				const lowerWinners = getWinners(lowerParentNode.matches);
+
 				if (
-					losingRound.fromUpperParent.length > 0 &&
-					losingRound.fromLowerParent.length > 0
+					// losingRound.fromUpperParent.length > 0 &&
+					// losingRound.fromLowerParent.length > 0
+					upperLosers.length === upperParentNode.numTeams / 2 &&
+					lowerWinners.length === lowerParentNode.numTeams / 2
 				) {
 					// call evaluation sort for 2 teams
 					const matchups = this.evaluationSort(
-						losingRound.fromUpperParent,
-						losingRound.fromLowerParent
+						// losingRound.fromUpperParent,
+						// losingRound.fromLowerParent
+						upperLosers,
+						lowerWinners
 					);
 					populateMatches(losingRound.matches, matchups);
 				}

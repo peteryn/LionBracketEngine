@@ -1,4 +1,4 @@
-import { Match, TeamNameMap } from "../models.ts";
+import { Match, TeamNameMap, Team } from "../models.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -19,3 +19,40 @@ export function printRound(matches: Match[], teamNameMap?: TeamNameMap[]) {
 		}
 	}
 }
+
+export function getWinners(matches: Match[]) {
+	const result: Team[] = []
+	
+	for (let index = 0; index < matches.length; index++) {
+		const match = matches[index];
+		if (match.matchRecord) {
+			const mr = match.matchRecord;
+			if (mr.upperTeamWins > mr.lowerTeamWins) {
+				result.push(mr.upperTeam);
+			} else if (mr.lowerTeamWins > mr.upperTeamWins) {
+				result.push(mr.lowerTeam);
+			}
+		}
+	}
+
+	return result;
+}
+
+export function getLosers(matches: Match[]) {
+	const result: Team[] = [];
+	
+	for (let index = 0; index < matches.length; index++) {
+		const match = matches[index];
+		if (match.matchRecord) {
+			const mr = match.matchRecord;
+			if (mr.upperTeamWins < mr.lowerTeamWins) {
+				result.push(mr.upperTeam);
+			} else if (mr.lowerTeamWins < mr.upperTeamWins) {
+				result.push(mr.lowerTeam);
+			}
+		}
+	}
+
+	return result;
+}
+

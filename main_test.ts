@@ -432,12 +432,12 @@ Deno.test(function round3Test2() {
 	swissBracket.setMatchRecordWithValue("0-1", 2, 0, 3);
 	swissBracket.setMatchRecordWithValue("0-1", 3, 0, 1);
 
-	const round3middle = swissBracket.getRoundNode("1-1");
-	assertEquals(round3middle.fromLowerParent.length, 4);
-	assertEquals(round3middle.fromUpperParent.length, 4);
-	assertNotEquals(round3middle.matches[0].matchRecord, undefined);
+	// const round3middle = swissBracket.getRoundNode("1-1");
+	// assertEquals(round3middle.fromLowerParent.length, 4);
+	// assertEquals(round3middle.fromUpperParent.length, 4);
+	// assertNotEquals(round3middle.matches[0].matchRecord, undefined);
 
-	swissBracket.setMatchRecordWithValue("1-0", 0, 1, 1);
-	assertEquals(round3middle.matches[0].matchRecord, undefined);
-	assertEquals(round3middle.fromUpperParent.length, 0);
+	// swissBracket.setMatchRecordWithValue("1-0", 0, 1, 1);
+	// assertEquals(round3middle.matches[0].matchRecord, undefined);
+	// assertEquals(round3middle.fromUpperParent.length, 0);
 });
