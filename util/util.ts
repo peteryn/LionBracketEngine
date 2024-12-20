@@ -20,9 +20,22 @@ export function printRound(matches: Match[], teamNameMap?: TeamNameMap[]) {
 	}
 }
 
+export function isFilledRound(matches: Match[]): boolean {
+	for (let index = 0; index < matches.length; index++) {
+		const matchRecord = matches[index].matchRecord;
+		if (matchRecord) {
+			const isFilledOut = matchRecord.upperTeamWins - matchRecord.lowerTeamWins !== 0;
+			if (!isFilledOut) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 export function getWinners(matches: Match[]) {
-	const result: Team[] = []
-	
+	const result: Team[] = [];
+
 	for (let index = 0; index < matches.length; index++) {
 		const match = matches[index];
 		if (match.matchRecord) {
@@ -40,7 +53,7 @@ export function getWinners(matches: Match[]) {
 
 export function getLosers(matches: Match[]) {
 	const result: Team[] = [];
-	
+
 	for (let index = 0; index < matches.length; index++) {
 		const match = matches[index];
 		if (match.matchRecord) {
@@ -55,4 +68,3 @@ export function getLosers(matches: Match[]) {
 
 	return result;
 }
-

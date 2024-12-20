@@ -7,7 +7,7 @@ import {
 	type MatchTracker,
 } from "./models.ts";
 import { SwissBracketData } from "./SwissBracketData.ts";
-import { cartesianProduct, getWinners, getLosers } from "./util/util.ts";
+import { cartesianProduct, getWinners, getLosers, isFilledRound } from "./util/util.ts";
 
 type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
 
@@ -18,9 +18,10 @@ export class SwissBracket {
 	constructor(
 		numTeams: number = 16,
 		winRequirement: number = 3,
-		tieBreaker: tieBreaker = "GAME_DIFF"
+		tieBreaker: tieBreaker = "GAME_DIFF",
+		bracketId: string
 	) {
-		this.data = new SwissBracketData(numTeams, winRequirement);
+		this.data = new SwissBracketData(numTeams, winRequirement, bracketId);
 		switch (tieBreaker) {
 			case "GAME_DIFF":
 				this.tieBreaker = this.getGameDifferential;
@@ -74,8 +75,17 @@ export class SwissBracket {
 		return false;
 	}
 
-	setMatchRecordWithValue(roundName: string, matchNumber: number, upperTeamWins: number, lowerTeamWins: number) {
-		this.setMatchRecordWithValueById(`${roundName}.${matchNumber}`, upperTeamWins, lowerTeamWins)
+	setMatchRecordWithValue(
+		roundName: string,
+		matchNumber: number,
+		upperTeamWins: number,
+		lowerTeamWins: number
+	) {
+		this.setMatchRecordWithValueById(
+			`${roundName}.${matchNumber}`,
+			upperTeamWins,
+			lowerTeamWins
+		);
 	}
 
 	setMatchRecordWithValueById(matchId: string, upperTeamWins: number, lowerTeamWins: number) {
@@ -84,7 +94,7 @@ export class SwissBracket {
 			return undefined;
 		}
 		mr.upperTeamWins = upperTeamWins;
-		mr.lowerTeamWins = lowerTeamWins
+		mr.lowerTeamWins = lowerTeamWins;
 		this.setMatchRecordById(matchId, mr);
 	}
 
@@ -162,60 +172,22 @@ export class SwissBracket {
 		this.clearDependents(roundNode.losingRound);
 
 		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
-		const isFilleldOut = this.isFilledRound(roundNode.matches);
+		const isFilleldOut = isFilledRound(roundNode.matches);
 		// if it is not filled out, then we can stop
 		if (!isFilleldOut) {
 			return;
 		}
 
 		// split teams into winners and losers
-		const winners: Team[] = [];
-		const losers: Team[] = [];
-		roundNode.matches.map((match: Match) => {
-			const matchRecord = match.matchRecord;
-			if (matchRecord) {
-				if (matchRecord.upperTeamWins > matchRecord.lowerTeamWins) {
-					winners.push(matchRecord.upperTeam);
-					losers.push(matchRecord.lowerTeam);
-				} else {
-					winners.push(matchRecord.lowerTeam);
-					losers.push(matchRecord.upperTeam);
-				}
-			} else {
-				throw new Error("Match record doesn't exist when it should");
-			}
-		});
+		const winners: Team[] = getWinners(roundNode.matches);
+		const losers: Team[] = getLosers(roundNode.matches);
 
 		// need to pass winners/losers to the next node because some nodes have a 2 dependencies (2 parents)
 		// after passing them, need to process them at those nodes
 		// for this implementation, we only need to process roundNode.winningRound and roundNode.losingRound
 		const winningRound = roundNode.winningRound;
 		if (winningRound) {
-			if (winningRound.has2Parents) {
-				// winningRound.fromLowerParent = winners;
-				// calculate winning round matchups
-				const [wRoundWins, wRoundLosses] = winningRound.name.split("-");
-				const upperParentNode = this.getRoundNode(`${wRoundWins}-${parseInt(wRoundLosses)-1}`)
-				const lowerParentNode = this.getRoundNode(`${parseInt(wRoundWins)-1}-${wRoundLosses}`)
-				const upperLosers = getLosers(upperParentNode.matches);
-				const lowerWinners = getWinners(lowerParentNode.matches);
-				if (
-					upperLosers.length === upperParentNode.numTeams / 2 &&
-					lowerWinners.length === lowerParentNode.numTeams / 2
-				) {
-					const matchups = this.evaluationSort(
-						upperLosers,
-						lowerWinners
-					);
-					populateMatches(winningRound.matches, matchups);
-				} else {
-					// do nothing, cant calculate round yet
-				}
-			} else {
-				// process winning round by calling evaluation sort for 1 team
-				const matchups = this.evaluationSort(winners);
-				populateMatches(winningRound.matches, matchups);
-			}
+			this.processRound(winningRound, winners);
 		} else {
 			// set the winners who go on to the next stage
 			roundNode.promotionTeams = this.swissSort(winners);
@@ -223,28 +195,7 @@ export class SwissBracket {
 
 		const losingRound = roundNode.losingRound;
 		if (losingRound) {
-			if (losingRound.has2Parents) {
-				const [lRoundWins, lRoundLosses] = losingRound.name.split("-");
-				const upperParentNode = this.getRoundNode(`${lRoundWins}-${parseInt(lRoundLosses)-1}`)
-				const lowerParentNode = this.getRoundNode(`${parseInt(lRoundWins)-1}-${lRoundLosses}`)
-				const upperLosers = getLosers(upperParentNode.matches);
-				const lowerWinners = getWinners(lowerParentNode.matches);
-				if (
-					upperLosers.length === upperParentNode.numTeams / 2 &&
-					lowerWinners.length === lowerParentNode.numTeams / 2
-				) {
-					// call evaluation sort for 2 teams
-					const matchups = this.evaluationSort(
-						upperLosers,
-						lowerWinners
-					);
-					populateMatches(losingRound.matches, matchups);
-				}
-			} else {
-				// process losers with sort
-				const matchups = this.evaluationSort(losers);
-				populateMatches(losingRound.matches, matchups);
-			}
+			this.processRound(losingRound, losers);
 		} else {
 			// set the losers who are eliminated
 			roundNode.eliminatedTeams = this.swissSort(losers);
@@ -259,6 +210,28 @@ export class SwissBracket {
 
 			IDEA: if after regenerating the matchup is the same and at the same position, keep the previous result
 		*/
+	}
+	private processRound(round: RoundNode, seeds: Team[]) {
+		if (round.has2Parents) {
+			const [roundWins, roundLosses] = round.name.split("-");
+			const upperParentNode = this.getRoundNode(`${roundWins}-${parseInt(roundLosses) - 1}`);
+			const lowerParentNode = this.getRoundNode(`${parseInt(roundWins) - 1}-${roundLosses}`);
+			const upperLosers = getLosers(upperParentNode.matches);
+			const lowerWinners = getWinners(lowerParentNode.matches);
+			if (
+				upperLosers.length === upperParentNode.numTeams / 2 &&
+				lowerWinners.length === lowerParentNode.numTeams / 2
+			) {
+				const matchups = this.evaluationSort(upperLosers, lowerWinners);
+				populateMatches(round.matches, matchups);
+			} else {
+				// do nothing, cant calculate round yet
+			}
+		} else {
+			// process winning round by calling evaluation sort for 1 team
+			const matchups = this.evaluationSort(seeds);
+			populateMatches(round.matches, matchups);
+		}
 	}
 
 	private clearDependents(round: RoundNode | undefined) {
@@ -276,13 +249,6 @@ export class SwissBracket {
 				if (node.eliminatedTeams.length > 0) {
 					node.eliminatedTeams = [];
 				}
-				// naive solution to round3Test2
-				// if (node.fromUpperParent.length > 0) {
-				// 	node.fromUpperParent = [];
-				// }
-				// if (node.fromLowerParent.length > 0) {
-				// 	node.fromUpperParent = [];
-				// }
 			});
 		}
 	}
@@ -352,6 +318,7 @@ export class SwissBracket {
 						index = 0;
 					} else {
 						let message = `
+							Error: Due to rematches rule, there may no more possible matchups...
 							Popped from stack when stack length is 0 
 							(matchLength: ${matchLength}, stackLength: ${stack.length}, 
 							index: ${index}, teamsCrossCleanLength: ${teamsCrossClean.length})\n
@@ -508,19 +475,6 @@ export class SwissBracket {
 			}
 		}
 		return false;
-	}
-
-	private isFilledRound(matches: Match[]): boolean {
-		for (let index = 0; index < matches.length; index++) {
-			const matchRecord = matches[index].matchRecord;
-			if (matchRecord) {
-				const isFilledOut = matchRecord.upperTeamWins - matchRecord.lowerTeamWins !== 0;
-				if (!isFilledOut) {
-					return false;
-				}
-			}
-		}
-		return true;
 	}
 }
 

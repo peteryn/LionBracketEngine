@@ -3,14 +3,16 @@ import { levelOrderTraversal, populateMatches } from "./SwissBracket.ts";
 
 export class SwissBracketData {
 	rootRound: RoundNode;
+	bracketId: string;
 
-	constructor(numTeams: number = 16, winRequirement: number = 3) {
+	constructor(numTeams: number = 16, winRequirement: number = 3, bracketId: string) {
 		this.rootRound = this.createStructure(numTeams, winRequirement);
 		this.initializeEmptyMatches(this.rootRound);
 		const teams = this.createTeams(numTeams);
 		// populate root round with the teams in the correct matches
 		const matchups = this.seedBasedMatchups(teams);
 		populateMatches(this.rootRound.matches, matchups);
+		this.bracketId = bracketId;
 	}
 
 	private createStructure(numTeams: number = 16, winRequirement: number = 3) {

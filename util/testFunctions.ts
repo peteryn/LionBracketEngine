@@ -69,7 +69,7 @@ export function populateMatchRecordFromData(
 
 export function testTournament(tournamentPath: string) {
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3);
+	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	checkVersusData(swissBracket, tournament, "1-0");

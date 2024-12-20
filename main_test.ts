@@ -1,4 +1,4 @@
-import { assertEquals, assertNotEquals } from "@std/assert";
+import { assertEquals } from "@std/assert";
 import { SwissBracket } from "./SwissBracket.ts";
 import {
 	getGameDifferential,
@@ -15,7 +15,7 @@ import {
 import { RoundNode } from "./models.ts";
 
 Deno.test(function structureTest1() {
-	const swissBracket = new SwissBracket(16, 3);
+	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 	const rootRound = swissBracket.data.rootRound;
 	assertEquals(rootRound.level, 1);
 	assertEquals(rootRound.has2Parents, false);
@@ -71,7 +71,7 @@ Deno.test(function structureTest1() {
 });
 
 Deno.test(function computeRound1() {
-	const swissBracket = new SwissBracket(16, 2);
+	const swissBracket = new SwissBracket(16, 2, "GAME_DIFF", "sb");
 	const f: MatchRecordSerialized[] = getJsonSync("./data/round1UpperTestData1.json");
 	for (let index = 0; index < f.length; index++) {
 		const matchRecordS = f[index];
@@ -119,7 +119,7 @@ Deno.test(function naRegional4Test1() {
 Deno.test(function naRegional4Test2() {
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3);
+	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	checkVersusData(swissBracket, tournament, "1-0");
@@ -203,7 +203,7 @@ Deno.test(function naRegional4Test2() {
 Deno.test(function naRegional4Test3() {
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3);
+	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 
 	// fill out bracket
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -269,7 +269,7 @@ Deno.test(function naRegional6Test1() {
 Deno.test(function naRegional4BuchholzTest1() {
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3);
+	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 
 	// fill out bracket
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -292,7 +292,7 @@ Deno.test(function naRegional4BuchholzTest1() {
 });
 
 Deno.test(function drawTest1() {
-	const swissBracket = new SwissBracket(16, 3);
+	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 	const numMatches = swissBracket.data.rootRound.matches.length;
 	// set all round 1 matches to 1-0
 	for (let i = 0; i < numMatches; i++) {
@@ -331,7 +331,7 @@ Deno.test(function drawTest1() {
 });
 
 Deno.test(function matchRecordTest1() {
-	const swissBracket = new SwissBracket(16, 3);
+	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 	const numMatches = swissBracket.data.rootRound.matches.length;
 	for (let i = 0; i < numMatches; i++) {
 		const mr = swissBracket.getMatchRecord("0-0", i);
