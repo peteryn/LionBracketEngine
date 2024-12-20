@@ -338,7 +338,7 @@ export class SwissBracket {
 	}
 
 	swissSort(seeds: Seed[]): Seed[] {
-		return [...seeds].sort((a, b) => {
+		return seeds.sort((a, b) => {
 			return (
 				this.getMatchDifferential(b) - this.getMatchDifferential(a) || // descending
 				this.tieBreaker(b) - this.tieBreaker(a) || // descending
@@ -440,8 +440,7 @@ export class SwissBracket {
 		return this.swissSort(eliminatedSeeds);
 	}
 
-	// check if seed1 has already played seed2
-	playedAlready(seed1: Seed, seed2: Seed) {
+	private playedAlready(seed1: Seed, seed2: Seed) {
 		const seed1MatchHistory = this.getMatchHistory(seed1);
 		for (let index = 0; index < seed1MatchHistory.length; index++) {
 			const matchRecord = seed1MatchHistory[index];
