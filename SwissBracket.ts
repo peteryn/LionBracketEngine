@@ -1,13 +1,12 @@
-import {
-	getMatchDifferential,
-	Match,
-	MatchRecord,
-	RoundNode,
-	Team,
-	type MatchTracker,
-} from "./models.ts";
+import { getMatchDifferential, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
 import { SwissBracketData } from "./SwissBracketData.ts";
-import { cartesianProduct, getWinners, getLosers, isFilledRound } from "./util/util.ts";
+import {
+	cartesianProduct,
+	getWinners,
+	getLosers,
+	isFilledRound,
+	populateMatches,
+} from "./util/util.ts";
 
 type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
 
@@ -514,20 +513,4 @@ export function levelOrderTraversal(
 		levels.push(level);
 	}
 	return levels;
-}
-
-export function populateMatches(matches: Match[], teams: Team[][]) {
-	if (teams.length !== matches.length) {
-		throw new Error(
-			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
-		);
-	}
-
-	for (let index = 0; index < teams.length; index++) {
-		const matchup = teams[index];
-		const team1 = matchup[0];
-		const team2 = matchup[1];
-		const record = new MatchRecord(team1, team2);
-		matches[index].matchRecord = record;
-	}
 }

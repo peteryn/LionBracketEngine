@@ -1,4 +1,4 @@
-import { Match, TeamNameMap, Team } from "../models.ts";
+import { Match, TeamNameMap, Team, MatchRecord } from "../models.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -67,4 +67,20 @@ export function getLosers(matches: Match[]) {
 	}
 
 	return result;
+}
+
+export function populateMatches(matches: Match[], teams: Team[][]) {
+	if (teams.length !== matches.length) {
+		throw new Error(
+			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
+		);
+	}
+
+	for (let index = 0; index < teams.length; index++) {
+		const matchup = teams[index];
+		const team1 = matchup[0];
+		const team2 = matchup[1];
+		const record = new MatchRecord(team1, team2);
+		matches[index].matchRecord = record;
+	}
 }
