@@ -3,11 +3,11 @@ import { MatchRecord, MatchRecordSerialized, Seed, TournamentData } from "../mod
 import { getJsonSync } from "./file.ts";
 import { assertEquals } from "@std/assert/equals";
 
-export function populateMatchRecords(teams: Seed[], data: MatchRecordSerialized[]) {
+export function populateMatchRecords(seeds: Seed[], data: MatchRecordSerialized[]) {
 	let i = 0;
-	let j = teams.length - 1;
+	let j = seeds.length - 1;
 	while (i < j) {
-		const record = new MatchRecord(teams[i], teams[j]);
+		const record = new MatchRecord(seeds[i], seeds[j]);
 		record.upperSeedWins = data[i].upperSeedWins;
 		record.lowerSeedWins = data[i].lowerSeedWins;
 		i++;

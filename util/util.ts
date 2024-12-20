@@ -69,18 +69,18 @@ export function getLosers(matches: Match[]) {
 	return result;
 }
 
-export function populateMatches(matches: Match[], teams: Seed[][]) {
-	if (teams.length !== matches.length) {
+export function populateMatches(matches: Match[], seeds: Seed[][]) {
+	if (seeds.length !== matches.length) {
 		throw new Error(
-			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${teams.length}`
+			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${seeds.length}`
 		);
 	}
 
-	for (let index = 0; index < teams.length; index++) {
-		const matchup = teams[index];
-		const team1 = matchup[0];
-		const team2 = matchup[1];
-		const record = new MatchRecord(team1, team2);
+	for (let index = 0; index < seeds.length; index++) {
+		const matchup = seeds[index];
+		const seed1 = matchup[0];
+		const seed2 = matchup[1];
+		const record = new MatchRecord(seed1, seed2);
 		matches[index].matchRecord = record;
 	}
 }
