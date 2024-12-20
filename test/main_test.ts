@@ -1,11 +1,11 @@
 import { assertEquals } from "@std/assert";
-import { TournamentData, type MatchRecordSerialized } from "@/models.ts";
-import { getJsonSync } from "@/util/file.ts";
+import { TournamentData, type MatchRecordSerialized } from "./models.ts";
+import { getJsonSync } from "./util/file.ts";
 import {
 	checkVersusData,
 	populateMatchRecordFromData,
 	testTournament,
-} from "@/util/testFunctions.ts";
+} from "./util/testFunctions.ts";
 import { RoundNode } from "@/models/round_node.ts";
 import { SwissBracket } from "@/swiss_bracket/swiss_bracket.ts";
 

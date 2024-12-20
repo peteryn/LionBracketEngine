@@ -1,4 +1,4 @@
-import { TeamNameMap } from "../models.ts";
+import { TeamNameMap } from "../../test/models.ts";
 import type { Match } from "@/models/match.ts";
 import { type Seed, MatchRecord } from "@/models/match_record.ts";
 

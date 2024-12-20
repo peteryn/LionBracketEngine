@@ -1,5 +1,6 @@
 import { scrape } from "@panha/scrape/";
-import { MatchRecord, Seed, TeamNameMap, TournamentData } from "../models.ts";
+import { TeamNameMap, TournamentData } from "../models.ts";
+import { MatchRecord, Seed } from "@/models/match_record.ts";
 
 const url = Deno.args[0];
 const scraper = await scrape(url);

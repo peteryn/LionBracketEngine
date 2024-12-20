@@ -1,4 +1,3 @@
-import { MatchTracker } from "../models.ts";
 import type { RoundNode } from "@/models/round_node.ts";
 import { SwissBracketData } from "./swiss_bracket_data.ts";
 import {
@@ -11,6 +10,13 @@ import {
 import type { Seed, MatchRecord } from "@/models/match_record.ts";
 
 type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
+
+type MatchTracker = {
+	upperSeed: Seed;
+	lowerSeed: Seed;
+	invalidIndexes: number[];
+	index: number;
+};
 
 export class SwissBracket {
 	data: SwissBracketData;

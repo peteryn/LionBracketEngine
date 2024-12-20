@@ -1,16 +1,9 @@
-import type { Seed, MatchRecord } from "@/models/match_record.ts";
+import type { MatchRecord } from "@/models/match_record.ts";
 
 export interface MatchRecordSerialized {
 	upperSeedWins: number;
 	lowerSeedWins: number;
 }
-
-export type MatchTracker = {
-	upperSeed: Seed;
-	lowerSeed: Seed;
-	invalidIndexes: number[];
-	index: number;
-};
 
 export interface TeamNameMap {
 	seed: number;
