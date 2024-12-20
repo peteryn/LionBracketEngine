@@ -1,5 +1,5 @@
 {
-	"teamNames": [
+	"SeedNames": [
 		{ "seed": 1, "name": "KC" },
 		{ "seed": 2, "name": "VIT" },
 		{ "seed": 3, "name": "END" },
@@ -19,218 +19,218 @@
 	],
 	"0-0": [
 		{
-			"upperTeam": { "seed": 1 },
-			"lowerTeam": { "seed": 16 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 0
+			"upperSeed": { "seed": 1 },
+			"lowerSeed": { "seed": 16 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 0
 		},
 		{
-			"upperTeam": { "seed": 2 },
-			"lowerTeam": { "seed": 15 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 2 },
+			"lowerSeed": { "seed": 15 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 3 },
-			"lowerTeam": { "seed": 14 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 2
+			"upperSeed": { "seed": 3 },
+			"lowerSeed": { "seed": 14 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 2
 		},
 		{
-			"upperTeam": { "seed": 4 },
-			"lowerTeam": { "seed": 13 },
-			"upperTeamWins": 0,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 4 },
+			"lowerSeed": { "seed": 13 },
+			"upperSeedWins": 0,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 5 },
-			"lowerTeam": { "seed": 12 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 5 },
+			"lowerSeed": { "seed": 12 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 6 },
-			"lowerTeam": { "seed": 11 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 6 },
+			"lowerSeed": { "seed": 11 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 7 },
-			"lowerTeam": { "seed": 10 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 7 },
+			"lowerSeed": { "seed": 10 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 8 },
-			"lowerTeam": { "seed": 9 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 8 },
+			"lowerSeed": { "seed": 9 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		}
 	],
 	"1-0": [
 		{
-			"upperTeam": { "seed": 1 },
-			"lowerTeam": { "seed": 15 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 2
+			"upperSeed": { "seed": 1 },
+			"lowerSeed": { "seed": 15 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 2
 		},
 		{
-			"upperTeam": { "seed": 13 },
-			"lowerTeam": { "seed": 11 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 13 },
+			"lowerSeed": { "seed": 11 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		},
 		{
-			"upperTeam": { "seed": 8 },
-			"lowerTeam": { "seed": 12 },
-			"upperTeamWins": 0,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 8 },
+			"lowerSeed": { "seed": 12 },
+			"upperSeedWins": 0,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 3 },
-			"lowerTeam": { "seed": 10 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 3 },
+			"lowerSeed": { "seed": 10 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		}
 	],
 	"0-1": [
 		{
-			"upperTeam": { "seed": 2 },
-			"lowerTeam": { "seed": 16 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 0
+			"upperSeed": { "seed": 2 },
+			"lowerSeed": { "seed": 16 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 0
 		},
 		{
-			"upperTeam": { "seed": 5 },
-			"lowerTeam": { "seed": 4 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 5 },
+			"lowerSeed": { "seed": 4 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 6 },
-			"lowerTeam": { "seed": 9 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 6 },
+			"lowerSeed": { "seed": 9 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 7 },
-			"lowerTeam": { "seed": 14 },
-			"upperTeamWins": 1,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 7 },
+			"lowerSeed": { "seed": 14 },
+			"upperSeedWins": 1,
+			"lowerSeedWins": 3
 		}
 	],
 	"2-0": [
 		{
-			"upperTeam": { "seed": 13 },
-			"lowerTeam": { "seed": 3 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 2
+			"upperSeed": { "seed": 13 },
+			"lowerSeed": { "seed": 3 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 2
 		},
 		{
-			"upperTeam": { "seed": 1 },
-			"lowerTeam": { "seed": 12 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 1 },
+			"lowerSeed": { "seed": 12 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		}
 	],
 	"1-1": [
 		{
-			"upperTeam": { "seed": 15 },
-			"lowerTeam": { "seed": 4 },
-			"upperTeamWins": 0,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 15 },
+			"lowerSeed": { "seed": 4 },
+			"upperSeedWins": 0,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 8 },
-			"lowerTeam": { "seed": 14 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 8 },
+			"lowerSeed": { "seed": 14 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		},
 		{
-			"upperTeam": { "seed": 10 },
-			"lowerTeam": { "seed": 9 },
-			"upperTeamWins": 0,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 10 },
+			"lowerSeed": { "seed": 9 },
+			"upperSeedWins": 0,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 11 },
-			"lowerTeam": { "seed": 2 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 11 },
+			"lowerSeed": { "seed": 2 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		}
 	],
 	"0-2": [
 		{
-			"upperTeam": { "seed": 5 },
-			"lowerTeam": { "seed": 16 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 2
+			"upperSeed": { "seed": 5 },
+			"lowerSeed": { "seed": 16 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 2
 		},
 		{
-			"upperTeam": { "seed": 6 },
-			"lowerTeam": { "seed": 7 },
-			"upperTeamWins": 1,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 6 },
+			"lowerSeed": { "seed": 7 },
+			"upperSeedWins": 1,
+			"lowerSeedWins": 3
 		}
 	],
 	"2-1": [
 		{
-			"upperTeam": { "seed": 3 },
-			"lowerTeam": { "seed": 8 },
-			"upperTeamWins": 1,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 3 },
+			"lowerSeed": { "seed": 8 },
+			"upperSeedWins": 1,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 12 },
-			"lowerTeam": { "seed": 4 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 12 },
+			"lowerSeed": { "seed": 4 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 2 },
-			"lowerTeam": { "seed": 9 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 2 },
+			"lowerSeed": { "seed": 9 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		}
 	],
 	"1-2": [
 		{
-			"upperTeam": { "seed": 11 },
-			"lowerTeam": { "seed": 7 },
-			"upperTeamWins": 0,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 11 },
+			"lowerSeed": { "seed": 7 },
+			"upperSeedWins": 0,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 14 },
-			"lowerTeam": { "seed": 5 },
-			"upperTeamWins": 2,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 14 },
+			"lowerSeed": { "seed": 5 },
+			"upperSeedWins": 2,
+			"lowerSeedWins": 3
 		},
 		{
-			"upperTeam": { "seed": 15 },
-			"lowerTeam": { "seed": 10 },
-			"upperTeamWins": 1,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 15 },
+			"lowerSeed": { "seed": 10 },
+			"upperSeedWins": 1,
+			"lowerSeedWins": 3
 		}
 	],
 	"2-2": [
 		{
-			"upperTeam": { "seed": 12 },
-			"lowerTeam": { "seed": 10 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 12 },
+			"lowerSeed": { "seed": 10 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		},
 		{
-			"upperTeam": { "seed": 3 },
-			"lowerTeam": { "seed": 5 },
-			"upperTeamWins": 3,
-			"lowerTeamWins": 1
+			"upperSeed": { "seed": 3 },
+			"lowerSeed": { "seed": 5 },
+			"upperSeedWins": 3,
+			"lowerSeedWins": 1
 		},
 		{
-			"upperTeam": { "seed": 9 },
-			"lowerTeam": { "seed": 7 },
-			"upperTeamWins": 1,
-			"lowerTeamWins": 3
+			"upperSeed": { "seed": 9 },
+			"lowerSeed": { "seed": 7 },
+			"upperSeedWins": 1,
+			"lowerSeedWins": 3
 		}
 	]
 }

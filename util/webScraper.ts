@@ -1,11 +1,11 @@
 import { scrape } from "@panha/scrape/";
-import { MatchRecord, Team, TeamNameMap, TournamentData } from "../models.ts";
+import { MatchRecord, Seed, TeamNameMap, TournamentData } from "../models.ts";
 
 const url = Deno.args[0];
 const scraper = await scrape(url);
 const res = scraper.text(".brkts-matchlist-cell-content");
 
-const nameToSeed: Map<string, Team> = new Map();
+const nameToSeed: Map<string, Seed> = new Map();
 const seedToName: TeamNameMap[] = Array.from({ length: 16 }, (_, i) => ({ seed: i + 1, name: "" }));
 let j = 1;
 let k = 16;
@@ -53,8 +53,8 @@ for (let i = 0; i < res.length; i += 4) {
 	const s2 = res[i + 2];
 
 	const mr = new MatchRecord(team1!, team2!);
-	mr.upperTeamWins = parseInt(s1);
-	mr.lowerTeamWins = parseInt(s2);
+	mr.upperSeedWins = parseInt(s1);
+	mr.lowerSeedWins = parseInt(s2);
 	if (i >= 0 && i < 8 * 4) {
 		round1.push(mr);
 	} else if (i >= 8 * 4 && i < 12 * 4) {

@@ -1,4 +1,4 @@
-import { getMatchDifferential, MatchRecord, RoundNode, Team, type MatchTracker } from "./models.ts";
+import { getMatchDifferential, MatchRecord, RoundNode, Seed, type MatchTracker } from "./models.ts";
 import { SwissBracketData } from "./SwissBracketData.ts";
 import {
 	cartesianProduct,
@@ -12,15 +12,15 @@ type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
 
 export class SwissBracket {
 	data: SwissBracketData;
-	tieBreaker: (seed: Team) => number;
+	tieBreaker: (seed: Seed) => number;
 
 	constructor(
-		numTeams: number = 16,
+		numSeeds: number = 16,
 		winRequirement: number = 3,
 		tieBreaker: tieBreaker = "GAME_DIFF",
 		bracketId: string
 	) {
-		this.data = new SwissBracketData(numTeams, winRequirement, bracketId);
+		this.data = new SwissBracketData(numSeeds, winRequirement, bracketId);
 		switch (tieBreaker) {
 			case "GAME_DIFF":
 				this.tieBreaker = this.getGameDifferential;
@@ -77,23 +77,23 @@ export class SwissBracket {
 	setMatchRecordWithValue(
 		roundName: string,
 		matchNumber: number,
-		upperTeamWins: number,
-		lowerTeamWins: number
+		upperSeedWins: number,
+		lowerSeedWins: number
 	) {
 		this.setMatchRecordWithValueById(
 			`${roundName}.${matchNumber}`,
-			upperTeamWins,
-			lowerTeamWins
+			upperSeedWins,
+			lowerSeedWins
 		);
 	}
 
-	setMatchRecordWithValueById(matchId: string, upperTeamWins: number, lowerTeamWins: number) {
+	setMatchRecordWithValueById(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
 		const mr = this.getMatchRecordById(matchId);
 		if (!mr) {
 			return undefined;
 		}
-		mr.upperTeamWins = upperTeamWins;
-		mr.lowerTeamWins = lowerTeamWins;
+		mr.upperSeedWins = upperSeedWins;
+		mr.lowerSeedWins = lowerSeedWins;
 		this.setMatchRecordById(matchId, mr);
 	}
 
@@ -110,7 +110,7 @@ export class SwissBracket {
 		return roundNode as RoundNode;
 	}
 
-	getMatchHistory(seed: Team) {
+	getMatchHistory(seed: Seed) {
 		let curr: RoundNode | undefined = this.data.rootRound;
 		const matchHistory: MatchRecord[] = [];
 		while (curr) {
@@ -124,20 +124,20 @@ export class SwissBracket {
 					winner = 0;
 					break;
 				}
-				if (matchRecord.upperTeam === seed) {
-					if (matchRecord.upperTeamWins > matchRecord.lowerTeamWins) {
+				if (matchRecord.upperSeed === seed) {
+					if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
 						winner = 1;
-					} else if (matchRecord.upperTeamWins < matchRecord.lowerTeamWins) {
+					} else if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
 						winner = -1;
 					} else {
 						winner = 0;
 					}
 					matchHistory.push(matchRecord);
 				}
-				if (matchRecord.lowerTeam === seed) {
-					if (matchRecord.lowerTeamWins > matchRecord.upperTeamWins) {
+				if (matchRecord.lowerSeed === seed) {
+					if (matchRecord.lowerSeedWins > matchRecord.upperSeedWins) {
 						winner = 1;
-					} else if (matchRecord.lowerTeamWins < matchRecord.upperTeamWins) {
+					} else if (matchRecord.lowerSeedWins < matchRecord.upperSeedWins) {
 						winner = -1;
 					} else {
 						winner = 0;
@@ -170,16 +170,16 @@ export class SwissBracket {
 		this.clearDependents(roundNode.winningRound);
 		this.clearDependents(roundNode.losingRound);
 
-		// check to see if round is filled out (no ties in upperTeamWins and lowerTeamWins)
+		// check to see if round is filled out (no ties in upperSeedWins and lowerSeedWins)
 		const isFilleldOut = isFilledRound(roundNode.matches);
 		// if it is not filled out, then we can stop
 		if (!isFilleldOut) {
 			return;
 		}
 
-		// split teams into winners and losers
-		const winners: Team[] = getWinners(roundNode.matches);
-		const losers: Team[] = getLosers(roundNode.matches);
+		// split seeds into winners and losers
+		const winners: Seed[] = getWinners(roundNode.matches);
+		const losers: Seed[] = getLosers(roundNode.matches);
 
 		// need to pass winners/losers to the next node because some nodes have a 2 dependencies (2 parents)
 		// after passing them, need to process them at those nodes
@@ -189,7 +189,7 @@ export class SwissBracket {
 			this.processRound(winningRound, winners);
 		} else {
 			// set the winners who go on to the next stage
-			roundNode.promotionTeams = this.swissSort(winners);
+			roundNode.promotionSeeds = this.swissSort(winners);
 		}
 
 		const losingRound = roundNode.losingRound;
@@ -197,20 +197,11 @@ export class SwissBracket {
 			this.processRound(losingRound, losers);
 		} else {
 			// set the losers who are eliminated
-			roundNode.eliminatedTeams = this.swissSort(losers);
+			roundNode.eliminationSeeds = this.swissSort(losers);
 		}
-
-		/*
-			need to edit roundNode to support a place to put teams before sorting
-
-			after a round has been edited, should user input for future rounds be kept or deleted?
-			if they are deleted, then evaluate the current round, update the direct children, and be done
-			if they are kept, then need to rerun this function on future rounds that depend on this round
-
-			IDEA: if after regenerating the matchup is the same and at the same position, keep the previous result
-		*/
 	}
-	private processRound(round: RoundNode, seeds: Team[]) {
+
+	private processRound(round: RoundNode, seeds: Seed[]) {
 		if (round.has2Parents) {
 			const [roundWins, roundLosses] = round.name.split("-");
 			const upperParentNode = this.getRoundNode(`${roundWins}-${parseInt(roundLosses) - 1}`);
@@ -218,8 +209,8 @@ export class SwissBracket {
 			const upperLosers = getLosers(upperParentNode.matches);
 			const lowerWinners = getWinners(lowerParentNode.matches);
 			if (
-				upperLosers.length === upperParentNode.numTeams / 2 &&
-				lowerWinners.length === lowerParentNode.numTeams / 2
+				upperLosers.length === upperParentNode.numSeeds / 2 &&
+				lowerWinners.length === lowerParentNode.numSeeds / 2
 			) {
 				const matchups = this.evaluationSort(upperLosers, lowerWinners);
 				populateMatches(round.matches, matchups);
@@ -227,7 +218,6 @@ export class SwissBracket {
 				// do nothing, cant calculate round yet
 			}
 		} else {
-			// process winning round by calling evaluation sort for 1 team
 			const matchups = this.evaluationSort(seeds);
 			populateMatches(round.matches, matchups);
 		}
@@ -241,12 +231,12 @@ export class SwissBracket {
 					const match = matches[index];
 					match.matchRecord = undefined;
 				}
-				// reset the teams that were promoted because future rounds are being calculated
-				if (node.promotionTeams.length > 0) {
-					node.promotionTeams = [];
+				// reset the seeds that were promoted because future rounds are being calculated
+				if (node.promotionSeeds.length > 0) {
+					node.promotionSeeds = [];
 				}
-				if (node.eliminatedTeams.length > 0) {
-					node.eliminatedTeams = [];
+				if (node.eliminationSeeds.length > 0) {
+					node.eliminationSeeds = [];
 				}
 			});
 		}
@@ -257,31 +247,31 @@ export class SwissBracket {
 	// 3. Seed
 	// if RoundNode has 2 parents, then upper must play lower
 	// basically, a sort by multiple criteria
-	evaluationSort(upperTeamsInput: Team[], lowerTeamsInput?: Team[]): Team[][] {
-		const upperTeams = this.swissSort(upperTeamsInput);
-		const matchups: Team[][] = [];
-		if (lowerTeamsInput) {
-			let lowerTeams = this.swissSort(lowerTeamsInput);
+	evaluationSort(upperSeedsInput: Seed[], lowerSeedsInput?: Seed[]): Seed[][] {
+		const upperSeeds = this.swissSort(upperSeedsInput);
+		const matchups: Seed[][] = [];
+		if (lowerSeedsInput) {
+			let lowerSeeds = this.swissSort(lowerSeedsInput);
 
-			// for 2-1 and 1-2 rounds, we need to "promote" or "demote" a team so that the two arrays have an equal number of teams
-			if (upperTeams.length > lowerTeams.length) {
-				const lastItem = upperTeams.pop();
+			// for 2-1 and 1-2 rounds, we need to "promote" or "demote" a seed so that the two arrays have an equal number of seeds
+			if (upperSeeds.length > lowerSeeds.length) {
+				const lastItem = upperSeeds.pop();
 				if (lastItem) {
-					lowerTeams = [lastItem, ...lowerTeams];
+					lowerSeeds = [lastItem, ...lowerSeeds];
 				}
-			} else if (upperTeams.length < lowerTeams.length) {
-				const firstItem = lowerTeams.shift();
+			} else if (upperSeeds.length < lowerSeeds.length) {
+				const firstItem = lowerSeeds.shift();
 				if (firstItem) {
-					upperTeams.push(firstItem);
+					upperSeeds.push(firstItem);
 				}
 			}
 
 			// implementation when round node has 2 parents
 			// this is when we have to account for history
-			// potentialy need to sort upper and lower teams
+			// potentialy need to sort upper and lower seeds
 
-			// calculate every possible pairing of upper and lower teams
-			const upperLowerCross: Team[][] = cartesianProduct(upperTeams, lowerTeams.reverse());
+			// calculate every possible pairing of upper and lower seeds
+			const upperLowerCross: Seed[][] = cartesianProduct(upperSeeds, lowerSeeds.reverse());
 			// find the indexes of invalid pairings due to match history
 			const nonValidIndex: number[] = [];
 			for (let index = 0; index < upperLowerCross.length; index++) {
@@ -292,11 +282,11 @@ export class SwissBracket {
 			}
 
 			// using the list of invalid indexes, create a new list that does not have those index values
-			const teamsCrossClean: Team[][] = [];
+			const seedsCrossClean: Seed[][] = [];
 			for (let index = 0; index < upperLowerCross.length; index++) {
 				if (!nonValidIndex.includes(index)) {
 					const matchup = upperLowerCross[index];
-					teamsCrossClean.push(matchup);
+					seedsCrossClean.push(matchup);
 				}
 			}
 
@@ -304,12 +294,12 @@ export class SwissBracket {
 			const stack: MatchTracker[] = [];
 			let invalidIndexes: number[] = [];
 			let index = 0;
-			const matchLength = (upperTeams.length + lowerTeams.length) / 2;
+			const matchLength = (upperSeeds.length + lowerSeeds.length) / 2;
 			while (stack.length < matchLength) {
 				// if this condition holds, then we have not generate enough matches for the round
 				// this means that we selected a matchup that causes some other invalidity
 				// we need to get rid of that matchup and restore the state of invalidIndexes
-				if (index >= teamsCrossClean.length) {
+				if (index >= seedsCrossClean.length) {
 					const badMatch = stack.pop();
 					if (badMatch) {
 						invalidIndexes = badMatch.invalidIndexes;
@@ -320,10 +310,10 @@ export class SwissBracket {
 							Error: Due to rematches rule, there may no more possible matchups...
 							Popped from stack when stack length is 0 
 							(matchLength: ${matchLength}, stackLength: ${stack.length}, 
-							index: ${index}, teamsCrossCleanLength: ${teamsCrossClean.length})\n
+							index: ${index}, seedsCrossClean: ${seedsCrossClean.length})\n
 							`;
-						for (let index = 0; index < teamsCrossClean.length; index++) {
-							const element = teamsCrossClean[index];
+						for (let index = 0; index < seedsCrossClean.length; index++) {
+							const element = seedsCrossClean[index];
 							message = message.concat(`(${element[0]}, ${element[1]})\n`);
 						}
 						throw new Error(message);
@@ -339,40 +329,40 @@ export class SwissBracket {
 				// so that we can backtrack
 				const invalidIndexesCopy = structuredClone(invalidIndexes);
 
-				// if we select this matchup, then those 2 teams can no longer play
-				// so we remove potential pairings with those teams by adding the index of that matchup
+				// if we select this matchup, then those 2 seeds can no longer play
+				// so we remove potential pairings with those seeds by adding the index of that matchup
 				// to invalidIndexes
-				const match = teamsCrossClean[index];
-				const team1 = match[0];
-				const team2 = match[1];
-				for (let i = 0; i < teamsCrossClean.length; i++) {
+				const match = seedsCrossClean[index];
+				const seed1 = match[0];
+				const seed2 = match[1];
+				for (let i = 0; i < seedsCrossClean.length; i++) {
 					if (
-						teamsCrossClean[i][0] === team1 ||
-						teamsCrossClean[i][0] === team2 ||
-						teamsCrossClean[i][1] === team1 ||
-						teamsCrossClean[i][1] === team2
+						seedsCrossClean[i][0] === seed1 ||
+						seedsCrossClean[i][0] === seed2 ||
+						seedsCrossClean[i][1] === seed1 ||
+						seedsCrossClean[i][1] === seed2
 					) {
 						invalidIndexes.push(i);
 					}
 				}
 
 				stack.push({
-					upperTeam: team1,
-					lowerTeam: team2,
+					upperSeed: seed1,
+					lowerSeed: seed2,
 					invalidIndexes: invalidIndexesCopy,
 					index: index,
 				});
 			}
 
 			for (const matchTrackerObject of stack) {
-				matchups.push([matchTrackerObject.upperTeam, matchTrackerObject.lowerTeam]);
+				matchups.push([matchTrackerObject.upperSeed, matchTrackerObject.lowerSeed]);
 			}
 		} else {
 			// implementation when round node has 1 parent
 			let i = 0;
-			let j = upperTeams.length - 1;
+			let j = upperSeeds.length - 1;
 			while (i < j) {
-				matchups.push([upperTeams[i], upperTeams[j]]);
+				matchups.push([upperSeeds[i], upperSeeds[j]]);
 				i++;
 				j--;
 			}
@@ -380,8 +370,8 @@ export class SwissBracket {
 		return matchups;
 	}
 
-	swissSort(teams: Team[]): Team[] {
-		return [...teams].sort((a, b) => {
+	swissSort(seeds: Seed[]): Seed[] {
+		return [...seeds].sort((a, b) => {
 			const aHistory = this.getMatchHistory(a);
 			const bHistory = this.getMatchHistory(b);
 			return (
@@ -392,19 +382,19 @@ export class SwissBracket {
 		});
 	}
 
-	// to calculate Buchholz score, you need the match differential of every team
+	// to calculate Buchholz score, you need the match differential of every seed
 	// you faced in your match history
-	getBuchholzScore(seed: Team) {
+	getBuchholzScore(seed: Seed) {
 		let score = 0;
 		const matchHistory = this.getMatchHistory(seed);
 
-		// 	for each team faced
-		//		get that team's match differential
+		// 	for each seed faced
+		//		get that seed's match differential
 		//		and add it to score
 		for (let index = 0; index < matchHistory.length; index++) {
 			const match = matchHistory[index];
-			const isUpperSeed = match.upperTeam === seed;
-			const opponent = isUpperSeed ? match.lowerTeam : match.upperTeam;
+			const isUpperSeed = match.upperSeed === seed;
+			const opponent = isUpperSeed ? match.lowerSeed : match.upperSeed;
 			const opponentMatchHistory = this.getMatchHistory(opponent);
 			score += getMatchDifferential(opponent, opponentMatchHistory);
 		}
@@ -412,20 +402,20 @@ export class SwissBracket {
 		return score;
 	}
 
-	getGameDifferential(seed: Team) {
+	getGameDifferential(seed: Seed) {
 		const matchHistory = this.getMatchHistory(seed);
 		let gamesWon = 0;
 		let gamesLost = 0;
 		for (let index = 0; index < matchHistory.length; index++) {
 			const match = matchHistory[index];
-			const isUpperSeed = match.upperTeam === seed;
+			const isUpperSeed = match.upperSeed === seed;
 
 			if (isUpperSeed) {
-				gamesWon += match.upperTeamWins;
-				gamesLost += match.lowerTeamWins;
+				gamesWon += match.upperSeedWins;
+				gamesLost += match.lowerSeedWins;
 			} else {
-				gamesWon += match.lowerTeamWins;
-				gamesLost += match.upperTeamWins;
+				gamesWon += match.lowerSeedWins;
+				gamesLost += match.upperSeedWins;
 			}
 		}
 		return gamesWon - gamesLost;
@@ -444,32 +434,32 @@ export class SwissBracket {
 		levelOrderTraversal(this.data.rootRound, undefined, printLevel);
 	}
 
-	getPromotedTeams() {
-		let promotedTeams: Team[] = [];
+	getPromotedSeeds() {
+		let promotedSeeds: Seed[] = [];
 		levelOrderTraversal(this.data.rootRound, (node) => {
-			if (node.promotionTeams.length > 0) {
-				promotedTeams = promotedTeams.concat(node.promotionTeams);
+			if (node.promotionSeeds.length > 0) {
+				promotedSeeds = promotedSeeds.concat(node.promotionSeeds);
 			}
 		});
-		return promotedTeams;
+		return promotedSeeds;
 	}
 
-	getEliminatedTeams() {
-		let eliminatedTeams: Team[] = [];
+	getEliminatedSeeds() {
+		let eliminatedSeeds: Seed[] = [];
 		levelOrderTraversal(this.data.rootRound, (node) => {
-			if (node.eliminatedTeams.length > 0) {
-				eliminatedTeams = eliminatedTeams.concat(node.eliminatedTeams);
+			if (node.eliminationSeeds.length > 0) {
+				eliminatedSeeds = eliminatedSeeds.concat(node.eliminationSeeds);
 			}
 		});
-		return this.swissSort(eliminatedTeams);
+		return this.swissSort(eliminatedSeeds);
 	}
 
-	// check if team1 has already played team2
-	playedAlready(team1: Team, team2: Team) {
-		const team1MatchHistory = this.getMatchHistory(team1);
-		for (let index = 0; index < team1MatchHistory.length; index++) {
-			const matchRecord = team1MatchHistory[index];
-			if (matchRecord.upperTeam === team2 || matchRecord.lowerTeam === team2) {
+	// check if seed1 has already played seed2
+	playedAlready(seed1: Seed, seed2: Seed) {
+		const seed1MatchHistory = this.getMatchHistory(seed1);
+		for (let index = 0; index < seed1MatchHistory.length; index++) {
+			const matchRecord = seed1MatchHistory[index];
+			if (matchRecord.upperSeed === seed2 || matchRecord.lowerSeed === seed2) {
 				return true;
 			}
 		}

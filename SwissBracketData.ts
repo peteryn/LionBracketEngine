@@ -1,24 +1,24 @@
-import { Match, RoundNode, Team } from "./models.ts";
-import { levelOrderTraversal} from "./SwissBracket.ts";
+import { Match, RoundNode, Seed } from "./models.ts";
+import { levelOrderTraversal } from "./SwissBracket.ts";
 import { populateMatches } from "./util/util.ts";
 
 export class SwissBracketData {
 	rootRound: RoundNode;
 	bracketId: string;
 
-	constructor(numTeams: number = 16, winRequirement: number = 3, bracketId: string) {
-		this.rootRound = this.createStructure(numTeams, winRequirement);
+	constructor(numSeeds: number = 16, winRequirement: number = 3, bracketId: string) {
+		this.rootRound = this.createStructure(numSeeds, winRequirement);
 		this.initializeEmptyMatches(this.rootRound);
-		const teams = this.createTeams(numTeams);
-		// populate root round with the teams in the correct matches
-		const matchups = this.seedBasedMatchups(teams);
+		const seeds = this.createSeeds(numSeeds);
+		// populate root round with the seeds in the correct matches
+		const matchups = this.seedBasedMatchups(seeds);
 		populateMatches(this.rootRound.matches, matchups);
 		this.bracketId = bracketId;
 	}
 
-	private createStructure(numTeams: number = 16, winRequirement: number = 3) {
+	private createStructure(numSeeds: number = 16, winRequirement: number = 3) {
 		let level = 1;
-		const root = new RoundNode("0-0", numTeams, 0, 0, level);
+		const root = new RoundNode("0-0", numSeeds, 0, 0, level);
 		level++;
 		let queue: RoundNode[] = [];
 		queue.push(root);
@@ -59,13 +59,13 @@ export class SwissBracketData {
 	) {
 		const wNode = existingNodes.get(nodeRecord);
 		if (wNode) {
-			wNode.numTeams += parentNode.numTeams / 2;
+			wNode.numSeeds += parentNode.numSeeds / 2;
 			wNode.has2Parents = true;
 			return false;
 		} else {
 			const newNode = new RoundNode(
 				nodeRecord,
-				parentNode.numTeams / 2,
+				parentNode.numSeeds / 2,
 				parentNode.winRecord + addWinRecord,
 				parentNode.loseRecord + addLoseRecord,
 				level
@@ -77,7 +77,7 @@ export class SwissBracketData {
 
 	private initializeEmptyMatches(root: RoundNode) {
 		const init = (node: RoundNode) => {
-			for (let index = 0; index < node.numTeams / 2; index++) {
+			for (let index = 0; index < node.numSeeds / 2; index++) {
 				const match = new Match(node.name, index);
 				node.matches.push(match);
 			}
@@ -85,23 +85,22 @@ export class SwissBracketData {
 		levelOrderTraversal(root, init);
 	}
 
-	private createTeams(numTeams: number): Team[] {
-		const teams: Team[] = [];
-		for (let index = 1; index <= numTeams; index++) {
-			// teams.push(new Team(index));
-			teams.push(index);
+	private createSeeds(numSeeds: number): Seed[] {
+		const seeds: Seed[] = [];
+		for (let index = 1; index <= numSeeds; index++) {
+			seeds.push(index);
 		}
-		return teams;
+		return seeds;
 	}
 
-	private seedBasedMatchups(teams: Team[]) {
-		const matchups: Team[][] = [];
+	private seedBasedMatchups(seeds: Seed[]) {
+		const matchups: Seed[][] = [];
 
 		// implementation when round node has 1 parent
 		let i = 0;
-		let j = teams.length - 1;
+		let j = seeds.length - 1;
 		while (i < j) {
-			matchups.push([teams[i], teams[j]]);
+			matchups.push([seeds[i], seeds[j]]);
 			i++;
 			j--;
 		}

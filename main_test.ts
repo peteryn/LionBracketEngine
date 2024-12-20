@@ -19,10 +19,10 @@ Deno.test(function structureTest1() {
 	const rootRound = swissBracket.data.rootRound;
 	assertEquals(rootRound.level, 1);
 	assertEquals(rootRound.has2Parents, false);
-	assertEquals(rootRound.matches[0].matchRecord?.upperTeam, 1);
-	assertEquals(rootRound.matches[0].matchRecord?.lowerTeam, 16);
-	assertEquals(rootRound.matches[1].matchRecord?.upperTeam, 2);
-	assertEquals(rootRound.matches[1].matchRecord?.lowerTeam, 15);
+	assertEquals(rootRound.matches[0].matchRecord?.upperSeed, 1);
+	assertEquals(rootRound.matches[0].matchRecord?.lowerSeed, 16);
+	assertEquals(rootRound.matches[1].matchRecord?.upperSeed, 2);
+	assertEquals(rootRound.matches[1].matchRecord?.lowerSeed, 15);
 	assertEquals(swissBracket.getRoundNode("0-0")?.name, swissBracket.data.rootRound.name);
 
 	const round2Upper = rootRound.winningRound;
@@ -77,8 +77,8 @@ Deno.test(function computeRound1() {
 		const matchRecordS = f[index];
 		const mr = swissBracket.getMatchRecord("0-0", index);
 		if (mr) {
-			mr.lowerTeamWins = matchRecordS.lowerTeamWins;
-			mr.upperTeamWins = matchRecordS.upperTeamWins;
+			mr.lowerSeedWins = matchRecordS.lowerSeedWins;
+			mr.upperSeedWins = matchRecordS.upperSeedWins;
 			swissBracket.setMatchRecord("0-0", index, mr);
 		} else {
 			throw new Error("Match record doesn't exist when it should");
@@ -87,29 +87,29 @@ Deno.test(function computeRound1() {
 	const round1 = swissBracket.data.rootRound;
 	const round2Upper = round1.winningRound;
 	const round2Lower = round1.losingRound;
-	assertEquals(round2Upper?.matches[0].matchRecord?.upperTeam, 1);
-	assertEquals(round2Upper?.matches[0].matchRecord?.lowerTeam, 8);
+	assertEquals(round2Upper?.matches[0].matchRecord?.upperSeed, 1);
+	assertEquals(round2Upper?.matches[0].matchRecord?.lowerSeed, 8);
 
-	assertEquals(round2Upper?.matches[1].matchRecord?.upperTeam, 2);
-	assertEquals(round2Upper?.matches[1].matchRecord?.lowerTeam, 7);
+	assertEquals(round2Upper?.matches[1].matchRecord?.upperSeed, 2);
+	assertEquals(round2Upper?.matches[1].matchRecord?.lowerSeed, 7);
 
-	assertEquals(round2Upper?.matches[2].matchRecord?.upperTeam, 3);
-	assertEquals(round2Upper?.matches[2].matchRecord?.lowerTeam, 6);
+	assertEquals(round2Upper?.matches[2].matchRecord?.upperSeed, 3);
+	assertEquals(round2Upper?.matches[2].matchRecord?.lowerSeed, 6);
 
-	assertEquals(round2Upper?.matches[3].matchRecord?.upperTeam, 4);
-	assertEquals(round2Upper?.matches[3].matchRecord?.lowerTeam, 5);
+	assertEquals(round2Upper?.matches[3].matchRecord?.upperSeed, 4);
+	assertEquals(round2Upper?.matches[3].matchRecord?.lowerSeed, 5);
 
-	assertEquals(round2Lower?.matches[0].matchRecord?.upperTeam, 9);
-	assertEquals(round2Lower?.matches[0].matchRecord?.lowerTeam, 16);
+	assertEquals(round2Lower?.matches[0].matchRecord?.upperSeed, 9);
+	assertEquals(round2Lower?.matches[0].matchRecord?.lowerSeed, 16);
 
-	assertEquals(round2Lower?.matches[1].matchRecord?.upperTeam, 10);
-	assertEquals(round2Lower?.matches[1].matchRecord?.lowerTeam, 15);
+	assertEquals(round2Lower?.matches[1].matchRecord?.upperSeed, 10);
+	assertEquals(round2Lower?.matches[1].matchRecord?.lowerSeed, 15);
 
-	assertEquals(round2Lower?.matches[2].matchRecord?.upperTeam, 11);
-	assertEquals(round2Lower?.matches[2].matchRecord?.lowerTeam, 14);
+	assertEquals(round2Lower?.matches[2].matchRecord?.upperSeed, 11);
+	assertEquals(round2Lower?.matches[2].matchRecord?.lowerSeed, 14);
 
-	assertEquals(round2Lower?.matches[3].matchRecord?.upperTeam, 12);
-	assertEquals(round2Lower?.matches[3].matchRecord?.lowerTeam, 13);
+	assertEquals(round2Lower?.matches[3].matchRecord?.upperSeed, 12);
+	assertEquals(round2Lower?.matches[3].matchRecord?.lowerSeed, 13);
 });
 
 Deno.test(function naRegional4Test1() {
@@ -148,7 +148,7 @@ Deno.test(function naRegional4Test2() {
 
 	// change record in round 1
 	const mr = swissBracket.getMatchRecord("0-0", 1);
-	mr!.lowerTeamWins = 1;
+	mr!.lowerSeedWins = 1;
 	swissBracket.setMatchRecord("0-0", 1, mr!);
 
 	// make sure that future rounds are now undefined
@@ -301,25 +301,25 @@ Deno.test(function drawTest1() {
 			throw new Error("match record DNE when it should");
 		}
 
-		mr.upperTeamWins = 1;
+		mr.upperSeedWins = 1;
 
 		swissBracket.setMatchRecord("0-0", i, mr);
 	}
 
 	// check r2 was generated correctly
 	const round2Upper = swissBracket.getRoundNode("1-0");
-	assertEquals(round2Upper!.matches[0].matchRecord?.upperTeam, 1);
-	assertEquals(round2Upper!.matches[0].matchRecord?.lowerTeam, 8);
+	assertEquals(round2Upper!.matches[0].matchRecord?.upperSeed, 1);
+	assertEquals(round2Upper!.matches[0].matchRecord?.lowerSeed, 8);
 
 	// now get first match from round 1
 	const mr = swissBracket.getMatchRecord("0-0", 0);
 	const round1 = swissBracket.getRoundNode("0-0");
 	// set it to 1-1 aka a draw
-	mr!.lowerTeamWins = 1;
+	mr!.lowerSeedWins = 1;
 	swissBracket.setMatchRecord("0-0", 0, mr!);
 	// check that the draw exists
-	assertEquals(round1?.matches[0].matchRecord?.upperTeamWins, 1);
-	assertEquals(round1?.matches[0].matchRecord?.lowerTeamWins, 1);
+	assertEquals(round1?.matches[0].matchRecord?.upperSeedWins, 1);
+	assertEquals(round1?.matches[0].matchRecord?.lowerSeedWins, 1);
 	// TODO, when a user enters data that causes a draw, future rounds should be erased because they are no longer valid
 	// since they cannot be calculated until the current round is filled out.
 	const r2UpperMatch1Mr = round2Upper!.matches[0].matchRecord;
@@ -339,12 +339,12 @@ Deno.test(function matchRecordTest1() {
 			throw new Error("match record DNE when it should");
 		}
 
-		mr.upperTeamWins = 2;
+		mr.upperSeedWins = 2;
 
 		swissBracket.setMatchRecord("0-0", i, mr);
 	}
 
-	const seed1 = swissBracket.data.rootRound.matches[0].matchRecord!.upperTeam;
+	const seed1 = swissBracket.data.rootRound.matches[0].matchRecord!.upperSeed;
 	const seed1History = swissBracket.getMatchHistory(seed1);
 	const seed1MatchDiff = getMatchDifferential(seed1, seed1History);
 	const seed1GameDiff = getGameDifferential(seed1, seed1History);

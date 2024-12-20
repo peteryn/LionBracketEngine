@@ -1,15 +1,15 @@
 import { SwissBracket } from "../SwissBracket.ts";
-import { MatchRecord, MatchRecordSerialized, Team, TournamentData } from "../models.ts";
+import { MatchRecord, MatchRecordSerialized, Seed, TournamentData } from "../models.ts";
 import { getJsonSync } from "./file.ts";
 import { assertEquals } from "@std/assert/equals";
 
-export function populateMatchRecords(teams: Team[], data: MatchRecordSerialized[]) {
+export function populateMatchRecords(teams: Seed[], data: MatchRecordSerialized[]) {
 	let i = 0;
 	let j = teams.length - 1;
 	while (i < j) {
 		const record = new MatchRecord(teams[i], teams[j]);
-		record.upperTeamWins = data[i].upperTeamWins;
-		record.lowerTeamWins = data[i].lowerTeamWins;
+		record.upperSeedWins = data[i].upperSeedWins;
+		record.lowerSeedWins = data[i].lowerSeedWins;
 		i++;
 		j--;
 	}
@@ -30,9 +30,9 @@ export function checkVersusData(
 	for (let j = 0; j < numMatches; j++) {
 		const calculated = swissBracket.getMatchRecord(roundName, j);
 		if (calculated) {
-			const actualUpperSeed = calculated.upperTeam;
+			const actualUpperSeed = calculated.upperSeed;
 			const expectedUpperSeed = tournament[roundName][j].upperTeam.seed;
-			const actualLowerSeed = calculated.lowerTeam;
+			const actualLowerSeed = calculated.lowerSeed;
 			const expectedLowerSeed = tournament[roundName][j].lowerTeam.seed;
 			assertEquals(actualUpperSeed, expectedUpperSeed);
 			assertEquals(actualLowerSeed, expectedLowerSeed);
@@ -60,8 +60,8 @@ export function populateMatchRecordFromData(
 			throw new Error("match record DNE when it should");
 		}
 
-		mr.lowerTeamWins = tournament[roundName][i].lowerTeamWins;
-		mr.upperTeamWins = tournament[roundName][i].upperTeamWins;
+		mr.lowerSeedWins = tournament[roundName][i].lowerTeamWins;
+		mr.upperSeedWins = tournament[roundName][i].upperTeamWins;
 
 		swissBracket.setMatchRecord(roundName, i, mr);
 	}
