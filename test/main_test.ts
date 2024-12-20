@@ -1,8 +1,6 @@
 import { assertEquals } from "@std/assert";
 import { SwissBracket } from "@/SwissBracket.ts";
 import {
-	getGameDifferential,
-	getMatchDifferential,
 	TournamentData,
 	type MatchRecordSerialized,
 } from "@/models.ts";
@@ -12,7 +10,7 @@ import {
 	populateMatchRecordFromData,
 	testTournament,
 } from "@/util/testFunctions.ts";
-import { RoundNode } from "@/models.ts";
+import { RoundNode } from "@/models/round_node.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
@@ -345,9 +343,8 @@ Deno.test(function matchRecordTest1() {
 	}
 
 	const seed1 = swissBracket.data.rootRound.matches[0].matchRecord!.upperSeed;
-	const seed1History = swissBracket.getMatchHistory(seed1);
-	const seed1MatchDiff = getMatchDifferential(seed1, seed1History);
-	const seed1GameDiff = getGameDifferential(seed1, seed1History);
+	const seed1MatchDiff = swissBracket.getMatchDifferential(seed1);
+	const seed1GameDiff = swissBracket.getGameDifferential(seed1);
 	assertEquals(seed1MatchDiff, 1);
 	assertEquals(seed1GameDiff, 2);
 });

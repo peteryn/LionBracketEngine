@@ -1,4 +1,5 @@
-import { getMatchDifferential, MatchRecord, RoundNode, Seed, type MatchTracker } from "./models.ts";
+import { MatchTracker } from "./models.ts";
+import type { RoundNode } from "@/models/round_node.ts";
 import { SwissBracketData } from "./SwissBracketData.ts";
 import {
 	cartesianProduct,
@@ -7,6 +8,7 @@ import {
 	isFilledRound,
 	populateMatches,
 } from "./util/util.ts";
+import type { Seed, MatchRecord } from "@/models/match_record.ts";
 
 type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
 
@@ -372,14 +374,34 @@ export class SwissBracket {
 
 	swissSort(seeds: Seed[]): Seed[] {
 		return [...seeds].sort((a, b) => {
-			const aHistory = this.getMatchHistory(a);
-			const bHistory = this.getMatchHistory(b);
 			return (
-				getMatchDifferential(b, bHistory) - getMatchDifferential(a, aHistory) || // descending
+				this.getMatchDifferential(b) - this.getMatchDifferential(a) || // descending
 				this.tieBreaker(b) - this.tieBreaker(a) || // descending
 				a - b
 			); // ascending
 		});
+	}
+
+	getMatchDifferential(seed: Seed) {
+		const matchHistory = this.getMatchHistory(seed);
+		let wins = 0;
+		let losses = 0;
+		for (let index = 0; index < matchHistory.length; index++) {
+			const match = matchHistory[index];
+			const isUpperSeed = match.upperSeed === seed;
+			// if the match is a draw, do not count it as a win or loss
+			if (match.upperSeedWins === match.lowerSeedWins) {
+				continue;
+			}
+			const isUpperSeedWinner = match.upperSeedWins > match.lowerSeedWins;
+
+			if ((isUpperSeed && isUpperSeedWinner) || (!isUpperSeed && !isUpperSeedWinner)) {
+				wins++;
+			} else {
+				losses++;
+			}
+		}
+		return wins - losses;
 	}
 
 	// to calculate Buchholz score, you need the match differential of every seed
@@ -395,8 +417,7 @@ export class SwissBracket {
 			const match = matchHistory[index];
 			const isUpperSeed = match.upperSeed === seed;
 			const opponent = isUpperSeed ? match.lowerSeed : match.upperSeed;
-			const opponentMatchHistory = this.getMatchHistory(opponent);
-			score += getMatchDifferential(opponent, opponentMatchHistory);
+			score += this.getMatchDifferential(opponent);
 		}
 
 		return score;
