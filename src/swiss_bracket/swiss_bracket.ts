@@ -209,47 +209,6 @@ export class SwissBracket {
 		}
 	}
 
-	private processRound(round: RoundNode, seeds: Seed[]) {
-		if (round.has2Parents) {
-			const [roundWins, roundLosses] = round.name.split("-");
-			const upperParentNode = this.getRoundNode(`${roundWins}-${parseInt(roundLosses) - 1}`);
-			const lowerParentNode = this.getRoundNode(`${parseInt(roundWins) - 1}-${roundLosses}`);
-			const upperLosers = getLosers(upperParentNode.matches);
-			const lowerWinners = getWinners(lowerParentNode.matches);
-			if (
-				upperLosers.length === upperParentNode.numSeeds / 2 &&
-				lowerWinners.length === lowerParentNode.numSeeds / 2
-			) {
-				const matchups = this.evaluationSort(upperLosers, lowerWinners);
-				populateMatches(round.matches, matchups);
-			} else {
-				// do nothing, cant calculate round yet
-			}
-		} else {
-			const matchups = this.evaluationSort(seeds);
-			populateMatches(round.matches, matchups);
-		}
-	}
-
-	private clearDependents(round: RoundNode | undefined) {
-		if (round) {
-			levelOrderTraversal(round, (node) => {
-				const matches = node.matches;
-				for (let index = 0; index < matches.length; index++) {
-					const match = matches[index];
-					match.matchRecord = undefined;
-				}
-				// reset the seeds that were promoted because future rounds are being calculated
-				if (node.promotionSeeds.length > 0) {
-					node.promotionSeeds = [];
-				}
-				if (node.eliminationSeeds.length > 0) {
-					node.eliminationSeeds = [];
-				}
-			});
-		}
-	}
-
 	// 1. Match differential
 	// 2. Game differential
 	// 3. Seed
@@ -491,6 +450,47 @@ export class SwissBracket {
 			}
 		}
 		return false;
+	}
+
+	private processRound(round: RoundNode, seeds: Seed[]) {
+		if (round.has2Parents) {
+			const [roundWins, roundLosses] = round.name.split("-");
+			const upperParentNode = this.getRoundNode(`${roundWins}-${parseInt(roundLosses) - 1}`);
+			const lowerParentNode = this.getRoundNode(`${parseInt(roundWins) - 1}-${roundLosses}`);
+			const upperLosers = getLosers(upperParentNode.matches);
+			const lowerWinners = getWinners(lowerParentNode.matches);
+			if (
+				upperLosers.length === upperParentNode.numSeeds / 2 &&
+				lowerWinners.length === lowerParentNode.numSeeds / 2
+			) {
+				const matchups = this.evaluationSort(upperLosers, lowerWinners);
+				populateMatches(round.matches, matchups);
+			} else {
+				// do nothing, cant calculate round yet
+			}
+		} else {
+			const matchups = this.evaluationSort(seeds);
+			populateMatches(round.matches, matchups);
+		}
+	}
+
+	private clearDependents(round: RoundNode | undefined) {
+		if (round) {
+			levelOrderTraversal(round, (node) => {
+				const matches = node.matches;
+				for (let index = 0; index < matches.length; index++) {
+					const match = matches[index];
+					match.matchRecord = undefined;
+				}
+				// reset the seeds that were promoted because future rounds are being calculated
+				if (node.promotionSeeds.length > 0) {
+					node.promotionSeeds = [];
+				}
+				if (node.eliminationSeeds.length > 0) {
+					node.eliminationSeeds = [];
+				}
+			});
+		}
 	}
 }
 
