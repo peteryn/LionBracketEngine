@@ -1,4 +1,4 @@
-import { SwissBracket } from "../SwissBracket.ts";
+import { SwissBracket } from "@/swiss_bracket/swiss_bracket.ts";
 import { MatchRecordSerialized, TournamentData } from "../models.ts";
 import { type Seed, MatchRecord } from "@/models/match_record.ts";
 import { getJsonSync } from "./file.ts";

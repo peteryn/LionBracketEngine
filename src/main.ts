@@ -1,4 +1,4 @@
-import { SwissBracket } from "./SwissBracket.ts";
+import { SwissBracket } from "./swiss_bracket/swiss_bracket.ts";
 
 // Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
 if (import.meta.main) {

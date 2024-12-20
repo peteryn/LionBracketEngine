@@ -1,9 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { SwissBracket } from "@/SwissBracket.ts";
-import {
-	TournamentData,
-	type MatchRecordSerialized,
-} from "@/models.ts";
+import { TournamentData, type MatchRecordSerialized } from "@/models.ts";
 import { getJsonSync } from "@/util/file.ts";
 import {
 	checkVersusData,
@@ -11,6 +7,7 @@ import {
 	testTournament,
 } from "@/util/testFunctions.ts";
 import { RoundNode } from "@/models/round_node.ts";
+import { SwissBracket } from "@/swiss_bracket/swiss_bracket.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");

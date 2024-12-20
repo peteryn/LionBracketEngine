@@ -1,13 +1,13 @@
-import { MatchTracker } from "./models.ts";
+import { MatchTracker } from "../models.ts";
 import type { RoundNode } from "@/models/round_node.ts";
-import { SwissBracketData } from "./SwissBracketData.ts";
+import { SwissBracketData } from "./swiss_bracket_data.ts";
 import {
 	cartesianProduct,
 	getWinners,
 	getLosers,
 	isFilledRound,
 	populateMatches,
-} from "./util/util.ts";
+} from "../util/util.ts";
 import type { Seed, MatchRecord } from "@/models/match_record.ts";
 
 type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
