@@ -1,5 +1,5 @@
-import type { Match } from "@/models/match.ts";
-import type { Seed } from "@/models/match_record.ts";
+import type { Match } from "./match.ts";
+import type { Seed } from "./match_record.ts";
 
 export class RoundNode {
 	name: string;

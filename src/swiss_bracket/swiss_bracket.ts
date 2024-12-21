@@ -1,4 +1,4 @@
-import type { RoundNode } from "@/models/round_node.ts";
+import type { RoundNode } from "../models/round_node.ts";
 import { SwissBracketData } from "./swiss_bracket_data.ts";
 import {
 	cartesianProduct,

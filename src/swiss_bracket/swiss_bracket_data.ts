@@ -1,8 +1,8 @@
-import { RoundNode } from "@/models/round_node.ts";
+import { RoundNode } from "../models/round_node.ts";
 import { levelOrderTraversal } from "./swiss_bracket.ts";
 import { populateMatches } from "../util/util.ts";
-import { Match } from "@/models/match.ts";
-import { Seed } from "@/models/match_record.ts";
+import { Match } from "../models/match.ts";
+import { Seed } from "../models/match_record.ts";
 
 export class SwissBracketData {
 	rootRound: RoundNode;

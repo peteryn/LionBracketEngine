@@ -1,4 +1,4 @@
-import type { MatchRecord } from "@/models/match_record.ts";
+import type { MatchRecord } from "./match_record.ts";
 
 export class Match {
 	id: string;
