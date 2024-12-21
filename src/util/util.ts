@@ -1,5 +1,5 @@
-import type { Match } from "@/models/match.ts";
-import { type Seed, MatchRecord } from "@/models/match_record.ts";
+import type { Match } from "../models/match.ts";
+import { type Seed, MatchRecord } from "../models/match_record.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
