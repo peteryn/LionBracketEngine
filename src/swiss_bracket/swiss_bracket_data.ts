@@ -10,7 +10,7 @@ export class SwissBracketData {
 
 	constructor(numSeeds: number = 16, winRequirement: number = 3, bracketId: string) {
 		this.rootRound = this.createStructure(numSeeds, winRequirement);
-		this.initializeEmptyMatches(this.rootRound);
+		initializeEmptyMatches(this.rootRound);
 		const seeds = this.createSeeds(numSeeds);
 		// populate root round with the seeds in the correct matches
 		const matchups = this.seedBasedMatchups(seeds);
@@ -77,16 +77,6 @@ export class SwissBracketData {
 		}
 	}
 
-	private initializeEmptyMatches(root: RoundNode) {
-		const init = (node: RoundNode) => {
-			for (let index = 0; index < node.numSeeds / 2; index++) {
-				const match = new Match(node.name, index);
-				node.matches.push(match);
-			}
-		};
-		levelOrderTraversal(root, init);
-	}
-
 	private createSeeds(numSeeds: number): Seed[] {
 		const seeds: Seed[] = [];
 		for (let index = 1; index <= numSeeds; index++) {
@@ -109,4 +99,14 @@ export class SwissBracketData {
 
 		return matchups;
 	}
+}
+
+export function initializeEmptyMatches(root: RoundNode) {
+	const init = (node: RoundNode) => {
+		for (let index = 0; index < node.numSeeds / 2; index++) {
+			const match = new Match(node.name, index);
+			node.matches.push(match);
+		}
+	};
+	levelOrderTraversal(root, init);
 }
