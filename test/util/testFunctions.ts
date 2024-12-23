@@ -1,6 +1,6 @@
-import { SwissBracket } from "@/swiss_bracket/swiss_bracket.ts";
+import { SwissBracket } from "../../src/swiss_bracket/swiss_bracket.ts";
 import { MatchRecordSerialized, TournamentData } from "../models.ts";
-import { type Seed, MatchRecord } from "@/models/match_record.ts";
+import { type Seed, MatchRecord } from "../../src/models/match_record.ts";
 import { getJsonSync } from "./file.ts";
 import { assertEquals } from "@std/assert/equals";
 

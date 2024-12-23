@@ -1,4 +1,4 @@
-import type { MatchRecord } from "@/models/match_record.ts";
+import type { MatchRecord } from "../src/models/match_record.ts";
 
 export interface MatchRecordSerialized {
 	upperSeedWins: number;

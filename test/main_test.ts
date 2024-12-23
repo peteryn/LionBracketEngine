@@ -6,8 +6,8 @@ import {
 	populateMatchRecordFromData,
 	testTournament,
 } from "./util/testFunctions.ts";
-import { RoundNode } from "@/models/round_node.ts";
-import { SwissBracket } from "@/swiss_bracket/swiss_bracket.ts";
+import { RoundNode } from "../src/models/round_node.ts";
+import { SwissBracket } from "../src/swiss_bracket/swiss_bracket.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");

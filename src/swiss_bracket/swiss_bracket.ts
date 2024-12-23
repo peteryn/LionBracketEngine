@@ -7,7 +7,7 @@ import {
 	isFilledRound,
 	populateMatches,
 } from "../util/util.ts";
-import type { Seed, MatchRecord } from "@/models/match_record.ts";
+import type { Seed, MatchRecord } from "../models/match_record.ts";
 
 type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
 
