@@ -1,5 +1,10 @@
 import { RoundNode } from "../models/round_node.ts";
-import { createSeeds, initializeEmptyMatches, populateMatches, seedBasedMatchups } from "../util/util.ts";
+import {
+	createSeeds,
+	initializeEmptyMatches,
+	populateMatches,
+	seedBasedMatchups,
+} from "../util/util.ts";
 import { Match } from "../models/match.ts";
 import { Seed } from "../models/match_record.ts";
 
@@ -75,7 +80,4 @@ export class SwissBracketData {
 			return true;
 		}
 	}
-
-	
-
 }

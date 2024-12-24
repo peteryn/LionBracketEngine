@@ -29,6 +29,68 @@ export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
 		populateMatches(this.rootRound.matches, matchups);
 	}
 
+	// override each setter so that as soon as a set is made,
+	// the new swiss flow is computed and future rounds are updated correctly
+	// OPTION: could refactor new method names that do the same thing and add them to
+	// FlowBracket interface. this would have the side effect that the original super.setter()
+	// methods would still be accessible from the outward interface.
+	override setMatchRecord(
+		roundName: string,
+		matchNumber: number,
+		matchRecord: MatchRecord
+	): boolean {
+		const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
+		const roundNode = this.getRoundNode(roundName);
+		console.log("in overridden")
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
+
+	override setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
+		const res = super.setMatchRecordById(matchId, matchRecord);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getRoundNode(roundNodeName);
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
+
+	override setMatchRecordWithValue(
+		roundName: string,
+		matchNumber: number,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean {
+		const res = super.setMatchRecordWithValue(
+			roundName,
+			matchNumber,
+			upperSeedWins,
+			lowerSeedWins
+		);
+		const roundNode = this.getRoundNode(roundName);
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
+
+	override setMatchRecordWithValueById(
+		matchId: string,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean {
+		const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getRoundNode(roundNodeName);
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
+
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated
 	// a different implementation will be called on all dependent nodes
@@ -70,7 +132,7 @@ export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
 		}
 	}
 
-	swissSort(seeds: Seed[]): Seed[] {
+	private swissSort(seeds: Seed[]): Seed[] {
 		return seeds.sort((a, b) => {
 			return (
 				this.getMatchDifferential(b) - this.getMatchDifferential(a) || // descending
@@ -80,7 +142,7 @@ export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
 		});
 	}
 
-	tieBreaker(seed: Seed): number {
+	protected tieBreaker(seed: Seed): number {
 		return this.getGameDifferential(seed);
 	}
 
@@ -89,7 +151,7 @@ export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
 	// 3. Seed
 	// if RoundNode has 2 parents, then upper must play lower
 	// basically, a sort by multiple criteria
-	evaluationSort(upperSeedsInput: Seed[], lowerSeedsInput?: Seed[]): Seed[][] {
+	private evaluationSort(upperSeedsInput: Seed[], lowerSeedsInput?: Seed[]): Seed[][] {
 		const upperSeeds = this.swissSort(upperSeedsInput);
 		const matchups: Seed[][] = [];
 		if (lowerSeedsInput) {
@@ -212,6 +274,7 @@ export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
 		return matchups;
 	}
 
+	// TODO: this should be apart of abstract bracket
 	getMatchHistory(seed: Seed) {
 		let curr: RoundNode | undefined = this.rootRound;
 		const matchHistory: MatchRecord[] = [];
@@ -262,6 +325,7 @@ export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
 		return matchHistory;
 	}
 
+	// TODO: this should be part of abstract bracket
 	getMatchDifferential(seed: Seed) {
 		const matchHistory = this.getMatchHistory(seed);
 		let wins = 0;

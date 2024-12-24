@@ -8,6 +8,9 @@ import {
 } from "./util/testFunctions.ts";
 import { RoundNode } from "../src/models/round_node.ts";
 import { SwissBracket } from "../src/swiss_bracket/swiss_bracket.ts";
+import { MatchRecord } from "../src/models/match_record.ts";
+import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
+import { Bracket } from "../src/models/bracket.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
@@ -344,4 +347,16 @@ Deno.test(function matchRecordTest1() {
 	const seed1GameDiff = swissBracket.getGameDifferential(seed1);
 	assertEquals(seed1MatchDiff, 1);
 	assertEquals(seed1GameDiff, 2);
+});
+
+Deno.test(function inheritanceTest1() {
+	const a = new SwissBracketFlow();
+	a.setMatchRecord("0-0", 0, new MatchRecord(1, 2));
+
+	console.log();
+
+	// so even if we use polymorphism, this will call the the setMatchRecord
+	// in the child class
+	const b: Bracket = a;
+	b.setMatchRecord("0-0", 0, new MatchRecord(1, 2));
 });

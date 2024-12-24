@@ -1,6 +1,6 @@
 import { RoundNode } from "./round_node.ts";
 import { MatchRecord } from "./match_record.ts";
-import { levelOrderTraversal } from "../swiss_bracket/swiss_bracket.ts";
+import { levelOrderTraversal } from "../util/util.ts";
 
 export abstract class Bracket {
 	abstract rootRound: RoundNode;
@@ -35,6 +35,15 @@ export abstract class Bracket {
 		return structuredClone(matchRecord);
 	}
 
+	getMatchRecord(roundName: string, matchNumber: number) {
+		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
+	}
+
+	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean {
+		console.log("in abstract class");
+		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
+	}
+
 	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
 		const match = this.getMatch(matchId);
 		if (match) {
@@ -45,28 +54,24 @@ export abstract class Bracket {
 				// then traverse starting at that node do the traversal
 				// with a callback that updates the next round
 				// this.updateRounds(roundNode);
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
 
-	getMatchRecord(roundName: string, matchNumber: number) {
-		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
-	}
-
-	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord) {
-		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
-	}
-
-	setMatchRecordWithValueById(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
+	setMatchRecordWithValueById(
+		matchId: string,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean {
 		const mr = this.getMatchRecordById(matchId);
 		if (!mr) {
-			return undefined;
+			return false;
 		}
 		mr.upperSeedWins = upperSeedWins;
 		mr.lowerSeedWins = lowerSeedWins;
-		this.setMatchRecordById(matchId, mr);
+		return this.setMatchRecordById(matchId, mr);
 	}
 
 	setMatchRecordWithValue(
@@ -74,8 +79,8 @@ export abstract class Bracket {
 		matchNumber: number,
 		upperSeedWins: number,
 		lowerSeedWins: number
-	) {
-		this.setMatchRecordWithValueById(
+	): boolean {
+		return this.setMatchRecordWithValueById(
 			`${roundName}.${matchNumber}`,
 			upperSeedWins,
 			lowerSeedWins
