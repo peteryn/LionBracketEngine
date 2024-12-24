@@ -1,5 +1,5 @@
-import { initializeEmptyMatches, SwissBracketData } from "@/swiss_bracket/swiss_bracket_data.ts";
-import { RoundNode } from "@/models/round_node.ts";
+import { initializeEmptyMatches, SwissBracketData } from "../swiss_bracket/swiss_bracket_data.ts";
+import { RoundNode } from "../models/round_node.ts";
 
 export class GSL_Bracket {
 	constructor() {
