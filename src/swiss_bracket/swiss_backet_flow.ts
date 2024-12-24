@@ -1,16 +1,17 @@
-import type { RoundNode } from "../models/round_node.ts";
-import { SwissBracketData } from "./swiss_bracket_data.ts";
+import { FlowBracket } from "../models/flow_bracket.ts";
+import { MatchRecord, Seed } from "../models/match_record.ts";
+import { RoundNode } from "../models/round_node.ts";
 import {
 	cartesianProduct,
-	getWinners,
+	createSeeds,
 	getLosers,
+	getWinners,
 	isFilledRound,
-	populateMatches,
 	levelOrderTraversal,
+	populateMatches,
+	seedBasedMatchups,
 } from "../util/util.ts";
-import type { Seed, MatchRecord } from "../models/match_record.ts";
-
-type tieBreaker = "GAME_DIFF" | "BUCCHOLZ";
+import { SwissBracket2 } from "./swiss_bracket2.ts";
 
 type MatchTracker = {
 	upperSeed: Seed;
@@ -19,160 +20,19 @@ type MatchTracker = {
 	index: number;
 };
 
-export class SwissBracket {
-	data: SwissBracketData;
-	tieBreaker: (seed: Seed) => number;
-
-	constructor(
-		numSeeds: number = 16,
-		winRequirement: number = 3,
-		tieBreaker: tieBreaker = "GAME_DIFF",
-		bracketId: string
-	) {
-		this.data = new SwissBracketData(numSeeds, winRequirement, bracketId);
-		switch (tieBreaker) {
-			case "GAME_DIFF":
-				this.tieBreaker = this.getGameDifferential;
-				break;
-			case "BUCCHOLZ":
-				this.tieBreaker = this.getBuchholzScore;
-				break;
-			default:
-				console.log("you may have set an incorrect tie breaker method");
-				this.tieBreaker = this.getGameDifferential;
-		}
-	}
-
-	getMatchRecord(roundName: string, matchNumber: number) {
-		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
-	}
-
-	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord) {
-		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
-	}
-
-	getMatch(matchId: string) {
-		const [roundName, matchIndexString] = matchId.split(".");
-		const matchIndex = parseInt(matchIndexString);
-		const roundNode = this.getRoundNode(roundName);
-		const matches = roundNode.matches;
-		return matches[matchIndex];
-	}
-
-	getMatchRecordById(matchId: string): MatchRecord | undefined {
-		const matchRecord = this.getMatch(matchId)?.matchRecord;
-		if (!matchRecord) {
-			return undefined;
-		}
-		return structuredClone(matchRecord);
-	}
-
-	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
-		const match = this.getMatch(matchId);
-		if (match) {
-			match.matchRecord = matchRecord;
-			const roundNodeName = match.id.split(".")[0];
-			const roundNode = this.getRoundNode(roundNodeName);
-			if (roundNode) {
-				// then traverse starting at that node do the traversal
-				// with a callback that updates the next round
-				this.updateRounds(roundNode);
-			}
-			return true;
-		}
-		return false;
-	}
-
-	setMatchRecordWithValue(
-		roundName: string,
-		matchNumber: number,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	) {
-		this.setMatchRecordWithValueById(
-			`${roundName}.${matchNumber}`,
-			upperSeedWins,
-			lowerSeedWins
-		);
-	}
-
-	setMatchRecordWithValueById(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
-		const mr = this.getMatchRecordById(matchId);
-		if (!mr) {
-			return undefined;
-		}
-		mr.upperSeedWins = upperSeedWins;
-		mr.lowerSeedWins = lowerSeedWins;
-		this.setMatchRecordById(matchId, mr);
-	}
-
-	getRoundNode(roundNodeName: string): RoundNode {
-		let roundNode: RoundNode | undefined = undefined;
-		levelOrderTraversal(this.data.rootRound, (node: RoundNode) => {
-			if (node.name === roundNodeName) {
-				roundNode = node;
-			}
-		});
-		if (roundNode === undefined) {
-			throw new Error("invalid round node id");
-		}
-		return roundNode as RoundNode;
-	}
-
-	getMatchHistory(seed: Seed) {
-		let curr: RoundNode | undefined = this.data.rootRound;
-		const matchHistory: MatchRecord[] = [];
-		while (curr) {
-			const matches = curr.matches;
-			// may need to check if round is filled out or not
-			let winner = 0;
-			for (let index = 0; index < matches.length; index++) {
-				const match = matches[index];
-				const matchRecord = match.matchRecord;
-				if (!matchRecord) {
-					winner = 0;
-					break;
-				}
-				if (matchRecord.upperSeed === seed) {
-					if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
-						winner = 1;
-					} else if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
-						winner = -1;
-					} else {
-						winner = 0;
-					}
-					matchHistory.push(matchRecord);
-				}
-				if (matchRecord.lowerSeed === seed) {
-					if (matchRecord.lowerSeedWins > matchRecord.upperSeedWins) {
-						winner = 1;
-					} else if (matchRecord.lowerSeedWins < matchRecord.upperSeedWins) {
-						winner = -1;
-					} else {
-						winner = 0;
-					}
-					matchHistory.push(matchRecord);
-				}
-			}
-			switch (winner) {
-				case -1:
-					curr = curr.losingRound;
-					break;
-				case 1:
-					curr = curr.winningRound;
-					break;
-				case 0:
-					curr = undefined;
-					break;
-			}
-		}
-		return matchHistory;
+export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
+	constructor(numSeeds: number = 16, winRequirement: number = 3) {
+		super(numSeeds, winRequirement);
+		const seeds = createSeeds(numSeeds);
+		// populate root round with the seeds in the correct matches
+		const matchups = seedBasedMatchups(seeds);
+		populateMatches(this.rootRound.matches, matchups);
 	}
 
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated
 	// a different implementation will be called on all dependent nodes
-	updateRounds(roundNode: RoundNode) {
+	updateRounds(roundNode: RoundNode): void {
 		// we need to remove match records in future rounds because changing the current round
 		// may invalidate future rounds
 		// we will then repopulate future rounds if necessary
@@ -208,6 +68,20 @@ export class SwissBracket {
 			// set the losers who are eliminated
 			roundNode.eliminationSeeds = this.swissSort(losers);
 		}
+	}
+
+	swissSort(seeds: Seed[]): Seed[] {
+		return seeds.sort((a, b) => {
+			return (
+				this.getMatchDifferential(b) - this.getMatchDifferential(a) || // descending
+				this.tieBreaker(b) - this.tieBreaker(a) || // descending
+				a - b
+			); // ascending
+		});
+	}
+
+	tieBreaker(seed: Seed): number {
+		return this.getGameDifferential(seed);
 	}
 
 	// 1. Match differential
@@ -338,14 +212,54 @@ export class SwissBracket {
 		return matchups;
 	}
 
-	swissSort(seeds: Seed[]): Seed[] {
-		return seeds.sort((a, b) => {
-			return (
-				this.getMatchDifferential(b) - this.getMatchDifferential(a) || // descending
-				this.tieBreaker(b) - this.tieBreaker(a) || // descending
-				a - b
-			); // ascending
-		});
+	getMatchHistory(seed: Seed) {
+		let curr: RoundNode | undefined = this.rootRound;
+		const matchHistory: MatchRecord[] = [];
+		while (curr) {
+			const matches = curr.matches;
+			// may need to check if round is filled out or not
+			let winner = 0;
+			for (let index = 0; index < matches.length; index++) {
+				const match = matches[index];
+				const matchRecord = match.matchRecord;
+				if (!matchRecord) {
+					winner = 0;
+					break;
+				}
+				if (matchRecord.upperSeed === seed) {
+					if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
+						winner = 1;
+					} else if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
+						winner = -1;
+					} else {
+						winner = 0;
+					}
+					matchHistory.push(matchRecord);
+				}
+				if (matchRecord.lowerSeed === seed) {
+					if (matchRecord.lowerSeedWins > matchRecord.upperSeedWins) {
+						winner = 1;
+					} else if (matchRecord.lowerSeedWins < matchRecord.upperSeedWins) {
+						winner = -1;
+					} else {
+						winner = 0;
+					}
+					matchHistory.push(matchRecord);
+				}
+			}
+			switch (winner) {
+				case -1:
+					curr = curr.losingRound;
+					break;
+				case 1:
+					curr = curr.winningRound;
+					break;
+				case 0:
+					curr = undefined;
+					break;
+			}
+		}
+		return matchHistory;
 	}
 
 	getMatchDifferential(seed: Seed) {
@@ -406,39 +320,6 @@ export class SwissBracket {
 			}
 		}
 		return gamesWon - gamesLost;
-	}
-
-	// prints out swiss rounds level by level
-	// will print each RoundNode once
-	printLevels() {
-		const printLevel = (level: RoundNode[]) => {
-			for (let index = 0; index < level.length; index++) {
-				const element = level[index];
-				console.log(element.toString());
-			}
-			console.log();
-		};
-		levelOrderTraversal(this.data.rootRound, undefined, printLevel);
-	}
-
-	getPromotedSeeds() {
-		let promotedSeeds: Seed[] = [];
-		levelOrderTraversal(this.data.rootRound, (node) => {
-			if (node.promotionSeeds.length > 0) {
-				promotedSeeds = promotedSeeds.concat(node.promotionSeeds);
-			}
-		});
-		return promotedSeeds;
-	}
-
-	getEliminatedSeeds() {
-		let eliminatedSeeds: Seed[] = [];
-		levelOrderTraversal(this.data.rootRound, (node) => {
-			if (node.eliminationSeeds.length > 0) {
-				eliminatedSeeds = eliminatedSeeds.concat(node.eliminationSeeds);
-			}
-		});
-		return this.swissSort(eliminatedSeeds);
 	}
 
 	private playedAlready(seed1: Seed, seed2: Seed) {

@@ -1,17 +1,9 @@
 import { RoundNode } from "./round_node.ts";
-import { MatchRecord, Seed } from "./match_record.ts";
+import { MatchRecord } from "./match_record.ts";
 import { levelOrderTraversal } from "../swiss_bracket/swiss_bracket.ts";
 
 export abstract class Bracket {
 	abstract rootRound: RoundNode;
-
-	abstract updateRounds(rootRound: RoundNode): void;
-
-	abstract getMatchHistory(seed: Seed): MatchRecord[]
-
-	abstract getPromotedSeeds(): Seed[];
-
-	abstract getEliminatedSeeds(): Seed[];
 
 	getRoundNode(roundNodeName: string): RoundNode {
 		let roundNode: RoundNode | undefined = undefined;
@@ -52,7 +44,7 @@ export abstract class Bracket {
 			if (roundNode) {
 				// then traverse starting at that node do the traversal
 				// with a callback that updates the next round
-				this.updateRounds(roundNode);
+				// this.updateRounds(roundNode);
 			}
 			return true;
 		}

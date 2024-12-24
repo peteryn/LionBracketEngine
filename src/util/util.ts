@@ -1,5 +1,6 @@
-import type { Match } from "../models/match.ts";
+import { Match } from "../models/match.ts";
 import { type Seed, MatchRecord } from "../models/match_record.ts";
+import { RoundNode } from "../models/round_node.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -68,4 +69,71 @@ export function populateMatches(matches: Match[], seeds: Seed[][]) {
 		const record = new MatchRecord(seed1, seed2);
 		matches[index].matchRecord = record;
 	}
+}
+
+export function initializeEmptyMatches(root: RoundNode) {
+	const init = (node: RoundNode) => {
+		for (let index = 0; index < node.numSeeds / 2; index++) {
+			const match = new Match(node.name, index);
+			node.matches.push(match);
+		}
+	};
+	levelOrderTraversal(root, init);
+}
+
+export function createSeeds(numSeeds: number): Seed[] {
+	return Array.from({ length: numSeeds }, (_, index) => index + 1);
+}
+
+export function seedBasedMatchups(seeds: Seed[]) {
+	const matchups: Seed[][] = [];
+
+	// implementation when round node has 1 parent
+	let i = 0;
+	let j = seeds.length - 1;
+	while (i < j) {
+		matchups.push([seeds[i], seeds[j]]);
+		i++;
+		j--;
+	}
+
+	return matchups;
+}
+
+export function levelOrderTraversal(
+	root: RoundNode,
+	perNodeCallBack?: (node: RoundNode) => void,
+	perLevelCallBack?: (level: RoundNode[]) => void
+) {
+	let queue: RoundNode[] = [];
+	const visited: string[] = [];
+	queue.push(root);
+	const levels = [];
+	while (queue.length > 0) {
+		const level: RoundNode[] = [];
+		const newQueue: RoundNode[] = [];
+		for (let i = 0; i < queue.length; i++) {
+			const node = queue[i];
+
+			if (!visited.includes(node.name)) {
+				if (perNodeCallBack) {
+					perNodeCallBack(node);
+				}
+				level.push(node);
+				visited.push(node.name);
+			}
+			if (node.winningRound) {
+				newQueue.push(node.winningRound);
+			}
+			if (node.losingRound) {
+				newQueue.push(node.losingRound);
+			}
+		}
+		queue = newQueue;
+		if (perLevelCallBack) {
+			perLevelCallBack(level);
+		}
+		levels.push(level);
+	}
+	return levels;
 }
