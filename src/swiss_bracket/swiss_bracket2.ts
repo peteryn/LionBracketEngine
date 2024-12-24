@@ -27,18 +27,7 @@ export class SwissBracket2 extends Bracket {
 			const newQueue: RoundNode[] = [];
 			for (let i = 0; i < queue.length; i++) {
 				const node = queue[i];
-				// update winning child
-				if (node.winRecord + 1 < winRequirement) {
-					const winningNodeRecord = `${node.winRecord + 1}-${node.loseRecord}`;
-					this.checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0, level);
-					node.winningRound = existingNodes.get(winningNodeRecord);
-				}
-				// update losing child
-				if (node.loseRecord + 1 < winRequirement) {
-					const losingNodeRecord = `${node.winRecord}-${node.loseRecord + 1}`;
-					this.checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1, level);
-					node.losingRound = existingNodes.get(losingNodeRecord);
-				}
+				this.processNode(node, winRequirement, existingNodes, level);
 			}
 			existingNodes.forEach((value) => {
 				newQueue.push(value);
@@ -47,6 +36,21 @@ export class SwissBracket2 extends Bracket {
 			level++;
 		}
 		return root;
+	}
+
+	private processNode(node: RoundNode, winRequirement: number, existingNodes: Map<string, RoundNode>, level: number) {
+		// update winning child
+		if (node.winRecord + 1 < winRequirement) {
+			const winningNodeRecord = `${node.winRecord + 1}-${node.loseRecord}`;
+			this.checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0, level);
+			node.winningRound = existingNodes.get(winningNodeRecord);
+		}
+		// update losing child
+		if (node.loseRecord + 1 < winRequirement) {
+			const losingNodeRecord = `${node.winRecord}-${node.loseRecord + 1}`;
+			this.checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1, level);
+			node.losingRound = existingNodes.get(losingNodeRecord);
+		}
 	}
 
 	private checkAndAddNode(
