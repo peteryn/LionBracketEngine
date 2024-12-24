@@ -7,21 +7,20 @@ import {
 	testTournament,
 } from "./util/testFunctions.ts";
 import { RoundNode } from "../src/models/round_node.ts";
-import { SwissBracket } from "../src/swiss_bracket/swiss_bracket.ts";
 import { MatchRecord } from "../src/models/match_record.ts";
 import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
 import { Bracket } from "../src/models/bracket.ts";
 
 Deno.test(function structureTest1() {
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
-	const rootRound = swissBracket.data.rootRound;
+	const swissBracket = new SwissBracketFlow(16, 3);
+	const rootRound = swissBracket.rootRound;
 	assertEquals(rootRound.level, 1);
 	assertEquals(rootRound.has2Parents, false);
 	assertEquals(rootRound.matches[0].matchRecord?.upperSeed, 1);
 	assertEquals(rootRound.matches[0].matchRecord?.lowerSeed, 16);
 	assertEquals(rootRound.matches[1].matchRecord?.upperSeed, 2);
 	assertEquals(rootRound.matches[1].matchRecord?.lowerSeed, 15);
-	assertEquals(swissBracket.getRoundNode("0-0")?.name, swissBracket.data.rootRound.name);
+	assertEquals(swissBracket.getRoundNode("0-0")?.name, swissBracket.rootRound.name);
 
 	const round2Upper = rootRound.winningRound;
 	const round2Lower = rootRound.losingRound;
@@ -69,7 +68,7 @@ Deno.test(function structureTest1() {
 });
 
 Deno.test(function computeRound1() {
-	const swissBracket = new SwissBracket(16, 2, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 2);
 	const f: MatchRecordSerialized[] = getJsonSync("./test/data/round1UpperTestData1.json");
 	for (let index = 0; index < f.length; index++) {
 		const matchRecordS = f[index];
@@ -82,7 +81,7 @@ Deno.test(function computeRound1() {
 			throw new Error("Match record doesn't exist when it should");
 		}
 	}
-	const round1 = swissBracket.data.rootRound;
+	const round1 = swissBracket.rootRound;
 	const round2Upper = round1.winningRound;
 	const round2Lower = round1.losingRound;
 	assertEquals(round2Upper?.matches[0].matchRecord?.upperSeed, 1);
@@ -117,7 +116,7 @@ Deno.test(function naRegional4Test1() {
 Deno.test(function naRegional4Test2() {
 	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 3);
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	checkVersusData(swissBracket, tournament, "1-0");
@@ -201,7 +200,7 @@ Deno.test(function naRegional4Test2() {
 Deno.test(function naRegional4Test3() {
 	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 3);
 
 	// fill out bracket
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -267,7 +266,7 @@ Deno.test(function naRegional6Test1() {
 Deno.test(function naRegional4BuchholzTest1() {
 	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 3);
 
 	// fill out bracket
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -290,8 +289,8 @@ Deno.test(function naRegional4BuchholzTest1() {
 });
 
 Deno.test(function drawTest1() {
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
-	const numMatches = swissBracket.data.rootRound.matches.length;
+	const swissBracket = new SwissBracketFlow(16, 3);
+	const numMatches = swissBracket.rootRound.matches.length;
 	// set all round 1 matches to 1-0
 	for (let i = 0; i < numMatches; i++) {
 		const mr = swissBracket.getMatchRecord("0-0", i);
@@ -329,8 +328,8 @@ Deno.test(function drawTest1() {
 });
 
 Deno.test(function matchRecordTest1() {
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
-	const numMatches = swissBracket.data.rootRound.matches.length;
+	const swissBracket = new SwissBracketFlow(16, 3);
+	const numMatches = swissBracket.rootRound.matches.length;
 	for (let i = 0; i < numMatches; i++) {
 		const mr = swissBracket.getMatchRecord("0-0", i);
 		if (!mr) {
@@ -342,7 +341,7 @@ Deno.test(function matchRecordTest1() {
 		swissBracket.setMatchRecord("0-0", i, mr);
 	}
 
-	const seed1 = swissBracket.data.rootRound.matches[0].matchRecord!.upperSeed;
+	const seed1 = swissBracket.rootRound.matches[0].matchRecord!.upperSeed;
 	const seed1MatchDiff = swissBracket.getMatchDifferential(seed1);
 	const seed1GameDiff = swissBracket.getGameDifferential(seed1);
 	assertEquals(seed1MatchDiff, 1);
@@ -352,8 +351,6 @@ Deno.test(function matchRecordTest1() {
 Deno.test(function inheritanceTest1() {
 	const a = new SwissBracketFlow();
 	a.setMatchRecord("0-0", 0, new MatchRecord(1, 2));
-
-	console.log();
 
 	// so even if we use polymorphism, this will call the the setMatchRecord
 	// in the child class

@@ -40,7 +40,7 @@ export abstract class Bracket {
 	}
 
 	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean {
-		console.log("in abstract class");
+		// console.log("in abstract class");
 		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
 	}
 

@@ -11,7 +11,7 @@ import {
 	populateMatches,
 	seedBasedMatchups,
 } from "../util/util.ts";
-import { SwissBracket2 } from "./swiss_bracket2.ts";
+import { SwissBracket } from "./swiss_bracket.ts";
 
 type MatchTracker = {
 	upperSeed: Seed;
@@ -20,7 +20,7 @@ type MatchTracker = {
 	index: number;
 };
 
-export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
+export class SwissBracketFlow extends SwissBracket implements FlowBracket {
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
 		super(numSeeds, winRequirement);
 		const seeds = createSeeds(numSeeds);
@@ -41,7 +41,7 @@ export class SwissBracketFlow extends SwissBracket2 implements FlowBracket {
 	): boolean {
 		const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
 		const roundNode = this.getRoundNode(roundName);
-		console.log("in overridden")
+		// console.log("in overridden")
 		if (res) {
 			this.updateRounds(roundNode);
 		}

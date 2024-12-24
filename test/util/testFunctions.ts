@@ -3,6 +3,7 @@ import { MatchRecordSerialized, TournamentData } from "../models.ts";
 import { type Seed, MatchRecord } from "../../src/models/match_record.ts";
 import { getJsonSync } from "./file.ts";
 import { assertEquals } from "@std/assert/equals";
+import { SwissBracketFlow } from "../../src/swiss_bracket/swiss_backet_flow.ts";
 
 export function populateMatchRecords(seeds: Seed[], data: MatchRecordSerialized[]) {
 	let i = 0;
@@ -70,7 +71,7 @@ export function populateMatchRecordFromData(
 
 export function testTournament(tournamentPath: string) {
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 3);
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	checkVersusData(swissBracket, tournament, "1-0");
