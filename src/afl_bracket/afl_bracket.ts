@@ -6,6 +6,8 @@ export class AFLBracket extends Bracket {
 
 	constructor() {
         super();
-		this.rootRound = new RoundNode("", 0, 0, 0, 0);
+		this.rootRound = new RoundNode("dummy", 0, 0, 0, 0);
+
+		
 	}
 }
