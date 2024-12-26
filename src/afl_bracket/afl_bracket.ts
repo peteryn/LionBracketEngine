@@ -1,5 +1,6 @@
 import { Bracket } from "../models/bracket.ts";
 import { RoundNode } from "../models/round_node.ts";
+import { initializeEmptyMatches } from "../util/util.ts";
 
 export class AFLBracket extends Bracket {
 	override rootRound: RoundNode;
@@ -25,5 +26,7 @@ export class AFLBracket extends Bracket {
 
 		const grandFinal = new RoundNode("3-1", 2, 0, 0, 4);
 		semiFinals.winningRound = grandFinal;
+
+		initializeEmptyMatches(this.rootRound);
 	}
 }
