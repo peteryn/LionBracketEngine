@@ -1,4 +1,5 @@
 import { Match } from "../models/match.ts";
+import { MatchNode } from "../models/match_node.ts";
 import { type Seed, MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 
@@ -136,4 +137,27 @@ export function levelOrderTraversal(
 		levels.push(level);
 	}
 	return levels;
+}
+
+export function postOrderTraversal(
+	root: MatchNode | undefined,
+	perNodeCallBack?: (node: MatchNode) => void,
+	visited?: Set<string> | undefined
+) {
+	if (!visited) {
+		visited = new Set();
+	}
+	if (!root) {
+		return;
+	}
+
+	postOrderTraversal(root.upperRound, perNodeCallBack, visited);
+	postOrderTraversal(root.lowerRound, perNodeCallBack, visited);
+
+	if (visited.has(root.name) || !perNodeCallBack) {
+		return;
+	}
+
+	perNodeCallBack(root);
+	visited.add(root.name);
 }
