@@ -34,62 +34,62 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket {
 	// OPTION: could refactor new method names that do the same thing and add them to
 	// FlowBracket interface. this would have the side effect that the original super.setter()
 	// methods would still be accessible from the outward interface.
-	// override setMatchRecord(
-	// 	roundName: string,
-	// 	matchNumber: number,
-	// 	matchRecord: MatchRecord
-	// ): boolean {
-	// 	const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
-	// 	const roundNode = this.getRoundNode(roundName);
-	// 	// console.log("in overridden")
-	// 	if (res) {
-	// 		this.updateRounds(roundNode);
-	// 	}
-	// 	return res;
-	// }
+	override setMatchRecord(
+		roundName: string,
+		matchNumber: number,
+		matchRecord: MatchRecord
+	): boolean {
+		const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
+		const roundNode = this.getRoundNode(roundName);
+		// console.log("in overridden")
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
 
-	// override setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
-	// 	const res = super.setMatchRecordById(matchId, matchRecord);
-	// 	const roundNodeName = matchId.split(".")[0];
-	// 	const roundNode = this.getRoundNode(roundNodeName);
-	// 	if (res) {
-	// 		this.updateRounds(roundNode);
-	// 	}
-	// 	return res;
-	// }
+	override setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
+		const res = super.setMatchRecordById(matchId, matchRecord);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getRoundNode(roundNodeName);
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
 
-	// override setMatchRecordWithValue(
-	// 	roundName: string,
-	// 	matchNumber: number,
-	// 	upperSeedWins: number,
-	// 	lowerSeedWins: number
-	// ): boolean {
-	// 	const res = super.setMatchRecordWithValue(
-	// 		roundName,
-	// 		matchNumber,
-	// 		upperSeedWins,
-	// 		lowerSeedWins
-	// 	);
-	// 	const roundNode = this.getRoundNode(roundName);
-	// 	if (res) {
-	// 		this.updateRounds(roundNode);
-	// 	}
-	// 	return res;
-	// }
+	override setMatchRecordWithValue(
+		roundName: string,
+		matchNumber: number,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean {
+		const res = super.setMatchRecordWithValue(
+			roundName,
+			matchNumber,
+			upperSeedWins,
+			lowerSeedWins
+		);
+		const roundNode = this.getRoundNode(roundName);
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
 
-	// override setMatchRecordWithValueById(
-	// 	matchId: string,
-	// 	upperSeedWins: number,
-	// 	lowerSeedWins: number
-	// ): boolean {
-	// 	const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
-	// 	const roundNodeName = matchId.split(".")[0];
-	// 	const roundNode = this.getRoundNode(roundNodeName);
-	// 	if (res) {
-	// 		this.updateRounds(roundNode);
-	// 	}
-	// 	return res;
-	// }
+	override setMatchRecordWithValueById(
+		matchId: string,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean {
+		const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getRoundNode(roundNodeName);
+		if (res) {
+			this.updateRounds(roundNode);
+		}
+		return res;
+	}
 
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated

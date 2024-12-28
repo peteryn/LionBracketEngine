@@ -10,10 +10,6 @@ export class SwissBracket implements Bracket<RoundNode> {
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
 		this.rootRound = this.createStructure(numSeeds, winRequirement);
 		initializeEmptyMatches(this.rootRound);
-		// const seeds = this.createSeeds(numSeeds);
-		// populate root round with the seeds in the correct matches
-		// const matchups = this.seedBasedMatchups(seeds);
-		// populateMatches(this.rootRound.matches, matchups);
 	}
 
 	getRoundNode(nodeName: string): RoundNode {
