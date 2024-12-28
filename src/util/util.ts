@@ -1,3 +1,5 @@
+import { Node } from "jsr:@b-fuze/deno-dom@~0.1.48";
+import { BracketNode } from "../models/bracket_node.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { type Seed, MatchRecord } from "../models/match_record.ts";
@@ -101,18 +103,18 @@ export function seedBasedMatchups(seeds: Seed[]) {
 	return matchups;
 }
 
-export function levelOrderTraversal(
-	root: RoundNode,
-	perNodeCallBack?: (node: RoundNode) => void,
-	perLevelCallBack?: (level: RoundNode[]) => void
+export function levelOrderTraversal<NodeType extends BracketNode>(
+	root: NodeType,
+	perNodeCallBack?: (node: NodeType) => void,
+	perLevelCallBack?: (level: NodeType[]) => void
 ) {
-	let queue: RoundNode[] = [];
+	let queue: NodeType[] = [];
 	const visited: string[] = [];
 	queue.push(root);
 	const levels = [];
 	while (queue.length > 0) {
-		const level: RoundNode[] = [];
-		const newQueue: RoundNode[] = [];
+		const level: NodeType[] = [];
+		const newQueue: NodeType[] = [];
 		for (let i = 0; i < queue.length; i++) {
 			const node = queue[i];
 
@@ -123,11 +125,11 @@ export function levelOrderTraversal(
 				level.push(node);
 				visited.push(node.name);
 			}
-			if (node.winningRound) {
-				newQueue.push(node.winningRound);
+			if (node.upperRound) {
+				newQueue.push(node.upperRound as NodeType);
 			}
-			if (node.losingRound) {
-				newQueue.push(node.losingRound);
+			if (node.lowerRound) {
+				newQueue.push(node.lowerRound as NodeType);
 			}
 		}
 		queue = newQueue;
@@ -139,9 +141,9 @@ export function levelOrderTraversal(
 	return levels;
 }
 
-export function postOrderTraversal(
-	root: MatchNode | undefined,
-	perNodeCallBack?: (node: MatchNode) => void,
+export function postOrderTraversal<NodeType extends BracketNode>(
+	root: NodeType | undefined,
+	perNodeCallBack?: (node: NodeType) => void,
 	visited?: Set<string> | undefined
 ) {
 	if (!visited) {
@@ -151,8 +153,8 @@ export function postOrderTraversal(
 		return;
 	}
 
-	postOrderTraversal(root.upperRound, perNodeCallBack, visited);
-	postOrderTraversal(root.lowerRound, perNodeCallBack, visited);
+	postOrderTraversal(root.upperRound as NodeType, perNodeCallBack, visited);
+	postOrderTraversal(root.lowerRound as NodeType, perNodeCallBack, visited);
 
 	if (visited.has(root.name) || !perNodeCallBack) {
 		return;

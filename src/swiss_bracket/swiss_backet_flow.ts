@@ -34,62 +34,62 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket {
 	// OPTION: could refactor new method names that do the same thing and add them to
 	// FlowBracket interface. this would have the side effect that the original super.setter()
 	// methods would still be accessible from the outward interface.
-	override setMatchRecord(
-		roundName: string,
-		matchNumber: number,
-		matchRecord: MatchRecord
-	): boolean {
-		const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
-		const roundNode = this.getRoundNode(roundName);
-		// console.log("in overridden")
-		if (res) {
-			this.updateRounds(roundNode);
-		}
-		return res;
-	}
+	// override setMatchRecord(
+	// 	roundName: string,
+	// 	matchNumber: number,
+	// 	matchRecord: MatchRecord
+	// ): boolean {
+	// 	const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
+	// 	const roundNode = this.getRoundNode(roundName);
+	// 	// console.log("in overridden")
+	// 	if (res) {
+	// 		this.updateRounds(roundNode);
+	// 	}
+	// 	return res;
+	// }
 
-	override setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
-		const res = super.setMatchRecordById(matchId, matchRecord);
-		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getRoundNode(roundNodeName);
-		if (res) {
-			this.updateRounds(roundNode);
-		}
-		return res;
-	}
+	// override setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
+	// 	const res = super.setMatchRecordById(matchId, matchRecord);
+	// 	const roundNodeName = matchId.split(".")[0];
+	// 	const roundNode = this.getRoundNode(roundNodeName);
+	// 	if (res) {
+	// 		this.updateRounds(roundNode);
+	// 	}
+	// 	return res;
+	// }
 
-	override setMatchRecordWithValue(
-		roundName: string,
-		matchNumber: number,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean {
-		const res = super.setMatchRecordWithValue(
-			roundName,
-			matchNumber,
-			upperSeedWins,
-			lowerSeedWins
-		);
-		const roundNode = this.getRoundNode(roundName);
-		if (res) {
-			this.updateRounds(roundNode);
-		}
-		return res;
-	}
+	// override setMatchRecordWithValue(
+	// 	roundName: string,
+	// 	matchNumber: number,
+	// 	upperSeedWins: number,
+	// 	lowerSeedWins: number
+	// ): boolean {
+	// 	const res = super.setMatchRecordWithValue(
+	// 		roundName,
+	// 		matchNumber,
+	// 		upperSeedWins,
+	// 		lowerSeedWins
+	// 	);
+	// 	const roundNode = this.getRoundNode(roundName);
+	// 	if (res) {
+	// 		this.updateRounds(roundNode);
+	// 	}
+	// 	return res;
+	// }
 
-	override setMatchRecordWithValueById(
-		matchId: string,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean {
-		const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
-		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getRoundNode(roundNodeName);
-		if (res) {
-			this.updateRounds(roundNode);
-		}
-		return res;
-	}
+	// override setMatchRecordWithValueById(
+	// 	matchId: string,
+	// 	upperSeedWins: number,
+	// 	lowerSeedWins: number
+	// ): boolean {
+	// 	const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+	// 	const roundNodeName = matchId.split(".")[0];
+	// 	const roundNode = this.getRoundNode(roundNodeName);
+	// 	if (res) {
+	// 		this.updateRounds(roundNode);
+	// 	}
+	// 	return res;
+	// }
 
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated
@@ -98,8 +98,8 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket {
 		// we need to remove match records in future rounds because changing the current round
 		// may invalidate future rounds
 		// we will then repopulate future rounds if necessary
-		this.clearDependents(roundNode.winningRound);
-		this.clearDependents(roundNode.losingRound);
+		this.clearDependents(roundNode.upperRound);
+		this.clearDependents(roundNode.lowerRound);
 
 		// check to see if round is filled out (no ties in upperSeedWins and lowerSeedWins)
 		const isFilleldOut = isFilledRound(roundNode.matches);
@@ -114,18 +114,18 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket {
 
 		// need to pass winners/losers to the next node because some nodes have a 2 dependencies (2 parents)
 		// after passing them, need to process them at those nodes
-		// for this implementation, we only need to process roundNode.winningRound and roundNode.losingRound
-		const winningRound = roundNode.winningRound;
-		if (winningRound) {
-			this.processRound(winningRound, winners);
+		// for this implementation, we only need to process roundNode.upperRound and roundNode.lowerRound
+		const upperRound = roundNode.upperRound;
+		if (upperRound) {
+			this.processRound(upperRound, winners);
 		} else {
 			// set the winners who go on to the next stage
 			roundNode.promotionSeeds = this.swissSort(winners);
 		}
 
-		const losingRound = roundNode.losingRound;
-		if (losingRound) {
-			this.processRound(losingRound, losers);
+		const lowerRound = roundNode.lowerRound;
+		if (lowerRound) {
+			this.processRound(lowerRound, losers);
 		} else {
 			// set the losers who are eliminated
 			roundNode.eliminationSeeds = this.swissSort(losers);
@@ -312,10 +312,10 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket {
 			}
 			switch (winner) {
 				case -1:
-					curr = curr.losingRound;
+					curr = curr.lowerRound;
 					break;
 				case 1:
-					curr = curr.winningRound;
+					curr = curr.upperRound;
 					break;
 				case 0:
 					curr = undefined;

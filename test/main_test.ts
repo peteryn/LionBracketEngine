@@ -22,8 +22,8 @@ Deno.test(function structureTest1() {
 	assertEquals(rootRound.matches[1].matchRecord?.lowerSeed, 15);
 	assertEquals(swissBracket.getRoundNode("0-0")?.name, swissBracket.rootRound.name);
 
-	const round2Upper = rootRound.winningRound;
-	const round2Lower = rootRound.losingRound;
+	const round2Upper = rootRound.upperRound;
+	const round2Lower = rootRound.lowerRound;
 	assertEquals(swissBracket.getRoundNode("1-0")?.name, round2Upper?.name);
 	assertEquals(swissBracket.getRoundNode("0-1")?.name, round2Lower?.name);
 	assertEquals(round2Upper?.level, 2);
@@ -33,9 +33,9 @@ Deno.test(function structureTest1() {
 	assertEquals(round2Upper?.matches.length, 4);
 	assertEquals(round2Lower?.matches.length, 4);
 
-	const round3Upper = round2Upper?.winningRound;
-	const round3Middle = round2Upper?.losingRound;
-	const round3Lower = round2Lower?.losingRound;
+	const round3Upper = round2Upper?.upperRound;
+	const round3Middle = round2Upper?.lowerRound;
+	const round3Lower = round2Lower?.lowerRound;
 	assertEquals(swissBracket.getRoundNode("2-0")?.name, round3Upper?.name);
 	assertEquals(swissBracket.getRoundNode("1-1")?.name, round3Middle?.name);
 	assertEquals(swissBracket.getRoundNode("0-2")?.name, round3Lower?.name);
@@ -49,8 +49,8 @@ Deno.test(function structureTest1() {
 	assertEquals(round3Middle?.matches.length, 4);
 	assertEquals(round3Lower?.matches.length, 2);
 
-	const round4Upper = round3Upper?.losingRound;
-	const round4Lower = round3Lower?.winningRound;
+	const round4Upper = round3Upper?.lowerRound;
+	const round4Lower = round3Lower?.upperRound;
 	assertEquals(swissBracket.getRoundNode("2-1")?.name, round4Upper?.name);
 	assertEquals(swissBracket.getRoundNode("1-2")?.name, round4Lower?.name);
 	assertEquals(round4Upper?.level, 4);
@@ -60,7 +60,7 @@ Deno.test(function structureTest1() {
 	assertEquals(round4Upper?.matches.length, 3);
 	assertEquals(round4Lower?.matches.length, 3);
 
-	const round5 = round4Lower?.winningRound;
+	const round5 = round4Lower?.upperRound;
 	assertEquals(swissBracket.getRoundNode("2-2")?.name, round5?.name);
 	assertEquals(round5?.level, 5);
 	assertEquals(round5?.has2Parents, true);
@@ -69,7 +69,7 @@ Deno.test(function structureTest1() {
 
 Deno.test(function computeRound1() {
 	const swissBracket = new SwissBracketFlow(16, 2);
-	const f: MatchRecordSerialized[] = getJsonSync("./test/data/round1UpperTestData1.json");
+	const f: MatchRecordSerialized[] = getJsonSync("./data/round1UpperTestData1.json");
 	for (let index = 0; index < f.length; index++) {
 		const matchRecordS = f[index];
 		const mr = swissBracket.getMatchRecord("0-0", index);
@@ -82,8 +82,8 @@ Deno.test(function computeRound1() {
 		}
 	}
 	const round1 = swissBracket.rootRound;
-	const round2Upper = round1.winningRound;
-	const round2Lower = round1.losingRound;
+	const round2Upper = round1.upperRound;
+	const round2Lower = round1.lowerRound;
 	assertEquals(round2Upper?.matches[0].matchRecord?.upperSeed, 1);
 	assertEquals(round2Upper?.matches[0].matchRecord?.lowerSeed, 8);
 
@@ -110,11 +110,11 @@ Deno.test(function computeRound1() {
 });
 
 Deno.test(function naRegional4Test1() {
-	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
 });
 
 Deno.test(function naRegional4Test2() {
-	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
 	const swissBracket = new SwissBracketFlow(16, 3);
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -198,7 +198,7 @@ Deno.test(function naRegional4Test2() {
 });
 
 Deno.test(function naRegional4Test3() {
-	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
 	const swissBracket = new SwissBracketFlow(16, 3);
 
@@ -256,15 +256,15 @@ Deno.test(function naRegional4Test3() {
 });
 
 Deno.test(function naRegional5Test1() {
-	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_5.json");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_5.json");
 });
 
 Deno.test(function naRegional6Test1() {
-	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json");
 });
 
 Deno.test(function naRegional4BuchholzTest1() {
-	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
 	const swissBracket = new SwissBracketFlow(16, 3);
 

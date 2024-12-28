@@ -3,7 +3,7 @@ import { Seed } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, populateMatches } from "../util/util.ts";
 
-export class SwissBracket extends Bracket {
+export class SwissBracket extends Bracket<RoundNode> {
 	rootRound: RoundNode;
 
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
@@ -38,18 +38,23 @@ export class SwissBracket extends Bracket {
 		return root;
 	}
 
-	private processNode(node: RoundNode, winRequirement: number, existingNodes: Map<string, RoundNode>, level: number) {
+	private processNode(
+		node: RoundNode,
+		winRequirement: number,
+		existingNodes: Map<string, RoundNode>,
+		level: number
+	) {
 		// update winning child
 		if (node.winRecord + 1 < winRequirement) {
 			const winningNodeRecord = `${node.winRecord + 1}-${node.loseRecord}`;
 			this.checkAndAddNode(existingNodes, winningNodeRecord, node, 1, 0, level);
-			node.winningRound = existingNodes.get(winningNodeRecord);
+			node.upperRound = existingNodes.get(winningNodeRecord);
 		}
 		// update losing child
 		if (node.loseRecord + 1 < winRequirement) {
 			const losingNodeRecord = `${node.winRecord}-${node.loseRecord + 1}`;
 			this.checkAndAddNode(existingNodes, losingNodeRecord, node, 0, 1, level);
-			node.losingRound = existingNodes.get(losingNodeRecord);
+			node.lowerRound = existingNodes.get(losingNodeRecord);
 		}
 	}
 

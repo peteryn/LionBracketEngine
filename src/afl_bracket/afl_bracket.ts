@@ -4,11 +4,12 @@ import { MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, postOrderTraversal } from "../util/util.ts";
 
-export class AFLBracket {
+export class AFLBracket extends Bracket<MatchNode> {
 	rootRound: MatchNode;
 
 	// by definition, there are 8 seeds for this bracket
 	constructor() {
+		super();
 		this.rootRound = this.createTree();
 	}
 
