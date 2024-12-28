@@ -4,7 +4,7 @@ import { Seed, MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, levelOrderTraversal, populateMatches } from "../util/util.ts";
 
-export class SwissBracket implements Bracket {
+export class SwissBracket implements Bracket<RoundNode> {
 	rootRound: RoundNode;
 
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
@@ -16,26 +16,7 @@ export class SwissBracket implements Bracket {
 		// populateMatches(this.rootRound.matches, matchups);
 	}
 
-	// getRoundNode<NodeType extends BracketNode = RoundNode>(nodeName: string): NodeType {
-	// 	let roundNode: NodeType | undefined = undefined;
-
-	// 	// levelOrderTraversal(this.rootRound, (node: NodeType) => {
-	// 	// 	if (node.name === nodeName) {
-	// 	// 		roundNode = node;
-	// 	// 	}
-	// 	// });
-	// 	levelOrderTraversal(this.rootRound, (node: NodeType) => {
-	// 		if (node.name === nodeName) {
-	// 			roundNode = node;
-	// 		}
-	// 	});
-	// 	if (roundNode === undefined) {
-	// 		throw new Error("invalid round node id");
-	// 	}
-	// 	return roundNode as NodeType;
-	// }
-
-	getRoundNode<T extends BracketNode>(nodeName: string): T {
+	getRoundNode(nodeName: string): RoundNode {
 		let roundNode: RoundNode | undefined = undefined;
 		levelOrderTraversal(this.rootRound, (node: RoundNode) => {
 			if (node.name === nodeName) {
@@ -45,7 +26,7 @@ export class SwissBracket implements Bracket {
 		if (roundNode === undefined) {
 			throw new Error("invalid round node id");
 		}
-		return roundNode as T;
+		return roundNode;
 	}
 
 	getMatch(matchId: string) {

@@ -4,109 +4,31 @@ import { levelOrderTraversal } from "../util/util.ts";
 import { BracketNode } from "./bracket_node.ts";
 import { Match } from "./match.ts";
 
-// export interface Bracket2<NodeType extends BracketNode> {
-// 	getRoundNode<NodeType>(nodeName: string): NodeType;
-// 	getMatch(matchId: string): Match;
-// 	getMatchRecord(matchId: string): MatchRecord;
-// 	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean;
-// 	setMatchRecordById(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean;
-// 	setMatchRecordWithValueById(
-// 		matchId: string,
-// 		upperSeedWins: number,
-// 		lowerSeedWins: number
-// 	): boolean;
-// 	setMatchRecordWithValue(
-// 		roundName: string,
-// 		matchNumber: number,
-// 		upperSeedWins: number,
-// 		lowerSeedWins: number
-// 	): boolean;
-// }
+export interface Bracket<NodeType extends BracketNode> {
+	rootRound: NodeType;
 
-export interface Bracket {
-	// rootRound: NodeType;
+	getRoundNode(nodeName: string): NodeType;
 
-	getRoundNode<NodeType extends BracketNode>(nodeName: string): NodeType;
+	getMatch(matchId: string): Match;
 
-	// getRoundNode(nodeName: string): NodeType {
-	// 	let roundNode: NodeType | undefined = undefined;
+	getMatchRecordById(matchId: string): MatchRecord | undefined;
 
-	// 	levelOrderTraversal(this.rootRound, (node: NodeType) => {
-	// 		if (node.name === nodeName) {
-	// 			roundNode = node;
-	// 		}
-	// 	});
-	// 	if (roundNode === undefined) {
-	// 		throw new Error("invalid round node id");
-	// 	}
-	// 	return roundNode as NodeType;
-	// }
+	getMatchRecord(roundName: string, matchNumber: number): MatchRecord | undefined;
 
-	// getMatch(matchId: string) {
-	// 	const [roundName, matchIndexString] = matchId.split(".");
-	// 	const matchIndex = parseInt(matchIndexString);
-	// 	const roundNode = this.getRoundNode(roundName);
-	// 	const matches = roundNode.matches;
-	// 	return matches[matchIndex];
-	// }
+	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean;
 
-	// getMatchRecordById(matchId: string): MatchRecord | undefined {
-	// 	const matchRecord = this.getMatch(matchId)?.matchRecord;
-	// 	if (!matchRecord) {
-	// 		return undefined;
-	// 	}
-	// 	return structuredClone(matchRecord);
-	// }
+	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean;
 
-	// 	getMatchRecord(roundName: string, matchNumber: number) {
-	// 		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
-	// 	}
+	setMatchRecordWithValueById(
+		matchId: string,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean;
 
-	// 	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean {
-	// 		// console.log("in abstract class");
-	// 		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
-	// 	}
-
-	// 	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
-	// 		const match = this.getMatch(matchId);
-	// 		if (match) {
-	// 			match.matchRecord = matchRecord;
-	// 			const roundNodeName = match.id.split(".")[0];
-	// 			const roundNode = this.getRoundNode(roundNodeName);
-	// 			if (roundNode) {
-	// 				// then traverse starting at that node do the traversal
-	// 				// with a callback that updates the next round
-	// 				// this.updateRounds(roundNode);
-	// 				return true;
-	// 			}
-	// 		}
-	// 		return false;
-	// 	}
-
-	// 	setMatchRecordWithValueById(
-	// 		matchId: string,
-	// 		upperSeedWins: number,
-	// 		lowerSeedWins: number
-	// 	): boolean {
-	// 		const mr = this.getMatchRecordById(matchId);
-	// 		if (!mr) {
-	// 			return false;
-	// 		}
-	// 		mr.upperSeedWins = upperSeedWins;
-	// 		mr.lowerSeedWins = lowerSeedWins;
-	// 		return this.setMatchRecordById(matchId, mr);
-	// 	}
-
-	// 	setMatchRecordWithValue(
-	// 		roundName: string,
-	// 		matchNumber: number,
-	// 		upperSeedWins: number,
-	// 		lowerSeedWins: number
-	// 	): boolean {
-	// 		return this.setMatchRecordWithValueById(
-	// 			`${roundName}.${matchNumber}`,
-	// 			upperSeedWins,
-	// 			lowerSeedWins
-	// 		);
-	// 	}
+	setMatchRecordWithValue(
+		roundName: string,
+		matchNumber: number,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean;
 }

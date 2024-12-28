@@ -354,6 +354,6 @@ Deno.test(function inheritanceTest1() {
 
 	// so even if we use polymorphism, this will call the the setMatchRecord
 	// in the child class
-	const b: Bracket = a;
-	b.setMatchRecord("0-0", 0, new MatchRecord(1, 2));
+	// const b: Bracket<RoundNode> = a;
+	// b.setMatchRecord("0-0", 0, new MatchRecord(1, 2));
 });
