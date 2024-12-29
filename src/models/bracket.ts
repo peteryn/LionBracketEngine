@@ -1,6 +1,4 @@
-import { RoundNode } from "./round_node.ts";
 import { MatchRecord } from "./match_record.ts";
-import { levelOrderTraversal } from "../util/util.ts";
 import { BracketNode } from "./bracket_node.ts";
 import { Match } from "./match.ts";
 

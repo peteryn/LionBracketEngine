@@ -57,9 +57,6 @@ export class SwissBracket implements Bracket<RoundNode> {
 			const roundNodeName = match.id.split(".")[0];
 			const roundNode = this.getRoundNode(roundNodeName);
 			if (roundNode) {
-				// then traverse starting at that node do the traversal
-				// with a callback that updates the next round
-				// this.updateRounds(roundNode);
 				return true;
 			}
 		}
