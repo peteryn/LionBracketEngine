@@ -41,6 +41,8 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 
 	// TODO:
 	// 1. Fix this function
+	//		fixed, but it is a little ugly that -1 is used to represent a partial match record which
+	//		leads to point 2
 	// 2. Refactor Match and MatchRecord into 1 object and write that seeds can be undefined
 	// 3. Refactor bracket interface to get rid of indexed match methods
 	recurse(node: MatchNode | undefined, visited?: Set<string> | undefined): Seed | undefined {
@@ -51,29 +53,29 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 			return;
 		}
 
-		const upperSeed = this.recurse(node.upperRound);
-		const lowerSeed = this.recurse(node.lowerRound);
+		let upperSeed = this.recurse(node.upperRound);
+		let lowerSeed = this.recurse(node.lowerRound);
+		if (node.match.matchRecord) {
+			upperSeed = node.match.matchRecord.upperSeed;
+			lowerSeed = node.match.matchRecord.lowerSeed;
+		}
+
 		if (visited.has(node.name)) {
 			return;
 		}
 
 		visited.add(node.name);
 		if (node.match.matchRecord === undefined) {
-			console.log("hello")
 			if (!upperSeed && lowerSeed) {
-				console.log("first if")
 				node.match.matchRecord = new MatchRecord(-1, lowerSeed);
 			}
 			if (upperSeed && !lowerSeed) {
-				console.log("second if")
 				node.match.matchRecord = new MatchRecord(upperSeed, -1);
 			}
 			if (upperSeed && lowerSeed) {
-				console.log("third if")
 				node.match.matchRecord = new MatchRecord(upperSeed, lowerSeed);
 			}
 			if (!upperSeed && !lowerSeed) {
-				console.log("fourth if")
 				node.match.matchRecord = new MatchRecord(-1, -1);
 			}
 

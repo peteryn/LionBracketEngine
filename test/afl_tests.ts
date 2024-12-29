@@ -36,7 +36,6 @@ Deno.test(function firstUpdate() {
 	const res = aflBracket.setMatchRecordWithValue("upperQuarterFinal1", 0, 3, 0);
 	assertEquals(res, true, "node was not set correctly");
 	const semiFinal1 = aflBracket.getRoundNode("semiFinal1");
-	console.log(semiFinal1)
 	assertEquals(semiFinal1.name, "semiFinal1", "semi final node doesn't exist");
 	assertEquals(semiFinal1.match.matchRecord!.upperSeed, 1);
 	assertEquals(semiFinal1.match.matchRecord!.lowerSeed, -1);
