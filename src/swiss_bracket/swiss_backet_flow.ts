@@ -20,7 +20,7 @@ type MatchTracker = {
 	index: number;
 };
 
-export class SwissBracketFlow extends SwissBracket implements FlowBracket {
+export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundNode> {
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
 		super(numSeeds, winRequirement);
 		const seeds = createSeeds(numSeeds);

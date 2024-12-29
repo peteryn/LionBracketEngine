@@ -1,5 +1,4 @@
 import { Bracket } from "../models/bracket.ts";
-import { BracketNode } from "../models/bracket_node.ts";
 import { Seed, MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, levelOrderTraversal, populateMatches } from "../util/util.ts";

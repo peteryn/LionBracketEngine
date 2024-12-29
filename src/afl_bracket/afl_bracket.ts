@@ -2,7 +2,7 @@ import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { MatchRecord } from "../models/match_record.ts";
-import { postOrderTraversal } from "../util/util.ts";
+import { initializeEmptyMatches, postOrderTraversal } from "../util/util.ts";
 
 export class AFLBracket implements Bracket<MatchNode> {
 	rootRound: MatchNode;
