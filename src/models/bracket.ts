@@ -3,8 +3,6 @@ import { BracketNode } from "./bracket_node.ts";
 import { Match } from "./match.ts";
 
 export interface Bracket<NodeType extends BracketNode> {
-	rootRound: NodeType;
-
 	getRoundNode(nodeName: string): NodeType;
 
 	getMatch(matchId: string): Match;

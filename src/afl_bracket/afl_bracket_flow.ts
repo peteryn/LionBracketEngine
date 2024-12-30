@@ -3,6 +3,7 @@ import { MatchRecord, Seed } from "../models/match_record.ts";
 import { AFLBracket } from "./afl_bracket.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { RoundNode } from "../models/round_node.ts";
+import { levelOrderTraversal } from "../util/util.ts";
 
 export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode> {
 	constructor() {
@@ -18,7 +19,44 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 	}
 
 	updateRounds(root: MatchNode): void {
-		this.recurse(this.rootRound);
+		if (!root.match.matchRecord) {
+			return;
+		}
+
+		const matchRecord = root.match.matchRecord;
+		this.clearDependents(root.upperRound, matchRecord.upperSeed, matchRecord.lowerSeed)
+		this.clearDependents(root.lowerRound, matchRecord.upperSeed, matchRecord.lowerSeed)
+		if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
+			root.upperRound!.match.matchRecord!.lowerSeed = matchRecord.lowerSeed;
+		}
+	}
+
+	private clearDependents(root: MatchNode | undefined, upperSeed: Seed, lowerSeed: Seed) {
+		if (root) {
+			levelOrderTraversal(root, (node) => {
+				if (!node.match.matchRecord) {
+					return;
+				}
+
+				const mr = node.match.matchRecord;
+				if (mr.upperSeed === upperSeed) {
+					mr.upperSeed = -1;
+					mr.upperSeedWins = 0;
+				}
+				if (mr.lowerSeed === upperSeed) {
+					mr.lowerSeed = -1;
+					mr.lowerSeedWins = 0;
+				}
+				if (mr.upperSeed === lowerSeed) {
+					mr.upperSeed = -1;
+					mr.upperSeedWins = 0;
+				}
+				if (mr.lowerSeed === lowerSeed) {
+					mr.lowerSeed = -1;
+					mr.lowerSeedWins = 0;
+				}
+			})
+		}
 	}
 
 	// perhaps we should change this name so that it can be included in the flow interface
@@ -33,57 +71,11 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		lowerSeedWins: number
 	): boolean {
 		const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getRoundNode(roundNodeName);
 		if (res) {
-			this.recurse(this.rootRound);
+			this.updateRounds(roundNode);
 		}
 		return res;
-	}
-
-	// TODO:
-	// 1. Fix this function
-	//		fixed, but it is a little ugly that -1 is used to represent a partial match record which
-	//		leads to point 2
-	// 2. Refactor Match and MatchRecord into 1 object and write that seeds can be undefined
-	// 3. Refactor bracket interface to get rid of indexed match methods
-	//		fixed
-	recurse(node: MatchNode | undefined, visited?: Set<string> | undefined): Seed | undefined {
-		if (!visited) {
-			visited = new Set();
-		}
-		if (!node) {
-			return;
-		}
-
-		let upperSeed = this.recurse(node.upperRound);
-		let lowerSeed = this.recurse(node.lowerRound);
-		if (node.match.matchRecord) {
-			upperSeed = node.match.matchRecord.upperSeed;
-			lowerSeed = node.match.matchRecord.lowerSeed;
-		}
-
-		if (visited.has(node.name)) {
-			return;
-		}
-
-		visited.add(node.name);
-		if (node.match.matchRecord === undefined) {
-			node.match.matchRecord = new MatchRecord(
-				upperSeed ?? -1,
-				lowerSeed ?? -1
-			);
-
-			return;
-		}
-
-		node.match.matchRecord.upperSeed = upperSeed ?? -1;
-		node.match.matchRecord.lowerSeed = lowerSeed ?? -1;
-
-		if (node.match.matchRecord.upperSeedWins > node.match.matchRecord.lowerSeedWins) {
-			return upperSeed;
-		}
-		if (node.match.matchRecord.upperSeedWins < node.match.matchRecord.lowerSeedWins) {
-			return upperSeed;
-		}
-		return;
 	}
 }
