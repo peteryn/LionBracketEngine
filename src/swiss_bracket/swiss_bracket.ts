@@ -1,7 +1,7 @@
 import { Bracket } from "../models/bracket.ts";
 import { Seed, MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
-import { initializeEmptyMatches, levelOrderTraversal, populateMatches } from "../util/util.ts";
+import { initializeEmptyMatches, levelOrderTraversal } from "../util/util.ts";
 
 export class SwissBracket implements Bracket<RoundNode> {
 	rootRound: RoundNode;

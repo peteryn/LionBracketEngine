@@ -2,7 +2,7 @@ import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { MatchRecord } from "../models/match_record.ts";
-import { initializeEmptyMatches, postOrderTraversal } from "../util/util.ts";
+import { postOrderTraversal } from "../util/util.ts";
 
 export class AFLBracket implements Bracket<MatchNode> {
 	rootRound: MatchNode;
@@ -36,14 +36,6 @@ export class AFLBracket implements Bracket<MatchNode> {
 		return structuredClone(matchRecord);
 	}
 
-	getMatchRecord(roundName: string, matchNumber: number): MatchRecord | undefined {
-		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
-	}
-
-	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean {
-		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
-	}
-
 	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
 		const match = this.getMatch(matchId);
 		if (match) {
@@ -69,18 +61,6 @@ export class AFLBracket implements Bracket<MatchNode> {
 		mr.upperSeedWins = upperSeedWins;
 		mr.lowerSeedWins = lowerSeedWins;
 		return this.setMatchRecordById(matchId, mr);
-	}
-	setMatchRecordWithValue(
-		roundName: string,
-		matchNumber: number,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean {
-		return this.setMatchRecordWithValueById(
-			`${roundName}.${matchNumber}`,
-			upperSeedWins,
-			lowerSeedWins
-		);
 	}
 
 	private createTree(): MatchNode {

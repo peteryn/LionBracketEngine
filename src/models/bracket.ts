@@ -11,21 +11,10 @@ export interface Bracket<NodeType extends BracketNode> {
 
 	getMatchRecordById(matchId: string): MatchRecord | undefined;
 
-	getMatchRecord(roundName: string, matchNumber: number): MatchRecord | undefined;
-
-	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean;
-
 	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean;
 
 	setMatchRecordWithValueById(
 		matchId: string,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean;
-
-	setMatchRecordWithValue(
-		roundName: string,
-		matchNumber: number,
 		upperSeedWins: number,
 		lowerSeedWins: number
 	): boolean;
