@@ -13,3 +13,17 @@ export class MatchRecord {
 		this.lowerSeedWins = 0;
 	}
 }
+
+export type UpperRecord = {
+	upperSeed: Seed;
+	upperSeedWins: number;
+};
+
+export type LowerRecord = {
+	lowerSeed: Seed;
+	lowerSeedWins: number;
+};
+
+export type FullRecord = UpperRecord & LowerRecord;
+
+export type MatchRecord2 = UpperRecord | LowerRecord | FullRecord;
