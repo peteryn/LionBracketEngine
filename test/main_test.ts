@@ -67,7 +67,7 @@ Deno.test(function structureTest1() {
 
 Deno.test(function computeRound1() {
 	const swissBracket = new SwissBracket(16, 2, "GAME_DIFF", "sb");
-	const f: MatchRecordSerialized[] = getJsonSync("./test/data/round1UpperTestData1.json");
+	const f: MatchRecordSerialized[] = getJsonSync("./data/round1UpperTestData1.json");
 	for (let index = 0; index < f.length; index++) {
 		const matchRecordS = f[index];
 		const mr = swissBracket.getMatchRecord("0-0", index);
@@ -108,11 +108,11 @@ Deno.test(function computeRound1() {
 });
 
 Deno.test(function naRegional4Test1() {
-	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
 });
 
 Deno.test(function naRegional4Test2() {
-	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
 	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -196,7 +196,7 @@ Deno.test(function naRegional4Test2() {
 });
 
 Deno.test(function naRegional4Test3() {
-	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
 	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 
@@ -254,15 +254,15 @@ Deno.test(function naRegional4Test3() {
 });
 
 Deno.test(function naRegional5Test1() {
-	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_5.json");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_5.json");
 });
 
 Deno.test(function naRegional6Test1() {
-	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json");
 });
 
 Deno.test(function naRegional4BuchholzTest1() {
-	const tournamentPath = "./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
 	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
 
