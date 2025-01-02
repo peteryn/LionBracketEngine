@@ -15,15 +15,23 @@ export class MatchRecord {
 }
 
 export type UpperRecord = {
+	type: "UpperRecord";
 	upperSeed: Seed;
 	upperSeedWins: number;
 };
 
 export type LowerRecord = {
+	type: "LowerRecord";
 	lowerSeed: Seed;
 	lowerSeedWins: number;
 };
 
-export type FullRecord = UpperRecord & LowerRecord;
+export type FullRecord = {
+	type: "FullRecord";
+	upperSeed: Seed;
+	lowerSeed: Seed;
+	upperSeedWins: number;
+	lowerSeedWins: number;
+};
 
 export type MatchRecord2 = UpperRecord | LowerRecord | FullRecord;
