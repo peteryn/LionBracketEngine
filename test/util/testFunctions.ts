@@ -5,18 +5,6 @@ import { getJsonSync } from "./file.ts";
 import { assertEquals } from "@std/assert/equals";
 import { SwissBracketFlow } from "../../src/swiss_bracket/swiss_backet_flow.ts";
 
-export function populateMatchRecords(seeds: Seed[], data: MatchRecordSerialized[]) {
-	let i = 0;
-	let j = seeds.length - 1;
-	while (i < j) {
-		const record = new MatchRecord(seeds[i], seeds[j]);
-		record.upperSeedWins = data[i].upperSeedWins;
-		record.lowerSeedWins = data[i].lowerSeedWins;
-		i++;
-		j--;
-	}
-}
-
 export function checkVersusData(
 	swissBracket: SwissBracket,
 	// deno-lint-ignore no-explicit-any

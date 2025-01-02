@@ -347,13 +347,3 @@ Deno.test(function matchRecordTest1() {
 	assertEquals(seed1MatchDiff, 1);
 	assertEquals(seed1GameDiff, 2);
 });
-
-Deno.test(function inheritanceTest1() {
-	const a = new SwissBracketFlow();
-	a.setMatchRecord("0-0", 0, new MatchRecord(1, 2));
-
-	// so even if we use polymorphism, this will call the the setMatchRecord
-	// in the child class
-	// const b: Bracket<RoundNode> = a;
-	// b.setMatchRecord("0-0", 0, new MatchRecord(1, 2));
-});

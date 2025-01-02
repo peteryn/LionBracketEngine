@@ -1,15 +1,16 @@
 import { Node } from "jsr:@b-fuze/deno-dom@~0.1.48";
 import { BracketNode } from "../models/bracket_node.ts";
-import { Match } from "../models/match.ts";
+import { getMatchId, Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { type Seed, FullRecord, FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
+import { SwissMatch } from "../models/match.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
 }
 
-export function isFilledRound(matches: Match[]): boolean {
+export function isFilledRound(matches: SwissMatch[]): boolean {
 	for (let index = 0; index < matches.length; index++) {
 		const matchRecord = matches[index].matchRecord;
 		if (matchRecord) {
@@ -22,7 +23,7 @@ export function isFilledRound(matches: Match[]): boolean {
 	return true;
 }
 
-export function getWinners(matches: Match[]) {
+export function getWinners(matches: SwissMatch[]) {
 	const result: Seed[] = [];
 
 	for (let index = 0; index < matches.length; index++) {
@@ -40,7 +41,7 @@ export function getWinners(matches: Match[]) {
 	return result;
 }
 
-export function getLosers(matches: Match[]) {
+export function getLosers(matches: SwissMatch[]) {
 	const result: Seed[] = [];
 
 	for (let index = 0; index < matches.length; index++) {
@@ -77,7 +78,7 @@ export function populateMatches(matches: Match[], seeds: Seed[][]) {
 export function initializeEmptyMatches(root: RoundNode) {
 	const init = (node: RoundNode) => {
 		for (let index = 0; index < node.numSeeds / 2; index++) {
-			const match = new Match(node.name, index);
+			const match: SwissMatch = { id: getMatchId(node.name, index), matchRecord: undefined };
 			node.matches.push(match);
 		}
 	};

@@ -1,5 +1,5 @@
 import { FlowBracket } from "../models/flow_bracket.ts";
-import { MatchRecord, Seed } from "../models/match_record.ts";
+import { FullRecord, MatchRecord, Seed } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import {
 	cartesianProduct,
@@ -37,7 +37,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 	override setMatchRecord(
 		roundName: string,
 		matchNumber: number,
-		matchRecord: MatchRecord
+		matchRecord: FullRecord
 	): boolean {
 		const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
 		const roundNode = this.getRoundNode(roundName);
@@ -48,7 +48,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		return res;
 	}
 
-	override setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
+	override setMatchRecordById(matchId: string, matchRecord: FullRecord): boolean {
 		const res = super.setMatchRecordById(matchId, matchRecord);
 		const roundNodeName = matchId.split(".")[0];
 		const roundNode = this.getRoundNode(roundNodeName);
@@ -277,7 +277,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 	// TODO: this should be apart of abstract bracket
 	getMatchHistory(seed: Seed) {
 		let curr: RoundNode | undefined = this.rootRound;
-		const matchHistory: MatchRecord[] = [];
+		const matchHistory: FullRecord[] = [];
 		while (curr) {
 			const matches = curr.matches;
 			// may need to check if round is filled out or not
