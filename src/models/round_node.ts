@@ -1,5 +1,5 @@
 import { BracketNode } from "./bracket_node.ts";
-import type { Match } from "./match.ts";
+import type { SwissMatch } from "./match.ts";
 import type { Seed } from "./match_record.ts";
 
 export class RoundNode implements BracketNode {
@@ -9,7 +9,7 @@ export class RoundNode implements BracketNode {
 	loseRecord: number;
 	upperRound: RoundNode | undefined;
 	lowerRound: RoundNode | undefined;
-	matches: Match[];
+	matches: SwissMatch[];
 	level: number;
 	has2Parents: boolean;
 	// TODO: these can probably be removed in a refactor

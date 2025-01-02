@@ -1,17 +1,21 @@
 export type Seed = number;
 
-export class MatchRecord {
-	upperSeed: Seed;
-	lowerSeed: Seed;
-	upperSeedWins: number;
-	lowerSeedWins: number;
+// export class MatchRecord {
+// 	upperSeed: Seed;
+// 	lowerSeed: Seed;
+// 	upperSeedWins: number;
+// 	lowerSeedWins: number;
 
-	constructor(upperSeed: Seed, lowerSeed: Seed) {
-		this.upperSeed = upperSeed;
-		this.lowerSeed = lowerSeed;
-		this.upperSeedWins = 0;
-		this.lowerSeedWins = 0;
-	}
+// 	constructor(upperSeed: Seed, lowerSeed: Seed) {
+// 		this.upperSeed = upperSeed;
+// 		this.lowerSeed = lowerSeed;
+// 		this.upperSeedWins = 0;
+// 		this.lowerSeedWins = 0;
+// 	}
+// }
+
+export type MatchId = {
+	matchId: string;
 }
 
 export type UpperRecord = {
@@ -34,4 +38,18 @@ export type FullRecord = {
 	lowerSeedWins: number;
 };
 
-export type MatchRecord2 = UpperRecord | LowerRecord | FullRecord;
+export type EmptyRecord = {
+	type: "EmptyRecord"
+}
+
+export function FullRecordFactory(upperSeed: Seed, lowerSeed: Seed): FullRecord {
+	return {
+		type: "FullRecord",
+		upperSeed: upperSeed,
+		lowerSeed: lowerSeed,
+		upperSeedWins: 0,
+		lowerSeedWins: 0,
+	};
+}
+
+export type MatchRecord = UpperRecord | LowerRecord | FullRecord;

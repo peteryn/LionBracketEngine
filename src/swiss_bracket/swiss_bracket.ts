@@ -1,5 +1,5 @@
 import { Bracket } from "../models/bracket.ts";
-import { Seed, MatchRecord } from "../models/match_record.ts";
+import { Seed, MatchRecord, FullRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, levelOrderTraversal } from "../util/util.ts";
 
@@ -32,7 +32,7 @@ export class SwissBracket implements Bracket<RoundNode> {
 		return matches[matchIndex];
 	}
 
-	getMatchRecordById(matchId: string): MatchRecord | undefined {
+	getMatchRecordById(matchId: string): FullRecord | undefined {
 		const matchRecord = this.getMatch(matchId)?.matchRecord;
 		if (!matchRecord) {
 			return undefined;
@@ -44,12 +44,12 @@ export class SwissBracket implements Bracket<RoundNode> {
 		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
 	}
 
-	setMatchRecord(roundName: string, matchNumber: number, matchRecord: MatchRecord): boolean {
+	setMatchRecord(roundName: string, matchNumber: number, matchRecord: FullRecord): boolean {
 		// console.log("in abstract class");
 		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
 	}
 
-	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
+	setMatchRecordById(matchId: string, matchRecord: FullRecord): boolean {
 		const match = this.getMatch(matchId);
 		if (match) {
 			match.matchRecord = matchRecord;

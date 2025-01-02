@@ -7,9 +7,9 @@ export interface Bracket<NodeType extends BracketNode> {
 
 	getMatch(matchId: string): Match;
 
-	getMatchRecordById(matchId: string): MatchRecord | undefined;
+	// getMatchRecordById(matchId: string): MatchRecord | undefined;
 
-	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean;
+	// setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean;
 
 	setMatchRecordWithValueById(
 		matchId: string,

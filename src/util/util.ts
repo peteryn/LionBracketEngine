@@ -2,7 +2,7 @@ import { Node } from "jsr:@b-fuze/deno-dom@~0.1.48";
 import { BracketNode } from "../models/bracket_node.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
-import { type Seed, MatchRecord } from "../models/match_record.ts";
+import { type Seed, FullRecord, FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
@@ -69,7 +69,7 @@ export function populateMatches(matches: Match[], seeds: Seed[][]) {
 		const matchup = seeds[index];
 		const seed1 = matchup[0];
 		const seed2 = matchup[1];
-		const record = new MatchRecord(seed1, seed2);
+		const record: FullRecord = FullRecordFactory(seed1, seed2);
 		matches[index].matchRecord = record;
 	}
 }
