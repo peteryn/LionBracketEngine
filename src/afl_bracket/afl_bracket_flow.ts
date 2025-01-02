@@ -2,7 +2,6 @@ import { FlowBracket } from "../models/flow_bracket.ts";
 import { FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts";
 import { AFLBracket } from "./afl_bracket.ts";
 import { MatchNode } from "../models/match_node.ts";
-import { RoundNode } from "../models/round_node.ts";
 import { levelOrderTraversal } from "../util/util.ts";
 
 export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode> {
@@ -18,8 +17,9 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		lowerBracketRound2.match.matchRecord = FullRecordFactory(6, 7);
 	}
 
+	// this will only be called if called on a node with a FullRecord
 	updateRounds(root: MatchNode): void {
-		if (!root.match.matchRecord || !root.upperRound) {
+		if (!root.match.matchRecord) {
 			return;
 		}
 
@@ -33,36 +33,90 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 				this.clearDependents(root.lowerRound, matchRecord.upperSeed, matchRecord.lowerSeed);
 
 				if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
-					const upperMatchRecord = root.upperRound.match.matchRecord;
-					if (!upperMatchRecord) {
-						root.upperRound.match.matchRecord = {
-							type: "UpperRecord",
-							upperSeed: matchRecord.upperSeed,
-							upperSeedWins: 0,
-						};
-						break;
+					const isUpper = !!(root.upperRound && root.lowerRound);
+
+					if (root.upperRound) {
+						root.upperRound.match.matchRecord = this.processTeam(
+							root.upperRound.match.matchRecord,
+							matchRecord.upperSeed,
+							isUpper
+						);
 					}
-					switch (upperMatchRecord.type) {
-						case "UpperRecord":
-						case "FullRecord":
-							break;
-						case "LowerRecord":
-							root.upperRound.match.matchRecord = {
-								type: "FullRecord",
-								lowerSeed: upperMatchRecord.lowerSeed,
-								lowerSeedWins: upperMatchRecord.lowerSeedWins,
-								upperSeed: matchRecord.upperSeed,
-								upperSeedWins: 0,
-							};
+
+					if (root.lowerRound) {
+						root.lowerRound.match.matchRecord = this.processTeam(
+							root.lowerRound.match.matchRecord,
+							matchRecord.lowerSeed,
+							true
+						);
 					}
 				} else if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
-					const upperMatchRecord = root.upperRound.match.matchRecord;
+					const isUpper = !!(root.upperRound && root.lowerRound);
+
+					if (root.upperRound) {
+						root.upperRound.match.matchRecord = this.processTeam(
+							root.upperRound.match.matchRecord,
+							matchRecord.lowerSeed,
+							isUpper
+						);
+					}
+
+					if (root.lowerRound) {
+						root.lowerRound.match.matchRecord = this.processTeam(
+							root.lowerRound.match.matchRecord,
+							matchRecord.upperSeed,
+							true
+						);
+					}
+				} else {
+					// the current mr is a tie and no update of future nodes are needed.
 				}
 		}
 	}
 
-	private processUpperTeamWin() {
-		
+	private processTeam(
+		matchRecord: MatchRecord | undefined,
+		curSeed: Seed,
+		fromUpper: boolean
+	): MatchRecord | undefined {
+		if (!matchRecord) {
+			// there needs to be another condition to determine if you are lowerRound1 or upperQuarterFinal1
+			if (fromUpper) {
+				return {
+					type: "UpperRecord",
+					upperSeed: curSeed,
+					upperSeedWins: 0,
+				};
+			} else {
+				return {
+					type: "LowerRecord",
+					lowerSeed: curSeed,
+					lowerSeedWins: 0,
+				};
+			}
+		}
+		switch (matchRecord.type) {
+			case "UpperRecord":
+				return {
+					type: "FullRecord",
+					upperSeed: matchRecord.upperSeed,
+					upperSeedWins: matchRecord.upperSeedWins,
+					lowerSeed: curSeed,
+					lowerSeedWins: 0,
+				};
+			case "LowerRecord":
+				return {
+					type: "FullRecord",
+					upperSeed: curSeed,
+					upperSeedWins: 0,
+					lowerSeed: matchRecord.lowerSeed,
+					lowerSeedWins: matchRecord.lowerSeedWins,
+				};
+			case "FullRecord":
+				// undefined bc this is an impossible state since we cleared dependents
+				// the compiler just doesn't know it yet.
+				return undefined;
+		}
 	}
 
 	private clearDependents(root: MatchNode | undefined, upperSeed: Seed, lowerSeed: Seed) {

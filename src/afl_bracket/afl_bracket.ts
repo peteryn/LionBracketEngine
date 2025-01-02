@@ -2,7 +2,7 @@ import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { MatchRecord } from "../models/match_record.ts";
-import { levelOrderTraversal, postOrderTraversal } from "../util/util.ts";
+import { levelOrderTraversal } from "../util/util.ts";
 
 export class AFLBracket implements Bracket<MatchNode> {
 	upperQuarterFinal1: MatchNode;
@@ -116,7 +116,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 		lowerQuarterFinal2.upperRound = semiFinal2;
 		semiFinal2.upperRound = grandFinal;
 
-		upperQuarterFinal1.upperRound = semiFinal1;
+		upperQuarterFinal1.upperRound = semiFinal2;
 		upperQuarterFinal2.upperRound = semiFinal1;
 
 		upperQuarterFinal1.lowerRound = lowerQuarterFinal1;
