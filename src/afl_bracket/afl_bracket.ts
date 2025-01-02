@@ -33,12 +33,12 @@ export class AFLBracket implements Bracket<MatchNode> {
 			if (node.name === nodeName) {
 				matchNode = node;
 			}
-		})
+		});
 		levelOrderTraversal(this.lowerBracketRound2, (node) => {
 			if (node.name === nodeName) {
 				matchNode = node;
 			}
-		})
+		});
 		return matchNode as MatchNode;
 	}
 
@@ -78,8 +78,15 @@ export class AFLBracket implements Bracket<MatchNode> {
 		if (!mr) {
 			return false;
 		}
-		mr.upperSeedWins = upperSeedWins;
-		mr.lowerSeedWins = lowerSeedWins;
+		switch (mr.type) {
+			case "UpperRecord":
+			case "LowerRecord":
+				return false;
+			case "FullRecord":
+				mr.upperSeedWins = upperSeedWins;
+				mr.lowerSeedWins = lowerSeedWins;
+		}
+
 		return this.setMatchRecordById(matchId, mr);
 	}
 
