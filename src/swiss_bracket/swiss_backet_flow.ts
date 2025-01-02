@@ -1,5 +1,5 @@
 import { FlowBracket } from "../models/flow_bracket.ts";
-import { FullRecord, MatchRecord, Seed } from "../models/match_record.ts";
+import { FullRecord, Seed } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import {
 	cartesianProduct,

@@ -1,8 +1,6 @@
-import { Node } from "jsr:@b-fuze/deno-dom@~0.1.48";
 import { BracketNode } from "../models/bracket_node.ts";
 import { getMatchId, Match } from "../models/match.ts";
-import { MatchNode } from "../models/match_node.ts";
-import { type Seed, FullRecord, FullRecordFactory, MatchRecord } from "../models/match_record.ts";
+import { type Seed, FullRecord, FullRecordFactory } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
 

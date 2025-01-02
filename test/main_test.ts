@@ -7,9 +7,7 @@ import {
 	testTournament,
 } from "./util/testFunctions.ts";
 import { RoundNode } from "../src/models/round_node.ts";
-import { MatchRecord } from "../src/models/match_record.ts";
 import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
-import { Bracket } from "../src/models/bracket.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracketFlow(16, 3);

@@ -1,4 +1,4 @@
-import { Match, SwissMatch } from "../../src/models/match.ts";
+import { SwissMatch } from "../../src/models/match.ts";
 import { TeamNameMap } from "../models.ts";
 
 export function printRound(matches: SwissMatch[], teamNameMap?: TeamNameMap[]) {

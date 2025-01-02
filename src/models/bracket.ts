@@ -1,4 +1,3 @@
-import { MatchRecord } from "./match_record.ts";
 import { BracketNode } from "./bracket_node.ts";
 import { Match } from "./match.ts";
 
