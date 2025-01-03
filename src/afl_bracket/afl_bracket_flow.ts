@@ -1,5 +1,5 @@
 import { FlowBracket } from "../models/flow_bracket.ts";
-import { FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts";
+import { FullRecord, FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts";
 import { AFLBracket } from "./afl_bracket.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { levelOrderTraversal } from "../util/util.ts";
@@ -31,46 +31,24 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 			case "FullRecord":
 				this.clearDependents(root.upperRound, matchRecord.upperSeed, matchRecord.lowerSeed);
 				this.clearDependents(root.lowerRound, matchRecord.upperSeed, matchRecord.lowerSeed);
+				this.handleScores(root, matchRecord);
+		}
+	}
 
-				if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
-					const isUpper = !!(root.upperRound && root.lowerRound);
+	private handleScores(root: MatchNode, matchRecord: FullRecord) {
+		if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
+			this.updateRound(root.upperRound, matchRecord.upperSeed, root.isUpper);
+			this.updateRound(root.lowerRound, matchRecord.lowerSeed, true);
+		}
+		if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
+			this.updateRound(root.upperRound, matchRecord.lowerSeed, root.isUpper);
+			this.updateRound(root.lowerRound, matchRecord.upperSeed, true);
+		} 
+	}
 
-					if (root.upperRound) {
-						root.upperRound.match.matchRecord = this.processTeam(
-							root.upperRound.match.matchRecord,
-							matchRecord.upperSeed,
-							isUpper
-						);
-					}
-
-					if (root.lowerRound) {
-						root.lowerRound.match.matchRecord = this.processTeam(
-							root.lowerRound.match.matchRecord,
-							matchRecord.lowerSeed,
-							true
-						);
-					}
-				} else if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
-					const isUpper = !!(root.upperRound && root.lowerRound);
-
-					if (root.upperRound) {
-						root.upperRound.match.matchRecord = this.processTeam(
-							root.upperRound.match.matchRecord,
-							matchRecord.lowerSeed,
-							isUpper
-						);
-					}
-
-					if (root.lowerRound) {
-						root.lowerRound.match.matchRecord = this.processTeam(
-							root.lowerRound.match.matchRecord,
-							matchRecord.upperSeed,
-							true
-						);
-					}
-				} else {
-					// the current mr is a tie and no update of future nodes are needed.
-				}
+	private updateRound(round: MatchNode | undefined, seed: number, isUpper: boolean) {
+		if (round) {
+			round.match.matchRecord = this.processTeam(round.match.matchRecord, seed, isUpper);
 		}
 	}
 

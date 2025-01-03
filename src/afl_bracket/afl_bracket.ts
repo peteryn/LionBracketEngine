@@ -91,22 +91,22 @@ export class AFLBracket implements Bracket<MatchNode> {
 	}
 
 	private createTree(): MatchNode[] {
-		const grandFinal = new MatchNode("grandFinal");
+		const grandFinal = new MatchNode("grandFinal", false);
 
-		const semiFinal1 = new MatchNode("semiFinal1");
-		const semiFinal2 = new MatchNode("semiFinal2");
+		const semiFinal1 = new MatchNode("semiFinal1", true);
+		const semiFinal2 = new MatchNode("semiFinal2", false);
 
-		const upperQuarterFinal1 = new MatchNode("upperQuarterFinal1");
+		const upperQuarterFinal1 = new MatchNode("upperQuarterFinal1", true);
 
-		const upperQuarterFinal2 = new MatchNode("upperQuarterFinal2");
+		const upperQuarterFinal2 = new MatchNode("upperQuarterFinal2", true);
 
-		const lowerQuarterFinal1 = new MatchNode("lowerQuarterFinal1");
+		const lowerQuarterFinal1 = new MatchNode("lowerQuarterFinal1", false);
 
-		const lowerQuarterFinal2 = new MatchNode("lowerQuarterFinal2");
+		const lowerQuarterFinal2 = new MatchNode("lowerQuarterFinal2", false);
 
-		const lowerBracketRound1 = new MatchNode("lowerBracketRound1");
+		const lowerBracketRound1 = new MatchNode("lowerBracketRound1", false);
 
-		const lowerBracketRound2 = new MatchNode("lowerBracketRound2");
+		const lowerBracketRound2 = new MatchNode("lowerBracketRound2", false);
 
 		lowerBracketRound1.upperRound = lowerQuarterFinal1;
 		lowerQuarterFinal1.upperRound = semiFinal1;

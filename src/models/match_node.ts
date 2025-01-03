@@ -6,9 +6,11 @@ export class MatchNode implements BracketNode {
     match: Match;
     upperRound: MatchNode | undefined;
     lowerRound: MatchNode | undefined;
+    isUpper: boolean;
     
-    constructor(name: string) {
+    constructor(name: string, isUpper: boolean) {
         this.name = name;
         this.match = new Match(this.name, 0);
+        this.isUpper = isUpper;
     }
 }

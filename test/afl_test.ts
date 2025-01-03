@@ -135,5 +135,87 @@ Deno.test(function updateTest6() {
 	const lqf1MR2 = lqf1.match.matchRecord as FullRecord;
 	assertEquals(lqf1MR2.upperSeed, 4);
 	assertEquals(lqf1MR2.lowerSeed, 5);
+});
 
-})
+Deno.test(function updateTest7() {
+	const aflBracket = new AFLBracketFlow();
+	aflBracket.setMatchRecordWithValueById("upperQuarterFinal1", 1, 0);
+	aflBracket.setMatchRecordWithValueById("upperQuarterFinal2", 1, 0);
+	aflBracket.setMatchRecordWithValueById("lowerBracketRound1", 1, 0);
+	aflBracket.setMatchRecordWithValueById("lowerBracketRound2", 1, 0);
+
+	const lbr1 = aflBracket.getRoundNode("lowerQuarterFinal1");
+	assertEquals(lbr1.match.matchRecord?.type, "FullRecord");
+	const lbr1MR = lbr1.match.matchRecord as FullRecord;
+	assertEquals(lbr1MR.upperSeed, 4);
+	assertEquals(lbr1MR.lowerSeed, 5);
+
+	const lbr2 = aflBracket.getRoundNode("lowerQuarterFinal2");
+	assertEquals(lbr2.match.matchRecord?.type, "FullRecord");
+	const lbr2MR = lbr2.match.matchRecord as FullRecord;
+	assertEquals(lbr2MR.upperSeed, 3);
+	assertEquals(lbr2MR.lowerSeed, 6);
+
+	aflBracket.setMatchRecordWithValueById("lowerQuarterFinal1", 1, 0);
+	aflBracket.setMatchRecordWithValueById("lowerQuarterFinal2", 1, 0);
+
+	const smf1 = aflBracket.getRoundNode("semiFinal1");
+	const smf1MR = smf1.match.matchRecord as FullRecord;
+	assertEquals(smf1MR.upperSeed, 2);
+	assertEquals(smf1MR.lowerSeed, 4);
+
+	const smf2 = aflBracket.getRoundNode("semiFinal2");
+	const smf2MR = smf2.match.matchRecord as FullRecord;
+	assertEquals(smf2MR.upperSeed, 1);
+	assertEquals(smf2MR.lowerSeed, 3);
+
+	aflBracket.setMatchRecordWithValueById("semiFinal1", 1, 0);
+	aflBracket.setMatchRecordWithValueById("semiFinal2", 1, 0);
+
+	const gf = aflBracket.getRoundNode("grandFinal");
+	const gfMR = gf.match.matchRecord as FullRecord;
+	assertEquals(gfMR.upperSeed, 2);
+	assertEquals(gfMR.lowerSeed, 1);
+});
+
+Deno.test(function updateTest8() {
+	// same as updateTest7 but reverse order for setting semiFinal results
+	const aflBracket = new AFLBracketFlow();
+	aflBracket.setMatchRecordWithValueById("upperQuarterFinal1", 1, 0);
+	aflBracket.setMatchRecordWithValueById("upperQuarterFinal2", 1, 0);
+	aflBracket.setMatchRecordWithValueById("lowerBracketRound1", 1, 0);
+	aflBracket.setMatchRecordWithValueById("lowerBracketRound2", 1, 0);
+
+	const lbr1 = aflBracket.getRoundNode("lowerQuarterFinal1");
+	assertEquals(lbr1.match.matchRecord?.type, "FullRecord");
+	const lbr1MR = lbr1.match.matchRecord as FullRecord;
+	assertEquals(lbr1MR.upperSeed, 4);
+	assertEquals(lbr1MR.lowerSeed, 5);
+
+	const lbr2 = aflBracket.getRoundNode("lowerQuarterFinal2");
+	assertEquals(lbr2.match.matchRecord?.type, "FullRecord");
+	const lbr2MR = lbr2.match.matchRecord as FullRecord;
+	assertEquals(lbr2MR.upperSeed, 3);
+	assertEquals(lbr2MR.lowerSeed, 6);
+
+	aflBracket.setMatchRecordWithValueById("lowerQuarterFinal1", 1, 0);
+	aflBracket.setMatchRecordWithValueById("lowerQuarterFinal2", 1, 0);
+
+	const smf1 = aflBracket.getRoundNode("semiFinal1");
+	const smf1MR = smf1.match.matchRecord as FullRecord;
+	assertEquals(smf1MR.upperSeed, 2);
+	assertEquals(smf1MR.lowerSeed, 4);
+
+	const smf2 = aflBracket.getRoundNode("semiFinal2");
+	const smf2MR = smf2.match.matchRecord as FullRecord;
+	assertEquals(smf2MR.upperSeed, 1);
+	assertEquals(smf2MR.lowerSeed, 3);
+
+	aflBracket.setMatchRecordWithValueById("semiFinal2", 1, 0);
+	aflBracket.setMatchRecordWithValueById("semiFinal1", 1, 0);
+
+	const gf = aflBracket.getRoundNode("grandFinal");
+	const gfMR = gf.match.matchRecord as FullRecord;
+	assertEquals(gfMR.upperSeed, 2);
+	assertEquals(gfMR.lowerSeed, 1);
+});
