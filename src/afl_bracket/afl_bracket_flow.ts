@@ -18,7 +18,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 	}
 
 	// this will only be called if called on a node with a FullRecord
-	updateRounds(root: MatchNode): void {
+	updateFlow(root: MatchNode): void {
 		if (!root.match.matchRecord) {
 			return;
 		}
@@ -43,7 +43,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		if (matchRecord.upperSeedWins < matchRecord.lowerSeedWins) {
 			this.updateRound(root.upperRound, matchRecord.lowerSeed, root.isUpper);
 			this.updateRound(root.lowerRound, matchRecord.upperSeed, true);
-		} 
+		}
 	}
 
 	private updateRound(round: MatchNode | undefined, seed: number, isUpper: boolean) {
@@ -147,16 +147,12 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 	// in the function above
 	// or refactor it so that there are multiple roots in a tree that eventually land at the
 	// same child (maybe a future factor that doesn't use recursion to traverse tree)
-	override setMatchRecordWithValueById(
-		matchId: string,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean {
-		const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
+		const res = this.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];
 		const roundNode = this.getRoundNode(roundNodeName);
 		if (res) {
-			this.updateRounds(roundNode);
+			this.updateFlow(roundNode);
 		}
 		return res;
 	}

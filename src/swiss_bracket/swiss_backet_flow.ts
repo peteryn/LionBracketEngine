@@ -43,7 +43,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		const roundNode = this.getRoundNode(roundName);
 		// console.log("in overridden")
 		if (res) {
-			this.updateRounds(roundNode);
+			this.updateFlow(roundNode);
 		}
 		return res;
 	}
@@ -53,7 +53,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		const roundNodeName = matchId.split(".")[0];
 		const roundNode = this.getRoundNode(roundNodeName);
 		if (res) {
-			this.updateRounds(roundNode);
+			this.updateFlow(roundNode);
 		}
 		return res;
 	}
@@ -72,21 +72,17 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		);
 		const roundNode = this.getRoundNode(roundName);
 		if (res) {
-			this.updateRounds(roundNode);
+			this.updateFlow(roundNode);
 		}
 		return res;
 	}
 
-	override setMatchRecordWithValueById(
-		matchId: string,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean {
-		const res = super.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
+		const res = this.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];
 		const roundNode = this.getRoundNode(roundNodeName);
 		if (res) {
-			this.updateRounds(roundNode);
+			this.updateFlow(roundNode);
 		}
 		return res;
 	}
@@ -94,7 +90,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 	// implementation 1: delete future round data because it is not valid anymore
 	// this should only be called on the roundNode that has a match that has been updated
 	// a different implementation will be called on all dependent nodes
-	updateRounds(roundNode: RoundNode): void {
+	updateFlow(roundNode: RoundNode): void {
 		// we need to remove match records in future rounds because changing the current round
 		// may invalidate future rounds
 		// we will then repopulate future rounds if necessary
