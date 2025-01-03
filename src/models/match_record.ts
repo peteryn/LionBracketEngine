@@ -26,10 +26,6 @@ export type FullRecord = {
 	lowerSeedWins: number;
 };
 
-export type EmptyRecord = {
-	type: "EmptyRecord";
-};
-
 export function FullRecordFactory(upperSeed: Seed, lowerSeed: Seed): FullRecord {
 	return {
 		type: "FullRecord",
