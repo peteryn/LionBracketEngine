@@ -3,6 +3,7 @@ import { TournamentData } from "../models.ts";
 import { getJsonSync } from "./file.ts";
 import { assertEquals } from "@std/assert/equals";
 import { SwissBracketFlow } from "../../src/swiss_bracket/swiss_backet_flow.ts";
+import { getMatchId } from "../../src/models/match.ts";
 
 export function checkVersusData(
 	swissBracket: SwissBracket,
@@ -17,7 +18,7 @@ export function checkVersusData(
 	}
 	const numMatches = roundNode.matches.length;
 	for (let j = 0; j < numMatches; j++) {
-		const calculated = swissBracket.getMatchRecord(roundName, j);
+		const calculated = swissBracket.getMatchRecord(getMatchId(roundName, j));
 		if (calculated) {
 			const actualUpperSeed = calculated.upperSeed;
 			const expectedUpperSeed = tournament[roundName][j].upperTeam.seed;
@@ -32,7 +33,7 @@ export function checkVersusData(
 }
 
 export function populateMatchRecordFromData(
-	swissBracket: SwissBracket,
+	swissBracket: SwissBracketFlow,
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
 	roundName: string
@@ -44,7 +45,8 @@ export function populateMatchRecordFromData(
 	}
 	const numMatches = roundNode.matches.length;
 	for (let i = 0; i < numMatches; i++) {
-		const mr = swissBracket.getMatchRecord(roundName, i);
+		const matchId = getMatchId(roundName, i);
+		const mr = swissBracket.getMatchRecord(matchId);
 		if (!mr) {
 			throw new Error("match record DNE when it should");
 		}
@@ -52,7 +54,8 @@ export function populateMatchRecordFromData(
 		mr.lowerSeedWins = tournament[roundName][i].lowerTeamWins;
 		mr.upperSeedWins = tournament[roundName][i].upperTeamWins;
 
-		swissBracket.setMatchRecord(roundName, i, mr);
+		swissBracket.setMatchRecord(matchId, mr);
+		swissBracket.updateFlow(roundNode);
 	}
 }
 

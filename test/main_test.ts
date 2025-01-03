@@ -8,6 +8,7 @@ import {
 } from "./util/testFunctions.ts";
 import { RoundNode } from "../src/models/round_node.ts";
 import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
+import { getMatchId } from "../src/models/match.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracketFlow(16, 3);
@@ -70,11 +71,13 @@ Deno.test(function computeRound1() {
 	const f: MatchRecordSerialized[] = getJsonSync("./data/round1UpperTestData1.json");
 	for (let index = 0; index < f.length; index++) {
 		const matchRecordS = f[index];
-		const mr = swissBracket.getMatchRecord("0-0", index);
+		const matchId = getMatchId("0-0", index);
+		const mr = swissBracket.getMatchRecord(matchId);
 		if (mr) {
 			mr.lowerSeedWins = matchRecordS.lowerSeedWins;
 			mr.upperSeedWins = matchRecordS.upperSeedWins;
-			swissBracket.setMatchRecord("0-0", index, mr);
+			swissBracket.setMatchRecord(matchId, mr);
+			swissBracket.updateFlow(swissBracket.rootRound)
 		} else {
 			throw new Error("Match record doesn't exist when it should");
 		}
@@ -105,6 +108,10 @@ Deno.test(function computeRound1() {
 
 	assertEquals(round2Lower?.matches[3].matchRecord?.upperSeed, 12);
 	assertEquals(round2Lower?.matches[3].matchRecord?.lowerSeed, 13);
+});
+
+Deno.test(function naRegional4Test1() {
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
 });
 
 Deno.test(function naRegional4Test1() {
@@ -142,9 +149,11 @@ Deno.test(function naRegional4Test2() {
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 
 	// change record in round 1
-	const mr = swissBracket.getMatchRecord("0-0", 1);
+	const matchId = getMatchId("0-0", 1);
+	const mr = swissBracket.getMatchRecord(matchId);
 	mr!.lowerSeedWins = 1;
-	swissBracket.setMatchRecord("0-0", 1, mr!);
+	swissBracket.setMatchRecord(matchId, mr!);
+	swissBracket.updateFlow(swissBracket.rootRound);
 
 	// make sure that future rounds are now undefined
 	const round3Upper = swissBracket.getRoundNode("2-0") as RoundNode;
@@ -291,14 +300,16 @@ Deno.test(function drawTest1() {
 	const numMatches = swissBracket.rootRound.matches.length;
 	// set all round 1 matches to 1-0
 	for (let i = 0; i < numMatches; i++) {
-		const mr = swissBracket.getMatchRecord("0-0", i);
+		const matchId = getMatchId("0-0", i);
+		const mr = swissBracket.getMatchRecord(matchId);
 		if (!mr) {
 			throw new Error("match record DNE when it should");
 		}
 
 		mr.upperSeedWins = 1;
 
-		swissBracket.setMatchRecord("0-0", i, mr);
+		swissBracket.setMatchRecord(matchId, mr);
+		swissBracket.updateFlow(swissBracket.rootRound)
 	}
 
 	// check r2 was generated correctly
@@ -307,11 +318,13 @@ Deno.test(function drawTest1() {
 	assertEquals(round2Upper!.matches[0].matchRecord?.lowerSeed, 8);
 
 	// now get first match from round 1
-	const mr = swissBracket.getMatchRecord("0-0", 0);
+	const matchId = getMatchId("0-0", 0);
+	const mr = swissBracket.getMatchRecord(matchId);
 	const round1 = swissBracket.getRoundNode("0-0");
 	// set it to 1-1 aka a draw
 	mr!.lowerSeedWins = 1;
-	swissBracket.setMatchRecord("0-0", 0, mr!);
+	swissBracket.setMatchRecord(matchId, mr!);
+	swissBracket.updateFlow(swissBracket.rootRound)
 	// check that the draw exists
 	assertEquals(round1?.matches[0].matchRecord?.upperSeedWins, 1);
 	assertEquals(round1?.matches[0].matchRecord?.lowerSeedWins, 1);
@@ -329,14 +342,15 @@ Deno.test(function matchRecordTest1() {
 	const swissBracket = new SwissBracketFlow(16, 3);
 	const numMatches = swissBracket.rootRound.matches.length;
 	for (let i = 0; i < numMatches; i++) {
-		const mr = swissBracket.getMatchRecord("0-0", i);
+		const matchId = getMatchId("0-0", i);
+		const mr = swissBracket.getMatchRecord(matchId);
 		if (!mr) {
 			throw new Error("match record DNE when it should");
 		}
 
 		mr.upperSeedWins = 2;
 
-		swissBracket.setMatchRecord("0-0", i, mr);
+		swissBracket.setMatchRecord(matchId, mr);
 	}
 
 	const seed1 = swissBracket.rootRound.matches[0].matchRecord!.upperSeed;
