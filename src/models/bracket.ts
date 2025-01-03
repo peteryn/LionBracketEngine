@@ -1,18 +1,15 @@
 import { BracketNode } from "./bracket_node.ts";
 import { Match } from "./match.ts";
+import { MatchRecord } from "./match_record.ts";
 
 export interface Bracket<NodeType extends BracketNode> {
 	getRoundNode(nodeName: string): NodeType;
 
 	getMatch(matchId: string): Match;
 
-	// getMatchRecordById(matchId: string): MatchRecord | undefined;
+	getMatchRecord(matchId: string): MatchRecord | undefined;
 
-	// setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean;
+	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean;
 
-	setMatchRecordWithValueById(
-		matchId: string,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean;
+	setMatchRecordWithValue(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean;
 }

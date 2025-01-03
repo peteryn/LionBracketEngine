@@ -148,7 +148,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 	// or refactor it so that there are multiple roots in a tree that eventually land at the
 	// same child (maybe a future factor that doesn't use recursion to traverse tree)
 	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
-		const res = this.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];
 		const roundNode = this.getRoundNode(roundNodeName);
 		if (res) {

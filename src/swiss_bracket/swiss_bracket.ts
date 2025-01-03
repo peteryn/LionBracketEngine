@@ -1,5 +1,5 @@
 import { Bracket } from "../models/bracket.ts";
-import { Seed,  FullRecord } from "../models/match_record.ts";
+import { Seed, FullRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, levelOrderTraversal } from "../util/util.ts";
 
@@ -32,7 +32,7 @@ export class SwissBracket implements Bracket<RoundNode> {
 		return matches[matchIndex];
 	}
 
-	getMatchRecordById(matchId: string): FullRecord | undefined {
+	getMatchRecord(matchId: string): FullRecord | undefined {
 		const matchRecord = this.getMatch(matchId)?.matchRecord;
 		if (!matchRecord) {
 			return undefined;
@@ -40,16 +40,7 @@ export class SwissBracket implements Bracket<RoundNode> {
 		return structuredClone(matchRecord);
 	}
 
-	getMatchRecord(roundName: string, matchNumber: number) {
-		return this.getMatchRecordById(`${roundName}.${matchNumber}`);
-	}
-
-	setMatchRecord(roundName: string, matchNumber: number, matchRecord: FullRecord): boolean {
-		// console.log("in abstract class");
-		return this.setMatchRecordById(`${roundName}.${matchNumber}`, matchRecord);
-	}
-
-	setMatchRecordById(matchId: string, matchRecord: FullRecord): boolean {
+	setMatchRecord(matchId: string, matchRecord: FullRecord): boolean {
 		const match = this.getMatch(matchId);
 		if (match) {
 			match.matchRecord = matchRecord;
@@ -62,31 +53,18 @@ export class SwissBracket implements Bracket<RoundNode> {
 		return false;
 	}
 
-	setMatchRecordWithValueById(
+	setMatchRecordWithValue(
 		matchId: string,
 		upperSeedWins: number,
 		lowerSeedWins: number
 	): boolean {
-		const mr = this.getMatchRecordById(matchId);
+		const mr = this.getMatchRecord(matchId);
 		if (!mr) {
 			return false;
 		}
 		mr.upperSeedWins = upperSeedWins;
 		mr.lowerSeedWins = lowerSeedWins;
-		return this.setMatchRecordById(matchId, mr);
-	}
-
-	setMatchRecordWithValue(
-		roundName: string,
-		matchNumber: number,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean {
-		return this.setMatchRecordWithValueById(
-			`${roundName}.${matchNumber}`,
-			upperSeedWins,
-			lowerSeedWins
-		);
+		return this.setMatchRecord(matchId, mr);
 	}
 
 	private createStructure(numSeeds: number = 16, winRequirement: number = 3) {

@@ -29,56 +29,8 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		populateMatches(this.rootRound.matches, matchups);
 	}
 
-	// override each setter so that as soon as a set is made,
-	// the new swiss flow is computed and future rounds are updated correctly
-	// OPTION: could refactor new method names that do the same thing and add them to
-	// FlowBracket interface. this would have the side effect that the original super.setter()
-	// methods would still be accessible from the outward interface.
-	override setMatchRecord(
-		roundName: string,
-		matchNumber: number,
-		matchRecord: FullRecord
-	): boolean {
-		const res = super.setMatchRecord(roundName, matchNumber, matchRecord);
-		const roundNode = this.getRoundNode(roundName);
-		// console.log("in overridden")
-		if (res) {
-			this.updateFlow(roundNode);
-		}
-		return res;
-	}
-
-	override setMatchRecordById(matchId: string, matchRecord: FullRecord): boolean {
-		const res = super.setMatchRecordById(matchId, matchRecord);
-		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getRoundNode(roundNodeName);
-		if (res) {
-			this.updateFlow(roundNode);
-		}
-		return res;
-	}
-
-	override setMatchRecordWithValue(
-		roundName: string,
-		matchNumber: number,
-		upperSeedWins: number,
-		lowerSeedWins: number
-	): boolean {
-		const res = super.setMatchRecordWithValue(
-			roundName,
-			matchNumber,
-			upperSeedWins,
-			lowerSeedWins
-		);
-		const roundNode = this.getRoundNode(roundName);
-		if (res) {
-			this.updateFlow(roundNode);
-		}
-		return res;
-	}
-
 	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
-		const res = this.setMatchRecordWithValueById(matchId, upperSeedWins, lowerSeedWins);
+		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];
 		const roundNode = this.getRoundNode(roundNodeName);
 		if (res) {

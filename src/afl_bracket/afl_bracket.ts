@@ -48,7 +48,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 		return matchNode.match;
 	}
 
-	getMatchRecordById(matchId: string): MatchRecord | undefined {
+	getMatchRecord(matchId: string): MatchRecord | undefined {
 		const matchRecord = this.getMatch(matchId)?.matchRecord;
 		if (!matchRecord) {
 			return undefined;
@@ -56,7 +56,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 		return structuredClone(matchRecord);
 	}
 
-	setMatchRecordById(matchId: string, matchRecord: MatchRecord): boolean {
+	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean {
 		const match = this.getMatch(matchId);
 		if (match) {
 			match.matchRecord = matchRecord;
@@ -69,12 +69,12 @@ export class AFLBracket implements Bracket<MatchNode> {
 		return false;
 	}
 
-	setMatchRecordWithValueById(
+	setMatchRecordWithValue(
 		matchId: string,
 		upperSeedWins: number,
 		lowerSeedWins: number
 	): boolean {
-		const mr = this.getMatchRecordById(matchId);
+		const mr = this.getMatchRecord(matchId);
 		if (!mr) {
 			return false;
 		}
@@ -87,7 +87,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 				mr.lowerSeedWins = lowerSeedWins;
 		}
 
-		return this.setMatchRecordById(matchId, mr);
+		return this.setMatchRecord(matchId, mr);
 	}
 
 	private createTree(): MatchNode[] {
