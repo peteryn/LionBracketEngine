@@ -124,6 +124,8 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 						node.match.matchRecord = {
 							type: "LowerRecord",
 							lowerSeed: mr.lowerSeed,
+							// potentially want to reset this to 0 if we deem their previous
+							// guess invalid when the match up changes
 							lowerSeedWins: mr.lowerSeedWins,
 						};
 					}
