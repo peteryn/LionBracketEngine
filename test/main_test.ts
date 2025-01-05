@@ -77,7 +77,7 @@ Deno.test(function computeRound1() {
 			mr.lowerSeedWins = matchRecordS.lowerSeedWins;
 			mr.upperSeedWins = matchRecordS.upperSeedWins;
 			swissBracket.setMatchRecord(matchId, mr);
-			swissBracket.updateFlow(swissBracket.rootRound)
+			swissBracket.updateFlow(swissBracket.rootRound);
 		} else {
 			throw new Error("Match record doesn't exist when it should");
 		}
@@ -309,7 +309,7 @@ Deno.test(function drawTest1() {
 		mr.upperSeedWins = 1;
 
 		swissBracket.setMatchRecord(matchId, mr);
-		swissBracket.updateFlow(swissBracket.rootRound)
+		swissBracket.updateFlow(swissBracket.rootRound);
 	}
 
 	// check r2 was generated correctly
@@ -324,7 +324,7 @@ Deno.test(function drawTest1() {
 	// set it to 1-1 aka a draw
 	mr!.lowerSeedWins = 1;
 	swissBracket.setMatchRecord(matchId, mr!);
-	swissBracket.updateFlow(swissBracket.rootRound)
+	swissBracket.updateFlow(swissBracket.rootRound);
 	// check that the draw exists
 	assertEquals(round1?.matches[0].matchRecord?.upperSeedWins, 1);
 	assertEquals(round1?.matches[0].matchRecord?.lowerSeedWins, 1);
@@ -358,4 +358,27 @@ Deno.test(function matchRecordTest1() {
 	const seed1GameDiff = swissBracket.getGameDifferential(seed1);
 	assertEquals(seed1MatchDiff, 1);
 	assertEquals(seed1GameDiff, 2);
+});
+
+Deno.test(function clearSelfTest1() {
+	const swissBracket = new SwissBracketFlow(16, 3);
+	for (let i = 0; i < 8; i++) {
+		swissBracket.setMatchRecordAndFlow(getMatchId("0-0", i), 1, 0);
+	}
+
+	for (let i = 0; i < 4; i++) {
+		swissBracket.setMatchRecordAndFlow(getMatchId("1-0", i), 1, 0);
+	}
+
+	for (let i = 0; i < 2; i++) {
+		swissBracket.setMatchRecordAndFlow(getMatchId("2-0", i), 1, 0);
+	}
+
+	const round3Upper = swissBracket.getRoundNode("2-0");
+	assertEquals(round3Upper.promotionSeeds.length, 2);
+	assertEquals(round3Upper.promotionSeeds[0], 1);
+	assertEquals(round3Upper.promotionSeeds[1], 2);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("2-0", 0), 1, 1);
+	assertEquals(round3Upper.promotionSeeds.length, 0);
 });

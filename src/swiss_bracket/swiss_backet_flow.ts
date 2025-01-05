@@ -48,6 +48,9 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		// we will then repopulate future rounds if necessary
 		this.clearDependents(roundNode.upperRound);
 		this.clearDependents(roundNode.lowerRound);
+		// eventually want to remove these attributes and use getWinners() instead
+		roundNode.promotionSeeds = [];
+		roundNode.eliminationSeeds = [];
 
 		// check to see if round is filled out (no ties in upperSeedWins and lowerSeedWins)
 		const isFilleldOut = isFilledRound(roundNode.matches);
