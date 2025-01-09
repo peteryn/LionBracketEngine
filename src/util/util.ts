@@ -1,11 +1,14 @@
-import type { Match } from "../models/match.ts";
-import { type Seed, MatchRecord } from "../models/match_record.ts";
+import { BracketNode } from "../models/bracket_node.ts";
+import { getMatchId, Match } from "../models/match.ts";
+import { type Seed, FullRecord, FullRecordFactory } from "../models/match_record.ts";
+import { RoundNode } from "../models/round_node.ts";
+import { SwissMatch } from "../models/match.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
 }
 
-export function isFilledRound(matches: Match[]): boolean {
+export function isFilledRound(matches: SwissMatch[]): boolean {
 	for (let index = 0; index < matches.length; index++) {
 		const matchRecord = matches[index].matchRecord;
 		if (matchRecord) {
@@ -18,7 +21,7 @@ export function isFilledRound(matches: Match[]): boolean {
 	return true;
 }
 
-export function getWinners(matches: Match[]) {
+export function getWinners(matches: SwissMatch[]) {
 	const result: Seed[] = [];
 
 	for (let index = 0; index < matches.length; index++) {
@@ -36,7 +39,7 @@ export function getWinners(matches: Match[]) {
 	return result;
 }
 
-export function getLosers(matches: Match[]) {
+export function getLosers(matches: SwissMatch[]) {
 	const result: Seed[] = [];
 
 	for (let index = 0; index < matches.length; index++) {
@@ -65,7 +68,97 @@ export function populateMatches(matches: Match[], seeds: Seed[][]) {
 		const matchup = seeds[index];
 		const seed1 = matchup[0];
 		const seed2 = matchup[1];
-		const record = new MatchRecord(seed1, seed2);
+		const record: FullRecord = FullRecordFactory(seed1, seed2);
 		matches[index].matchRecord = record;
 	}
+}
+
+export function initializeEmptyMatches(root: RoundNode) {
+	const init = (node: RoundNode) => {
+		for (let index = 0; index < node.numSeeds / 2; index++) {
+			const match: SwissMatch = { id: getMatchId(node.name, index), matchRecord: undefined };
+			node.matches.push(match);
+		}
+	};
+	levelOrderTraversal(root, init);
+}
+
+export function createSeeds(numSeeds: number): Seed[] {
+	return Array.from({ length: numSeeds }, (_, index) => index + 1);
+}
+
+export function seedBasedMatchups(seeds: Seed[]) {
+	const matchups: Seed[][] = [];
+
+	// implementation when round node has 1 parent
+	let i = 0;
+	let j = seeds.length - 1;
+	while (i < j) {
+		matchups.push([seeds[i], seeds[j]]);
+		i++;
+		j--;
+	}
+
+	return matchups;
+}
+
+export function levelOrderTraversal<NodeType extends BracketNode>(
+	root: NodeType,
+	perNodeCallBack?: (node: NodeType) => void,
+	perLevelCallBack?: (level: NodeType[]) => void
+) {
+	let queue: NodeType[] = [];
+	const visited: string[] = [];
+	queue.push(root);
+	const levels = [];
+	while (queue.length > 0) {
+		const level: NodeType[] = [];
+		const newQueue: NodeType[] = [];
+		for (let i = 0; i < queue.length; i++) {
+			const node = queue[i];
+
+			if (!visited.includes(node.name)) {
+				if (perNodeCallBack) {
+					perNodeCallBack(node);
+				}
+				level.push(node);
+				visited.push(node.name);
+			}
+			if (node.upperRound) {
+				newQueue.push(node.upperRound as NodeType);
+			}
+			if (node.lowerRound) {
+				newQueue.push(node.lowerRound as NodeType);
+			}
+		}
+		queue = newQueue;
+		if (perLevelCallBack) {
+			perLevelCallBack(level);
+		}
+		levels.push(level);
+	}
+	return levels;
+}
+
+export function postOrderTraversal<NodeType extends BracketNode>(
+	root: NodeType | undefined,
+	perNodeCallBack?: (node: NodeType) => void,
+	visited?: Set<string> | undefined
+) {
+	if (!visited) {
+		visited = new Set();
+	}
+	if (!root) {
+		return;
+	}
+
+	postOrderTraversal(root.upperRound as NodeType, perNodeCallBack, visited);
+	postOrderTraversal(root.lowerRound as NodeType, perNodeCallBack, visited);
+
+	if (visited.has(root.name) || !perNodeCallBack) {
+		return;
+	}
+
+	perNodeCallBack(root);
+	visited.add(root.name);
 }

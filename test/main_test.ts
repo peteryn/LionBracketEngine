@@ -7,21 +7,22 @@ import {
 	testTournament,
 } from "./util/testFunctions.ts";
 import { RoundNode } from "../src/models/round_node.ts";
-import { SwissBracket } from "../src/swiss_bracket/swiss_bracket.ts";
+import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
+import { getMatchId } from "../src/models/match.ts";
 
 Deno.test(function structureTest1() {
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
-	const rootRound = swissBracket.data.rootRound;
+	const swissBracket = new SwissBracketFlow(16, 3);
+	const rootRound = swissBracket.rootRound;
 	assertEquals(rootRound.level, 1);
 	assertEquals(rootRound.has2Parents, false);
 	assertEquals(rootRound.matches[0].matchRecord?.upperSeed, 1);
 	assertEquals(rootRound.matches[0].matchRecord?.lowerSeed, 16);
 	assertEquals(rootRound.matches[1].matchRecord?.upperSeed, 2);
 	assertEquals(rootRound.matches[1].matchRecord?.lowerSeed, 15);
-	assertEquals(swissBracket.getRoundNode("0-0")?.name, swissBracket.data.rootRound.name);
+	assertEquals(swissBracket.getRoundNode("0-0")?.name, swissBracket.rootRound.name);
 
-	const round2Upper = rootRound.winningRound;
-	const round2Lower = rootRound.losingRound;
+	const round2Upper = rootRound.upperRound;
+	const round2Lower = rootRound.lowerRound;
 	assertEquals(swissBracket.getRoundNode("1-0")?.name, round2Upper?.name);
 	assertEquals(swissBracket.getRoundNode("0-1")?.name, round2Lower?.name);
 	assertEquals(round2Upper?.level, 2);
@@ -31,9 +32,9 @@ Deno.test(function structureTest1() {
 	assertEquals(round2Upper?.matches.length, 4);
 	assertEquals(round2Lower?.matches.length, 4);
 
-	const round3Upper = round2Upper?.winningRound;
-	const round3Middle = round2Upper?.losingRound;
-	const round3Lower = round2Lower?.losingRound;
+	const round3Upper = round2Upper?.upperRound;
+	const round3Middle = round2Upper?.lowerRound;
+	const round3Lower = round2Lower?.lowerRound;
 	assertEquals(swissBracket.getRoundNode("2-0")?.name, round3Upper?.name);
 	assertEquals(swissBracket.getRoundNode("1-1")?.name, round3Middle?.name);
 	assertEquals(swissBracket.getRoundNode("0-2")?.name, round3Lower?.name);
@@ -47,8 +48,8 @@ Deno.test(function structureTest1() {
 	assertEquals(round3Middle?.matches.length, 4);
 	assertEquals(round3Lower?.matches.length, 2);
 
-	const round4Upper = round3Upper?.losingRound;
-	const round4Lower = round3Lower?.winningRound;
+	const round4Upper = round3Upper?.lowerRound;
+	const round4Lower = round3Lower?.upperRound;
 	assertEquals(swissBracket.getRoundNode("2-1")?.name, round4Upper?.name);
 	assertEquals(swissBracket.getRoundNode("1-2")?.name, round4Lower?.name);
 	assertEquals(round4Upper?.level, 4);
@@ -58,7 +59,7 @@ Deno.test(function structureTest1() {
 	assertEquals(round4Upper?.matches.length, 3);
 	assertEquals(round4Lower?.matches.length, 3);
 
-	const round5 = round4Lower?.winningRound;
+	const round5 = round4Lower?.upperRound;
 	assertEquals(swissBracket.getRoundNode("2-2")?.name, round5?.name);
 	assertEquals(round5?.level, 5);
 	assertEquals(round5?.has2Parents, true);
@@ -66,22 +67,24 @@ Deno.test(function structureTest1() {
 });
 
 Deno.test(function computeRound1() {
-	const swissBracket = new SwissBracket(16, 2, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 2);
 	const f: MatchRecordSerialized[] = getJsonSync("./data/round1UpperTestData1.json");
 	for (let index = 0; index < f.length; index++) {
 		const matchRecordS = f[index];
-		const mr = swissBracket.getMatchRecord("0-0", index);
+		const matchId = getMatchId("0-0", index);
+		const mr = swissBracket.getMatchRecord(matchId);
 		if (mr) {
 			mr.lowerSeedWins = matchRecordS.lowerSeedWins;
 			mr.upperSeedWins = matchRecordS.upperSeedWins;
-			swissBracket.setMatchRecord("0-0", index, mr);
+			swissBracket.setMatchRecord(matchId, mr);
+			swissBracket.updateFlow(swissBracket.rootRound);
 		} else {
 			throw new Error("Match record doesn't exist when it should");
 		}
 	}
-	const round1 = swissBracket.data.rootRound;
-	const round2Upper = round1.winningRound;
-	const round2Lower = round1.losingRound;
+	const round1 = swissBracket.rootRound;
+	const round2Upper = round1.upperRound;
+	const round2Lower = round1.lowerRound;
 	assertEquals(round2Upper?.matches[0].matchRecord?.upperSeed, 1);
 	assertEquals(round2Upper?.matches[0].matchRecord?.lowerSeed, 8);
 
@@ -108,13 +111,13 @@ Deno.test(function computeRound1() {
 });
 
 Deno.test(function naRegional4Test1() {
-	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
+	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
 });
 
 Deno.test(function naRegional4Test2() {
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 3);
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
 	checkVersusData(swissBracket, tournament, "1-0");
@@ -142,9 +145,11 @@ Deno.test(function naRegional4Test2() {
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 
 	// change record in round 1
-	const mr = swissBracket.getMatchRecord("0-0", 1);
+	const matchId = getMatchId("0-0", 1);
+	const mr = swissBracket.getMatchRecord(matchId);
 	mr!.lowerSeedWins = 1;
-	swissBracket.setMatchRecord("0-0", 1, mr!);
+	swissBracket.setMatchRecord(matchId, mr!);
+	swissBracket.updateFlow(swissBracket.rootRound);
 
 	// make sure that future rounds are now undefined
 	const round3Upper = swissBracket.getRoundNode("2-0") as RoundNode;
@@ -198,7 +203,7 @@ Deno.test(function naRegional4Test2() {
 Deno.test(function naRegional4Test3() {
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 3);
 
 	// fill out bracket
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -264,7 +269,7 @@ Deno.test(function naRegional6Test1() {
 Deno.test(function naRegional4BuchholzTest1() {
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
+	const swissBracket = new SwissBracketFlow(16, 3);
 
 	// fill out bracket
 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
@@ -287,18 +292,20 @@ Deno.test(function naRegional4BuchholzTest1() {
 });
 
 Deno.test(function drawTest1() {
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
-	const numMatches = swissBracket.data.rootRound.matches.length;
+	const swissBracket = new SwissBracketFlow(16, 3);
+	const numMatches = swissBracket.rootRound.matches.length;
 	// set all round 1 matches to 1-0
 	for (let i = 0; i < numMatches; i++) {
-		const mr = swissBracket.getMatchRecord("0-0", i);
+		const matchId = getMatchId("0-0", i);
+		const mr = swissBracket.getMatchRecord(matchId);
 		if (!mr) {
 			throw new Error("match record DNE when it should");
 		}
 
 		mr.upperSeedWins = 1;
 
-		swissBracket.setMatchRecord("0-0", i, mr);
+		swissBracket.setMatchRecord(matchId, mr);
+		swissBracket.updateFlow(swissBracket.rootRound);
 	}
 
 	// check r2 was generated correctly
@@ -307,11 +314,13 @@ Deno.test(function drawTest1() {
 	assertEquals(round2Upper!.matches[0].matchRecord?.lowerSeed, 8);
 
 	// now get first match from round 1
-	const mr = swissBracket.getMatchRecord("0-0", 0);
+	const matchId = getMatchId("0-0", 0);
+	const mr = swissBracket.getMatchRecord(matchId);
 	const round1 = swissBracket.getRoundNode("0-0");
 	// set it to 1-1 aka a draw
 	mr!.lowerSeedWins = 1;
-	swissBracket.setMatchRecord("0-0", 0, mr!);
+	swissBracket.setMatchRecord(matchId, mr!);
+	swissBracket.updateFlow(swissBracket.rootRound);
 	// check that the draw exists
 	assertEquals(round1?.matches[0].matchRecord?.upperSeedWins, 1);
 	assertEquals(round1?.matches[0].matchRecord?.lowerSeedWins, 1);
@@ -326,22 +335,46 @@ Deno.test(function drawTest1() {
 });
 
 Deno.test(function matchRecordTest1() {
-	const swissBracket = new SwissBracket(16, 3, "GAME_DIFF", "sb");
-	const numMatches = swissBracket.data.rootRound.matches.length;
+	const swissBracket = new SwissBracketFlow(16, 3);
+	const numMatches = swissBracket.rootRound.matches.length;
 	for (let i = 0; i < numMatches; i++) {
-		const mr = swissBracket.getMatchRecord("0-0", i);
+		const matchId = getMatchId("0-0", i);
+		const mr = swissBracket.getMatchRecord(matchId);
 		if (!mr) {
 			throw new Error("match record DNE when it should");
 		}
 
 		mr.upperSeedWins = 2;
 
-		swissBracket.setMatchRecord("0-0", i, mr);
+		swissBracket.setMatchRecord(matchId, mr);
 	}
 
-	const seed1 = swissBracket.data.rootRound.matches[0].matchRecord!.upperSeed;
+	const seed1 = swissBracket.rootRound.matches[0].matchRecord!.upperSeed;
 	const seed1MatchDiff = swissBracket.getMatchDifferential(seed1);
 	const seed1GameDiff = swissBracket.getGameDifferential(seed1);
 	assertEquals(seed1MatchDiff, 1);
 	assertEquals(seed1GameDiff, 2);
+});
+
+Deno.test(function clearSelfTest1() {
+	const swissBracket = new SwissBracketFlow(16, 3);
+	for (let i = 0; i < 8; i++) {
+		swissBracket.setMatchRecordAndFlow(getMatchId("0-0", i), 1, 0);
+	}
+
+	for (let i = 0; i < 4; i++) {
+		swissBracket.setMatchRecordAndFlow(getMatchId("1-0", i), 1, 0);
+	}
+
+	for (let i = 0; i < 2; i++) {
+		swissBracket.setMatchRecordAndFlow(getMatchId("2-0", i), 1, 0);
+	}
+
+	const round3Upper = swissBracket.getRoundNode("2-0");
+	assertEquals(round3Upper.promotionSeeds.length, 2);
+	assertEquals(round3Upper.promotionSeeds[0], 1);
+	assertEquals(round3Upper.promotionSeeds[1], 2);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("2-0", 0), 1, 1);
+	assertEquals(round3Upper.promotionSeeds.length, 0);
 });
