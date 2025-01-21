@@ -111,7 +111,7 @@ Deno.test(function computeRound1() {
 });
 
 Deno.test(function naRegional4Test1() {
-	testTournament("./test/data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
+	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json");
 });
 
 Deno.test(function naRegional4Test2() {
