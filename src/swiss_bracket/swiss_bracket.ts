@@ -1,5 +1,5 @@
 import { Bracket } from "../models/bracket.ts";
-import { Seed, FullRecord } from "../models/match_record.ts";
+import { FullRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, levelOrderTraversal } from "../util/util.ts";
 
@@ -133,28 +133,5 @@ export class SwissBracket implements Bracket<RoundNode> {
 			existingNodes.set(nodeRecord, newNode);
 			return true;
 		}
-	}
-
-	private createSeeds(numSeeds: number): Seed[] {
-		const seeds: Seed[] = [];
-		for (let index = 1; index <= numSeeds; index++) {
-			seeds.push(index);
-		}
-		return seeds;
-	}
-
-	private seedBasedMatchups(seeds: Seed[]) {
-		const matchups: Seed[][] = [];
-
-		// implementation when round node has 1 parent
-		let i = 0;
-		let j = seeds.length - 1;
-		while (i < j) {
-			matchups.push([seeds[i], seeds[j]]);
-			i++;
-			j--;
-		}
-
-		return matchups;
 	}
 }
