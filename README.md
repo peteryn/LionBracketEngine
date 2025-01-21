@@ -1,5 +1,5 @@
 # Lion Bracket Engine
-Lion Bracket Engine is a versatile library for managing and predicting tournament brackets. It supports both qualification and elimination formats, including Swiss and AFL. The library provides a intuitive API for creating brackets, updating match results, and calculating future matches.
+Lion Bracket Engine is a library for managing and predicting tournament brackets. It supports both qualification and elimination formats, including Swiss and AFL. The library provides a intuitive API for creating brackets, updating match results, and calculating future matches.
 
 This library supports the webapp [LionBracket](https://github.com/peteryn/LionBracket).
 
