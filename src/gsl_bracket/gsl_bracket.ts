@@ -1,11 +1,75 @@
 import { Bracket } from "../models/bracket.ts";
+import { Match } from "../models/match.ts";
+import { MatchNode } from "../models/match_node.ts";
+import { MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 
-export class GSLBracket extends Bracket {
-	override rootRound: RoundNode;
+export class GSLBracket implements Bracket<MatchNode> {
+	upperMatches: MatchNode[] = [];
+	lowerMatches: MatchNode[] = [];
 
 	constructor() {
-		super();
-		this.rootRound = new RoundNode("", 0, 0, 0, 0);
+		this.upperMatches.push(new MatchNode("UpperQuarterFinal1", true));
+		this.upperMatches.push(new MatchNode("UpperQuarterFinal2", false));
+		this.upperMatches.push(new MatchNode("UpperQuarterFinal3", true));
+		this.upperMatches.push(new MatchNode("UpperQuarterFinal4", false));
+
+		const upperSemiFinal1 = new MatchNode("UpperSemiFinal1", true);
+		this.upperMatches[0].upperRound = upperSemiFinal1;
+		this.upperMatches[1].upperRound = upperSemiFinal1;
+
+		const upperSemiFinal2 = new MatchNode("UpperSemiFinal2", false);
+		this.upperMatches[2].upperRound = upperSemiFinal2;
+		this.upperMatches[3].upperRound = upperSemiFinal2;
+
+		const upperFinal = new MatchNode("UpperFinal", true);
+		upperSemiFinal1.upperRound = upperFinal;
+		upperSemiFinal2.upperRound = upperFinal;
+
+		this.lowerMatches.push(new MatchNode("LowerQuarterFinal5", false));
+		this.lowerMatches.push(new MatchNode("LowerQuarterFinal6", false));
+
+		const lowerSemiFinal1 = new MatchNode("LowerSemiFinal1", true);
+		this.lowerMatches[0].upperRound = lowerSemiFinal1;
+
+		const lowerSemiFinal2 = new MatchNode("LowerSemiFinal2", false);
+		this.lowerMatches[1].upperRound = lowerSemiFinal2;
+
+		const lowerFinal = new MatchNode("LowerFinal", true);
+		lowerSemiFinal1.upperRound = lowerFinal;
+		lowerSemiFinal2.upperRound = lowerFinal;
+
+		this.upperMatches[0].lowerRound = this.lowerMatches[0];
+		this.upperMatches[1].lowerRound = this.lowerMatches[0];
+
+		this.upperMatches[2].lowerRound = this.lowerMatches[1];
+		this.upperMatches[3].lowerRound = this.lowerMatches[1];
+
+		upperSemiFinal1.lowerRound = lowerSemiFinal2;
+		upperSemiFinal2.lowerRound = lowerSemiFinal1;
+	}
+
+	getRoundNode(nodeName: string): MatchNode {
+		throw new Error("Method not implemented.");
+	}
+
+	getMatch(matchId: string): Match {
+		throw new Error("Method not implemented.");
+	}
+
+	getMatchRecord(matchId: string): MatchRecord | undefined {
+		throw new Error("Method not implemented.");
+	}
+
+	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean {
+		throw new Error("Method not implemented.");
+	}
+
+	setMatchRecordWithValue(
+		matchId: string,
+		upperSeedWins: number,
+		lowerSeedWins: number
+	): boolean {
+		throw new Error("Method not implemented.");
 	}
 }
