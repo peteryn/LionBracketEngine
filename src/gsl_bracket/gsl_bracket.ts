@@ -3,6 +3,7 @@ import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { MatchRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
+import { levelOrderTraversal } from "../util/util.ts";
 
 export class GSLBracket implements Bracket<MatchNode> {
 	upperMatches: MatchNode[] = [];
@@ -50,19 +51,65 @@ export class GSLBracket implements Bracket<MatchNode> {
 	}
 
 	getRoundNode(nodeName: string): MatchNode {
-		throw new Error("Method not implemented.");
+		for (const node of this.upperMatches) {
+			if (node.name === nodeName) {
+				return node;
+			}
+		}
+		for (const node of this.lowerMatches) {
+			if (node.name === nodeName) {
+				return node;
+			}
+		}
+		let resultNode: MatchNode | undefined;
+		levelOrderTraversal(this.upperMatches[0], (node) => {
+			if (node.name === nodeName) {
+				resultNode = node;
+			}
+		});
+		levelOrderTraversal(this.upperMatches[2], (node) => {
+			if (node.name === nodeName) {
+				resultNode = node;
+			}
+		});
+		levelOrderTraversal(this.lowerMatches[0], (node) => {
+			if (node.name === nodeName) {
+				resultNode = node;
+			}
+		});
+		levelOrderTraversal(this.lowerMatches[1], (node) => {
+			if (node.name === nodeName) {
+				resultNode = node;
+			}
+		});
+		return resultNode as MatchNode;
 	}
 
 	getMatch(matchId: string): Match {
-		throw new Error("Method not implemented.");
+		const [roundName] = matchId.split(".");
+		const matchNode = this.getRoundNode(roundName);
+		return matchNode.match;
 	}
 
 	getMatchRecord(matchId: string): MatchRecord | undefined {
-		throw new Error("Method not implemented.");
+		const matchRecord = this.getMatch(matchId)?.matchRecord;
+		if (!matchRecord) {
+			return undefined;
+		}
+		return structuredClone(matchRecord);
 	}
 
 	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean {
-		throw new Error("Method not implemented.");
+		const match = this.getMatch(matchId);
+		if (match) {
+			match.matchRecord = matchRecord;
+			const matchNodeName = match.id.split(".")[0];
+			const matchNode = this.getRoundNode(matchNodeName);
+			if (matchNode) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	setMatchRecordWithValue(
@@ -70,6 +117,19 @@ export class GSLBracket implements Bracket<MatchNode> {
 		upperSeedWins: number,
 		lowerSeedWins: number
 	): boolean {
-		throw new Error("Method not implemented.");
+		const mr = this.getMatchRecord(matchId);
+		if (!mr) {
+			return false;
+		}
+		switch (mr.type) {
+			case "UpperRecord":
+			case "LowerRecord":
+				return false;
+			case "FullRecord":
+				mr.upperSeedWins = upperSeedWins;
+				mr.lowerSeedWins = lowerSeedWins;
+		}
+
+		return this.setMatchRecord(matchId, mr);
 	}
 }
