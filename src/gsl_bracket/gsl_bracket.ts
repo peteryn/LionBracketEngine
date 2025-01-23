@@ -2,7 +2,6 @@ import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { MatchRecord } from "../models/match_record.ts";
-import { RoundNode } from "../models/round_node.ts";
 import { levelOrderTraversal } from "../util/util.ts";
 
 export class GSLBracket implements Bracket<MatchNode> {
