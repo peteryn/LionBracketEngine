@@ -28,18 +28,34 @@ export class Tournament {
 			// need to be cleared because changes in swiss round 4 and 5 do not affect what happened in swiss round 3
             const roundNodeName = SwissBracketFlow.getRoundNodeName(matchId);
             const roundNode = this.swissBracket.getRoundNode(roundNodeName);
-            const levelsToWipe = {
-                1: ['t1', 't2', 't3'],
-                2: ['t1', 't2', 't3'],
-                3: ['t1', 't2', 't3'],
-                4: ['t2', 't3'],
-                5: ['t3']
-            };
 
-			const nodesToWipe = levelsToWipe[roundNode.level as keyof typeof levelsToWipe] || [];
-            nodesToWipe.forEach(node => {
+            const uqf1 = this.aflBracket.getRoundNode("upperQuarterFinal1");
+            const uqf2 = this.aflBracket.getRoundNode("upperQuarterFinal2");
+            const lbr1 = this.aflBracket.getRoundNode("lowerBracketRound1")
+            const lbr2 = this.aflBracket.getRoundNode("lowerBracketRound2")
 
-            });
+            switch (roundNode.level) {
+                case 1:
+                case 2:
+                case 3:
+                    // clear the entire graph
+                    // we need all dependents of these nodes to be cleared too
+                    // clear upper seed from uqf1, uqf2
+                    // and all dependents
+                    break;
+                case 4:
+                    // clear the lower seed from uqf1, uqf2
+                    // clear entire records from lbr1, lbr2
+                    // and all dependents
+                    break;
+                case 5:
+                    // clear lower seed from lbr1
+                    // clear entire record from lbr2
+                    // and all depedents
+                    break;
+                default:
+
+            }
 
 			// process results
 			// get the winners from swiss bracket
