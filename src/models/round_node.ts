@@ -10,7 +10,7 @@ export class RoundNode implements BracketNode {
 	upperRound: RoundNode | undefined;
 	lowerRound: RoundNode | undefined;
 	matches: SwissMatch[];
-	level: number;
+	level: number; // 1 indexed
 	has2Parents: boolean;
 	// TODO: these can probably be removed in a refactor
 	promotionSeeds: Seed[];

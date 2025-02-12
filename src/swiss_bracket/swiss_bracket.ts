@@ -11,6 +11,11 @@ export class SwissBracket implements Bracket<RoundNode> {
 		initializeEmptyMatches(this.rootRound);
 	}
 
+	static getRoundNodeName(matchId: string) {
+		const [roundName, _] = matchId.split(".");
+		return roundName
+	}
+
 	getRoundNode(nodeName: string): RoundNode {
 		let roundNode: RoundNode | undefined = undefined;
 		levelOrderTraversal(this.rootRound, (node: RoundNode) => {
