@@ -36,4 +36,20 @@ export function FullRecordFactory(upperSeed: Seed, lowerSeed: Seed): FullRecord 
 	};
 }
 
+export function UpperRecordFactory(upperSeed: Seed): UpperRecord {
+	return {
+		type: "UpperRecord",
+		upperSeed: upperSeed,
+		upperSeedWins: 0,
+	};
+}
+
+export function LowerRecordFactory(lowerSeed: Seed): LowerRecord {
+	return {
+		type: "LowerRecord",
+		lowerSeed: lowerSeed,
+		lowerSeedWins: 0,
+	};
+}
+
 export type MatchRecord = UpperRecord | LowerRecord | FullRecord;

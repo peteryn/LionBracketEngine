@@ -258,6 +258,49 @@ Deno.test(function naRegional4Test3() {
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 });
 
+Deno.test(function naRegional4Test4() {
+	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+	const tournament: TournamentData = getJsonSync(tournamentPath);
+	const swissBracket = new SwissBracketFlow(16, 3);
+
+	// fill out bracket
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+
+	checkVersusData(swissBracket, tournament, "1-0");
+	checkVersusData(swissBracket, tournament, "0-1");
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData(swissBracket, tournament, "2-0");
+	checkVersusData(swissBracket, tournament, "1-1");
+	checkVersusData(swissBracket, tournament, "0-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	checkVersusData(swissBracket, tournament, "2-1");
+	checkVersusData(swissBracket, tournament, "1-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+
+	checkVersusData(swissBracket, tournament, "2-2");
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
+
+	const promotedSeeds = swissBracket.getPromotedSeeds();
+	assertEquals(promotedSeeds[0], 1);
+	assertEquals(promotedSeeds[1], 12);
+	assertEquals(promotedSeeds[2], 10);
+	assertEquals(promotedSeeds[3], 4);
+	assertEquals(promotedSeeds[4], 7);
+	assertEquals(promotedSeeds[5], 2);
+	assertEquals(promotedSeeds[6], 11);
+	assertEquals(promotedSeeds[7], 6);
+});
+
 Deno.test(function naRegional5Test1() {
 	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_5.json");
 });

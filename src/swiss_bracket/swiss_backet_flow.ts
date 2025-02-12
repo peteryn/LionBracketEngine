@@ -388,4 +388,14 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 			});
 		}
 	}
+
+	getPromotedSeeds() {
+		const upperRound3 = this.getRoundNode("2-0");
+		const upperRound4 = this.getRoundNode("2-1");
+		const round5 = this.getRoundNode("2-2");
+		const promotionSeeds = getWinners(upperRound3.matches)
+			.concat(getWinners(upperRound4.matches))
+			.concat(getWinners(round5.matches));
+		return this.swissSort(promotionSeeds);
+	}
 }
