@@ -7,7 +7,7 @@ export class Tournament {
 
 	constructor() {
 		this.swissBracket = new SwissBracketFlow(16, 3);
-		this.aflBracket = new AFLBracketFlow();
+		this.aflBracket = new AFLBracketFlow(false);
 	}
 
 	updateFlow(
