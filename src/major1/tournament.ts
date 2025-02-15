@@ -1,6 +1,6 @@
 import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
 import { SwissBracketFlow } from "../swiss_bracket/swiss_backet_flow.ts";
-import { FullRecordFactory, UpperRecordFactory } from "../models/match_record.ts";
+import { FullRecordFactory, Seed, UpperRecordFactory } from "../models/match_record.ts";
 
 export class Tournament {
 	swissBracket: SwissBracketFlow;
@@ -61,60 +61,34 @@ export class Tournament {
 			// get the winners from swiss bracket
 			// winners should be swiss sorted
 			// populate afl bracket
-            // 1 4
-            // 2 3
-            // 5 8
-            // 6 7
-            const promotedSeeds = this.swissBracket.getPromotedSeeds();
-            if (promotedSeeds[0] && promotedSeeds[3]) {
-                this.aflBracket.setMatchRecord(
-                    "upperQuarterFinal1",
-                    FullRecordFactory(promotedSeeds[0], promotedSeeds[3])
-                );
-            } else if (promotedSeeds[0]) {
-                this.aflBracket.setMatchRecord(
-                    "upperQuarterFinal1",
-                    UpperRecordFactory(promotedSeeds[0])
-                );
-            }
-
-            if (promotedSeeds[1] && promotedSeeds[2]) {
-                this.aflBracket.setMatchRecord(
-                    "upperQuarterFinal2",
-                    FullRecordFactory(promotedSeeds[1], promotedSeeds[2])
-                );
-            } else if (promotedSeeds[1]) {
-                this.aflBracket.setMatchRecord(
-                    "upperQuarterFinal2",
-                    UpperRecordFactory(promotedSeeds[1])
-                );
-            }
-
-            if (promotedSeeds[4] && promotedSeeds[7]) {
-                this.aflBracket.setMatchRecord(
-                    "lowerBracketRound1",
-                    FullRecordFactory(promotedSeeds[4], promotedSeeds[7])
-                );
-            } else if (promotedSeeds[4]) {
-                this.aflBracket.setMatchRecord(
-                    "lowerBracketRound1",
-                    UpperRecordFactory(promotedSeeds[4])
-                );
-            }
-
-            if (promotedSeeds[5] && promotedSeeds[6]) {
-                this.aflBracket.setMatchRecord(
-                    "lowerBracketRound2",
-                    FullRecordFactory(promotedSeeds[5], promotedSeeds[6])
-                );
-            } else if (promotedSeeds[5]) {
-                this.aflBracket.setMatchRecord(
-                    "lowerBracketRound2",
-                    UpperRecordFactory(promotedSeeds[5])
-                );
-            }
+			// 1 4
+			// 2 3
+			// 5 8
+			// 6 7
+			const promotedSeeds = this.swissBracket.getPromotedSeeds();
+			populateMatchRecord(promotedSeeds, this.aflBracket, 0, 3, "upperQuarterFinal1");
+			populateMatchRecord(promotedSeeds, this.aflBracket, 1, 2, "upperQuarterFinal2");
+			populateMatchRecord(promotedSeeds, this.aflBracket, 4, 7, "lowerBracketRound1");
+			populateMatchRecord(promotedSeeds, this.aflBracket, 5, 6, "lowerBracketRound2");
 		} else {
 			this.aflBracket.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
 		}
+	}
+}
+
+function populateMatchRecord(
+	promotedSeeds: Seed[],
+	aflBracket: AFLBracketFlow,
+	index1: number,
+	index2: number,
+	matchNodeId: string
+) {
+	if (promotedSeeds[index1] && promotedSeeds[index2]) {
+		aflBracket.setMatchRecord(
+			matchNodeId,
+			FullRecordFactory(promotedSeeds[index1], promotedSeeds[index2])
+		);
+	} else if (promotedSeeds[index1]) {
+		aflBracket.setMatchRecord(matchNodeId, UpperRecordFactory(promotedSeeds[index1]));
 	}
 }
