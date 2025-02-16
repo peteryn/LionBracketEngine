@@ -3,6 +3,7 @@ import { FullRecord, FullRecordFactory, MatchRecord, Seed } from "../models/matc
 import { AFLBracket } from "./afl_bracket.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { levelOrderTraversal } from "../util/util.ts";
+import { Match } from "../models/match.ts";
 
 export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode> {
 	constructor(initialize: boolean = true) {
@@ -12,7 +13,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		const lowerBracketRound1 = this.getRoundNode("lowerBracketRound1");
 		const lowerBracketRound2 = this.getRoundNode("lowerBracketRound2");
 		if (initialize) {
-			const seeds = [1, 2, 3, 4, 5, 6, 7, 8]
+			const seeds = [1, 2, 3, 4, 5, 6, 7, 8];
 			upperQuarterFinal1.match.matchRecord = FullRecordFactory(seeds[0], seeds[3]);
 			upperQuarterFinal2.match.matchRecord = FullRecordFactory(seeds[1], seeds[2]);
 			lowerBracketRound1.match.matchRecord = FullRecordFactory(seeds[4], seeds[7]);
@@ -158,5 +159,36 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 			this.updateFlow(roundNode);
 		}
 		return res;
+	}
+
+	getAllMatchNodes(): MatchNode[] {
+		const lbqf1 = this.lowerBracketRound1.upperRound as MatchNode;
+		const lbqf2 = this.lowerBracketRound2.upperRound as MatchNode;
+		const sf1 = this.upperQuarterFinal2.upperRound as MatchNode;
+		const sf2 = this.upperQuarterFinal1.upperRound as MatchNode;
+		const gf = sf1.upperRound as MatchNode;
+
+		return [
+			this.upperQuarterFinal1,
+			this.upperQuarterFinal2,
+			this.lowerBracketRound1,
+			this.lowerBracketRound2,
+			lbqf1,
+			lbqf2,
+			sf1,
+			sf2,
+			gf,
+		];
+	}
+
+	clearAllMatchRecords() {
+		this.upperQuarterFinal1.match.matchRecord = undefined;
+		this.upperQuarterFinal2.match.matchRecord = undefined;
+		levelOrderTraversal(this.lowerBracketRound1, (node) => {
+			node.match.matchRecord = undefined;
+		});
+		levelOrderTraversal(this.lowerBracketRound2, (node) => {
+			node.match.matchRecord = undefined;
+		});
 	}
 }

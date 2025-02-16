@@ -43,11 +43,13 @@ export class Tournament {
 					// we need all dependents of these nodes to be cleared too
 					// clear upper seed from uqf1, uqf2
 					// and all dependents
+					this.aflBracket.clearAllMatchRecords();
 					break;
 				case 4:
 					// clear the lower seed from uqf1, uqf2
 					// clear entire records from lbr1, lbr2
 					// and all dependents
+					
 					break;
 				case 5:
 					// clear lower seed from lbr1

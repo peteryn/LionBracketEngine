@@ -219,3 +219,44 @@ Deno.test(function updateTest8() {
 	assertEquals(gfMR.upperSeed, 2);
 	assertEquals(gfMR.lowerSeed, 1);
 });
+
+Deno.test(function getAllMatchNodesTest() {
+	const afl_bracket = new AFLBracketFlow();
+	const [uqf1, uqf2, lbr1, lbr2, lbqf1, lbqf2, sf1, sf2, gf] = afl_bracket.getAllMatchNodes();
+	assertEquals(uqf1.name, "upperQuarterFinal1");
+	assertEquals(uqf2.name, "upperQuarterFinal2");
+	assertEquals(lbr1.name, "lowerBracketRound1");
+	assertEquals(lbr2.name, "lowerBracketRound2");
+	assertEquals(lbqf1.name, "lowerQuarterFinal1");
+	assertEquals(lbqf2.name, "lowerQuarterFinal2");
+	assertEquals(sf1.name, "semiFinal1");
+	assertEquals(sf2.name, "semiFinal2");
+	assertEquals(gf.name, "grandFinal");
+});
+
+Deno.test(function clearAllMatchRecordsTest() {
+	const afl_bracket = new AFLBracketFlow();
+	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal1", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal2", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("lowerBracketRound1", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("lowerBracketRound2", 1, 0);
+
+	afl_bracket.setMatchRecordAndFlow("lowerQuarterFinal1", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("lowerQuarterFinal2", 1, 0);
+
+	afl_bracket.setMatchRecordAndFlow("semiFinal2", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("semiFinal1", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("grandFinal", 1, 0);
+
+	afl_bracket.clearAllMatchRecords();
+	const [uqf1, uqf2, lbr1, lbr2, lbqf1, lbqf2, sf1, sf2, gf] = afl_bracket.getAllMatchNodes();
+	assertEquals(uqf1.match.matchRecord, undefined);
+	assertEquals(uqf2.match.matchRecord, undefined);
+	assertEquals(lbr1.match.matchRecord, undefined);
+	assertEquals(lbr2.match.matchRecord, undefined);
+	assertEquals(lbqf1.match.matchRecord, undefined);
+	assertEquals(lbqf2.match.matchRecord, undefined);
+	assertEquals(sf1.match.matchRecord, undefined);
+	assertEquals(sf2.match.matchRecord, undefined);
+	assertEquals(gf.match.matchRecord, undefined);
+});
