@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert/equals";
-import { Tournament } from "../src/major1/tournament.ts";
+import { RLCS2025Major } from "../src/major1/RLCS2025Major.ts";
 import { getMatchId } from "../src/models/match.ts";
 import { FullRecord, UpperRecord } from "../src/models/match_record.ts";
 import { TournamentData } from "./models.ts";
@@ -7,7 +7,7 @@ import { getJsonSync } from "./util/file.ts";
 import { checkVersusData, populateMatchRecordFromData } from "./util/testFunctions.ts";
 
 Deno.test(function upperSeedAflBracketInitializationTest1() {
-	const tournament = new Tournament();
+	const tournament = new RLCS2025Major();
 	for (let i = 0; i < 8; i++) {
 		tournament.updateFlow(true, getMatchId("0-0", i), 1, 0);
 	}
@@ -28,7 +28,7 @@ Deno.test(function upperSeedAflBracketInitializationTest1() {
 });
 
 Deno.test(function naRegional4AflBracketInitializationTest() {
-	const tournament = new Tournament();
+	const tournament = new RLCS2025Major();
 
 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
 	const tournamentData: TournamentData = getJsonSync(tournamentPath);

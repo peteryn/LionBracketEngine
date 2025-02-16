@@ -3,7 +3,7 @@ import { SwissBracketFlow } from "../swiss_bracket/swiss_backet_flow.ts";
 import { FullRecordFactory, Seed, UpperRecordFactory } from "../models/match_record.ts";
 import { MatchNode } from "../models/match_node.ts";
 
-export class Tournament {
+export class RLCS2025Major {
 	swissBracket: SwissBracketFlow;
 	aflBracket: AFLBracketFlow;
 
