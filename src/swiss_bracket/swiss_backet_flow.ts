@@ -21,15 +21,12 @@ type MatchTracker = {
 };
 
 export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundNode> {
-	bracketType: string;
-
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
 		super(numSeeds, winRequirement);
 		const seeds = createSeeds(numSeeds);
 		// populate root round with the seeds in the correct matches
 		const matchups = seedBasedMatchups(seeds);
 		populateMatches(this.rootRound.matches, matchups);
-		this.bracketType = "SwissBracketFlow";
 	}
 
 	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {

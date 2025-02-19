@@ -6,8 +6,6 @@ import { levelOrderTraversal } from "../util/util.ts";
 import { Match } from "../models/match.ts";
 
 export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode> {
-	bracketType: string;
-
 	constructor(initialize: boolean = true) {
 		super();
 		const upperQuarterFinal1 = this.getRoundNode("upperQuarterFinal1");
@@ -21,7 +19,6 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 			lowerBracketRound1.match.matchRecord = FullRecordFactory(seeds[4], seeds[7]);
 			lowerBracketRound2.match.matchRecord = FullRecordFactory(seeds[5], seeds[6]);
 		}
-		this.bracketType = "AFLBracketFlow";
 	}
 
 	// this will only be called if called on a node with a FullRecord
