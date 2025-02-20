@@ -17,11 +17,13 @@ export interface Bracket<NodeType extends BracketNode> {
 }
 
 export type Major1SwissBracket = {
-	bracketType: "M1SwissBracket"
-	bracketObject: SwissBracketFlow
-}
+	bracketType: "M1SwissBracket";
+	bracketObject: SwissBracketFlow;
+};
 
 export type Major1AFLBracket = {
-	bracketType: "M1AFLBracket"
-	bracketObject: AFLBracketFlow
-}
+	bracketType: "M1AFLBracket";
+	bracketObject: AFLBracketFlow;
+};
+
+export type Major1Brackets = Major1SwissBracket | Major1AFLBracket;
