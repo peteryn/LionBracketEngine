@@ -1,8 +1,9 @@
 import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
 import { SwissBracketFlow } from "../swiss_bracket/swiss_backet_flow.ts";
 import { FullRecordFactory, Seed, UpperRecordFactory } from "../models/match_record.ts";
+import { MatchNode } from "../models/match_node.ts";
 
-export class Tournament {
+export class RLCS2025Major {
 	swissBracket: SwissBracketFlow;
 	aflBracket: AFLBracketFlow;
 
@@ -19,6 +20,10 @@ export class Tournament {
 	) {
 		if (forSwissBracket) {
 			this.swissBracket.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+
+			this.aflBracket.clearAllMatchRecords();
+
+			/*
 			// clearing depedents:
 			// swiss results are as follows
 			// t1: 1, 2
@@ -35,6 +40,9 @@ export class Tournament {
 			const lbr1 = this.aflBracket.getRoundNode("lowerBracketRound1");
 			const lbr2 = this.aflBracket.getRoundNode("lowerBracketRound2");
 
+			// FUTURE TODO: only reset the matches records you have to
+			// could also add a better clear and replace method. for example, if the replacement
+			// seeds are the same, keep the previous the match records. this could also be a feature flag
 			switch (roundNode.level) {
 				case 1:
 				case 2:
@@ -45,12 +53,21 @@ export class Tournament {
 					// and all dependents
 					this.aflBracket.clearAllMatchRecords();
 					break;
-				case 4:
+				case 4: {
 					// clear the lower seed from uqf1, uqf2
 					// clear entire records from lbr1, lbr2
 					// and all dependents
-					
+
+					// do this by storing upper seed of uqf1, uqf2
+					// clearing entire graph
+					// then repopulating uqf1 and uqf2
+					// if this code is running, round3upper is completed, so these always will exist
+					const uqf1UpperSeed = getUpperSeed(uqf1) as Seed;
+					const uqf2UpperSeed = getUpperSeed(uqf2) as Seed;
+					this.aflBracket.clearAllMatchRecords();
+
 					break;
+				}
 				case 5:
 					// clear lower seed from lbr1
 					// clear entire record from lbr2
@@ -58,6 +75,7 @@ export class Tournament {
 					break;
 				default:
 			}
+			*/
 
 			// process results
 			// get the winners from swiss bracket
@@ -92,5 +110,17 @@ function populateMatchRecord(
 		);
 	} else if (promotedSeeds[index1]) {
 		aflBracket.setMatchRecord(matchNodeId, UpperRecordFactory(promotedSeeds[index1]));
+	}
+}
+
+function getUpperSeed(matchNode: MatchNode) {
+	if (matchNode.match.matchRecord) {
+		if (
+			matchNode.match.matchRecord.type === "FullRecord" ||
+			matchNode.match.matchRecord.type === "UpperRecord"
+		) {
+			const upperSeed = matchNode.match.matchRecord.upperSeed;
+			return upperSeed;
+		}
 	}
 }
