@@ -181,6 +181,28 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		];
 	}
 
+	buildBracket(matchNodes: MatchNode[]) {
+		const [uqf1, uqf2, lbr1, lbr2, lbqf1, lbqf2, sf1, sf2, gf] = matchNodes;
+		lbr1.upperRound = lbqf1;
+		lbqf1.upperRound = sf1;
+		sf1.upperRound = gf;
+
+		lbr2.upperRound = lbqf2;
+		lbqf2.upperRound = sf2;
+		sf2.upperRound = gf;
+
+		uqf1.upperRound = sf2;
+		uqf2.upperRound = sf1;
+
+		uqf2.lowerRound = lbqf1;
+		uqf2.lowerRound = lbqf2;
+
+		this.upperQuarterFinal1 = uqf1
+		this.upperQuarterFinal2 = uqf2
+		this.lowerBracketRound1 = lbr1
+		this.lowerBracketRound2 = lbr2
+	}
+
 	clearAllMatchRecords() {
 		this.upperQuarterFinal1.match.matchRecord = undefined;
 		this.upperQuarterFinal2.match.matchRecord = undefined;
