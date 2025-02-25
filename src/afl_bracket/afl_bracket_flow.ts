@@ -114,12 +114,12 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 
 			switch (mr.type) {
 				case "UpperRecord":
-					if (mr.upperSeed === upperSeed) {
+					if (mr.upperSeed === upperSeed || mr.upperSeed === lowerSeed) {
 						node.match.matchRecord = undefined;
 					}
 					break;
 				case "LowerRecord":
-					if (mr.lowerSeed === lowerSeed) {
+					if (mr.lowerSeed === lowerSeed || mr.lowerSeed === upperSeed) {
 						node.match.matchRecord = undefined;
 					}
 					break;

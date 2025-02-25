@@ -220,6 +220,24 @@ Deno.test(function updateTest8() {
 	assertEquals(gfMR.lowerSeed, 1);
 });
 
+Deno.test(function updateTest9() {
+	const afl_bracket = new AFLBracketFlow();
+	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal1", 1, 0);
+	const lqf1 = afl_bracket.getRoundNode("lowerQuarterFinal1");
+	assertEquals(lqf1.match.matchRecord?.type, "UpperRecord");
+	const lqf1MR = lqf1.match.matchRecord as UpperRecord;
+	assertEquals(lqf1MR.upperSeed, 4);
+
+	const sf2 = afl_bracket.getRoundNode("semiFinal2");
+	assertEquals(sf2.match.matchRecord?.type, "UpperRecord");
+	const sf2MR = sf2.match.matchRecord as UpperRecord;
+	assertEquals(sf2MR.upperSeed, 1);
+
+	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal1", 0, 0);
+	assertEquals(sf2.match.matchRecord, undefined);
+	assertEquals(lqf1.match.matchRecord, undefined, "lowerQuarterFinal1 was not cleared correctly");
+});
+
 Deno.test(function getAllMatchNodesTest() {
 	const afl_bracket = new AFLBracketFlow();
 	const [uqf1, uqf2, lbr1, lbr2, lbqf1, lbqf2, sf1, sf2, gf] = afl_bracket.getAllMatchNodes();
