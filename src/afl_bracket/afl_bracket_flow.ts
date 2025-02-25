@@ -124,7 +124,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 					}
 					break;
 				case "FullRecord":
-					if (mr.upperSeed === upperSeed) {
+					if (mr.upperSeed === upperSeed || mr.upperSeed === lowerSeed) {
 						node.match.matchRecord = {
 							type: "LowerRecord",
 							lowerSeed: mr.lowerSeed,
@@ -133,7 +133,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 							lowerSeedWins: mr.lowerSeedWins,
 						};
 					}
-					if (mr.lowerSeed === lowerSeed) {
+					if (mr.lowerSeed === lowerSeed || mr.lowerSeed === upperSeed) {
 						node.match.matchRecord = {
 							type: "UpperRecord",
 							upperSeed: mr.upperSeed,

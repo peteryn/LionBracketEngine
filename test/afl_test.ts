@@ -220,7 +220,7 @@ Deno.test(function updateTest8() {
 	assertEquals(gfMR.lowerSeed, 1);
 });
 
-Deno.test(function updateTest9() {
+Deno.test(function lowerQuarterFinalShouldBeClearedAfterUpperQuarterFinalIsReset() {
 	const afl_bracket = new AFLBracketFlow();
 	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal1", 1, 0);
 	const lqf1 = afl_bracket.getRoundNode("lowerQuarterFinal1");
@@ -237,6 +237,40 @@ Deno.test(function updateTest9() {
 	assertEquals(sf2.match.matchRecord, undefined);
 	assertEquals(lqf1.match.matchRecord, undefined, "lowerQuarterFinal1 was not cleared correctly");
 });
+
+Deno.test(function lowerQuarterFinalShouldBeClearedCorrectlyFor2TeamsWhenUpperQuarterFinalIsReset() {
+	const afl_bracket = new AFLBracketFlow();
+	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal1", 3, 0);
+	afl_bracket.setMatchRecordAndFlow("lowerBracketRound1", 3, 0);
+
+	const lqf1 = afl_bracket.getRoundNode("lowerQuarterFinal1");
+	assertEquals(lqf1.match.matchRecord?.type, "FullRecord");
+	const lqf1MR = lqf1.match.matchRecord as FullRecord;
+	assertEquals(lqf1MR.upperSeed, 4);
+	assertEquals(lqf1MR.lowerSeed, 5);
+
+	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal1", 0, 0);
+	assertEquals(lqf1.match.matchRecord?.type, "LowerRecord");
+	const lqf1MR2 = lqf1.match.matchRecord as LowerRecord;
+	assertEquals(lqf1MR2.lowerSeed, 5);
+})
+
+Deno.test(function lowerQuarterFinalShouldBeClearedCorrectlyFor2TeamsWhenLowerBracketRound1IsReset() {
+	const afl_bracket = new AFLBracketFlow();
+	afl_bracket.setMatchRecordAndFlow("upperQuarterFinal1", 3, 0);
+	afl_bracket.setMatchRecordAndFlow("lowerBracketRound1", 3, 0);
+
+	const lqf1 = afl_bracket.getRoundNode("lowerQuarterFinal1");
+	assertEquals(lqf1.match.matchRecord?.type, "FullRecord");
+	const lqf1MR = lqf1.match.matchRecord as FullRecord;
+	assertEquals(lqf1MR.upperSeed, 4);
+	assertEquals(lqf1MR.lowerSeed, 5);
+
+	afl_bracket.setMatchRecordAndFlow("lowerBracketRound1", 0, 0);
+	assertEquals(lqf1.match.matchRecord?.type, "UpperRecord");
+	const lqf1MR2 = lqf1.match.matchRecord as UpperRecord;
+	assertEquals(lqf1MR2.upperSeed, 4);
+})
 
 Deno.test(function getAllMatchNodesTest() {
 	const afl_bracket = new AFLBracketFlow();
