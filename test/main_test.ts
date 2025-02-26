@@ -9,6 +9,7 @@ import {
 import { RoundNode } from "../src/models/round_node.ts";
 import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
 import { getMatchId } from "../src/models/match.ts";
+import { createSeeds, eightApartMatchups } from "../src/util/util.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracketFlow(16, 3);
@@ -420,4 +421,17 @@ Deno.test(function clearSelfTest1() {
 
 	swissBracket.setMatchRecordAndFlow(getMatchId("2-0", 0), 1, 1);
 	assertEquals(round3Upper.promotionSeeds.length, 0);
+});
+
+Deno.test(function eightApartMatchUpsTest() {
+	const seeds = createSeeds(16);
+	const matchups = eightApartMatchups(seeds);
+	assertEquals(matchups[0], [1, 9]);
+	assertEquals(matchups[1], [2, 10]);
+	assertEquals(matchups[2], [3, 11]);
+	assertEquals(matchups[3], [4, 12]);
+	assertEquals(matchups[4], [5, 13]);
+	assertEquals(matchups[5], [6, 14]);
+	assertEquals(matchups[6], [7, 15]);
+	assertEquals(matchups[7], [8, 16]);
 });

@@ -101,6 +101,17 @@ export function seedBasedMatchups(seeds: Seed[]) {
 
 	return matchups;
 }
+export function eightApartMatchups(seeds: Seed[]) {
+	const matchups: Seed[][] = [];
+	let i = 0;
+	let j = 8;
+	while (i < 8) {
+		matchups.push([seeds[i], seeds[j]]);
+		i++;
+		j++;
+	}
+	return matchups;
+}
 
 export function levelOrderTraversal<NodeType extends BracketNode>(
 	root: NodeType,
