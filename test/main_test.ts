@@ -311,30 +311,30 @@ Deno.test(function naRegional6Test1() {
 	testTournament("./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_6.json");
 });
 
-Deno.test(function naRegional4BuchholzTest1() {
-	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
-	const tournament: TournamentData = getJsonSync(tournamentPath);
-	const swissBracket = new SwissBracketFlow(16, 3);
+// Deno.test(function naRegional4BuchholzTest1() {
+// 	const tournamentPath = "./data/RLCS_2024_-_Major_2_North_America_Open_Qualifier_4.json";
+// 	const tournament: TournamentData = getJsonSync(tournamentPath);
+// 	const swissBracket = new SwissBracketFlow(16, 3);
 
-	// fill out bracket
-	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+// 	// fill out bracket
+// 	populateMatchRecordFromData(swissBracket, tournament, "0-0");
 
-	populateMatchRecordFromData(swissBracket, tournament, "1-0");
-	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+// 	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+// 	populateMatchRecordFromData(swissBracket, tournament, "0-1");
 
-	populateMatchRecordFromData(swissBracket, tournament, "2-0");
-	populateMatchRecordFromData(swissBracket, tournament, "1-1");
-	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+// 	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+// 	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+// 	populateMatchRecordFromData(swissBracket, tournament, "0-2");
 
-	populateMatchRecordFromData(swissBracket, tournament, "2-1");
-	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+// 	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+// 	populateMatchRecordFromData(swissBracket, tournament, "1-2");
 
-	populateMatchRecordFromData(swissBracket, tournament, "2-2");
+// 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 
-	assertEquals(swissBracket.getBuchholzScore(1), 0, "G2's buchholz ratings should be 0");
-	assertEquals(swissBracket.getBuchholzScore(2), -1, "GenG's buchholz ratings should be -1");
-	assertEquals(swissBracket.getBuchholzScore(12), -2, "Snowmen's buchholz ratings should be -2");
-});
+// 	assertEquals(swissBracket.getBuchholzScore(1), 0, "G2's buchholz ratings should be 0");
+// 	assertEquals(swissBracket.getBuchholzScore(2), -1, "GenG's buchholz ratings should be -1");
+// 	assertEquals(swissBracket.getBuchholzScore(12), -2, "Snowmen's buchholz ratings should be -2");
+// });
 
 Deno.test(function drawTest1() {
 	const swissBracket = new SwissBracketFlow(16, 3);

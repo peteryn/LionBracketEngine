@@ -306,13 +306,13 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		const matchHistory = this.getMatchHistory(seed);
 
 		// 	for each seed faced
-		//		get that seed's match differential
+		//		get that seed's game differential
 		//		and add it to score
 		for (let index = 0; index < matchHistory.length; index++) {
 			const match = matchHistory[index];
 			const isUpperSeed = match.upperSeed === seed;
 			const opponent = isUpperSeed ? match.lowerSeed : match.upperSeed;
-			score += this.getMatchDifferential(opponent);
+			score += this.getGameDifferential(opponent);
 		}
 
 		return score;
