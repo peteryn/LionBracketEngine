@@ -10,6 +10,7 @@ import { RoundNode } from "../src/models/round_node.ts";
 import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
 import { getMatchId } from "../src/models/match.ts";
 import { createSeeds, eightApartMatchups } from "../src/util/util.ts";
+import { SwissBracketFlow8Apart } from "../src/swiss_bracket/swiss_bracket_flow_8apart.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracketFlow(16, 3);
@@ -434,4 +435,10 @@ Deno.test(function eightApartMatchUpsTest() {
 	assertEquals(matchups[5], [6, 14]);
 	assertEquals(matchups[6], [7, 15]);
 	assertEquals(matchups[7], [8, 16]);
+});
+
+Deno.test(function eightApartSwissBracketTest() {
+	const swissBracket = new SwissBracketFlow8Apart(16, 3);
+	assertEquals(swissBracket.rootRound.matches[0].matchRecord?.upperSeed, 1);
+	assertEquals(swissBracket.rootRound.matches[0].matchRecord?.lowerSeed, 9);
 });
