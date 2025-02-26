@@ -194,7 +194,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		uqf1.upperRound = sf2;
 		uqf2.upperRound = sf1;
 
-		uqf2.lowerRound = lbqf1;
+		uqf1.lowerRound = lbqf1;
 		uqf2.lowerRound = lbqf2;
 
 		this.upperQuarterFinal1 = uqf1
