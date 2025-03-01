@@ -83,7 +83,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		}
 	}
 
-	private swissSort(seeds: Seed[]): Seed[] {
+	protected swissSort(seeds: Seed[]): Seed[] {
 		return seeds.sort((a, b) => {
 			return (
 				this.getMatchDifferential(b) - this.getMatchDifferential(a) || // descending
@@ -97,14 +97,104 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		return this.getGameDifferential(seed);
 	}
 
+	protected removeRematches(matchups: Seed[][]): Seed[][] {
+		const nonValidIndex: number[] = [];
+		for (let index = 0; index < matchups.length; index++) {
+			const possibleMatchup = matchups[index];
+			if (this.playedAlready(possibleMatchup[0], possibleMatchup[1])) {
+				nonValidIndex.push(index);
+			}
+		}
+
+		// using the list of invalid indexes, create a new list that does not have those index values
+		const seedsCrossClean: Seed[][] = [];
+		for (let index = 0; index < matchups.length; index++) {
+			if (!nonValidIndex.includes(index)) {
+				const matchup = matchups[index];
+				seedsCrossClean.push(matchup);
+			}
+		}
+		return seedsCrossClean;
+	}
+
+	protected backTrackingAlgorithm(seeds: Seed[][], matchLength: number) {
+		const matchups: Seed[][] = [];
+		const stack: MatchTracker[] = [];
+		let invalidIndexes: number[] = [];
+		let index = 0;
+		while (stack.length < matchLength) {
+			// if this condition holds, then we have not generate enough matches for the round
+			// this means that we selected a matchup that causes some other invalidity
+			// we need to get rid of that matchup and restore the state of invalidIndexes
+			if (index >= seeds.length) {
+				const badMatch = stack.pop();
+				if (badMatch) {
+					invalidIndexes = badMatch.invalidIndexes;
+					invalidIndexes.push(badMatch.index);
+					index = 0;
+				} else {
+					let message = `
+							Error: Due to rematches rule, there may no more possible matchups...
+							Popped from stack when stack length is 0 
+							(matchLength: ${matchLength}, stackLength: ${stack.length}, 
+							index: ${index}, seedsCrossClean: ${seeds.length})\n
+							`;
+					for (let index = 0; index < seeds.length; index++) {
+						const element = seeds[index];
+						message = message.concat(`(${element[0]}, ${element[1]})\n`);
+					}
+					throw new Error(message);
+				}
+			}
+
+			if (invalidIndexes.includes(index)) {
+				index++;
+				continue;
+			}
+
+			// key line, we need to preserve the state of invalidIndexes for each potential matchup
+			// so that we can backtrack
+			const invalidIndexesCopy = structuredClone(invalidIndexes);
+
+			// if we select this matchup, then those 2 seeds can no longer play
+			// so we remove potential pairings with those seeds by adding the index of that matchup
+			// to invalidIndexes
+			const match = seeds[index];
+			const seed1 = match[0];
+			const seed2 = match[1];
+			for (let i = 0; i < seeds.length; i++) {
+				if (
+					seeds[i][0] === seed1 ||
+					seeds[i][0] === seed2 ||
+					seeds[i][1] === seed1 ||
+					seeds[i][1] === seed2
+				) {
+					invalidIndexes.push(i);
+				}
+			}
+
+			stack.push({
+				upperSeed: seed1,
+				lowerSeed: seed2,
+				invalidIndexes: invalidIndexesCopy,
+				index: index,
+			});
+		}
+
+		for (const matchTrackerObject of stack) {
+			matchups.push([matchTrackerObject.upperSeed, matchTrackerObject.lowerSeed]);
+		}
+		return matchups
+	}
+
 	// 1. Match differential
 	// 2. Game differential
 	// 3. Seed
 	// if RoundNode has 2 parents, then upper must play lower
 	// basically, a sort by multiple criteria
-	private evaluationSort(upperSeedsInput: Seed[], lowerSeedsInput?: Seed[]): Seed[][] {
+	protected evaluationSort(upperSeedsInput: Seed[], lowerSeedsInput?: Seed[]): Seed[][] {
 		const upperSeeds = this.swissSort(upperSeedsInput);
-		const matchups: Seed[][] = [];
+		let matchups: Seed[][] = [];
 		if (lowerSeedsInput) {
 			let lowerSeeds = this.swissSort(lowerSeedsInput);
 
@@ -127,91 +217,10 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 
 			// calculate every possible pairing of upper and lower seeds
 			const upperLowerCross: Seed[][] = cartesianProduct(upperSeeds, lowerSeeds.reverse());
-			// find the indexes of invalid pairings due to match history
-			const nonValidIndex: number[] = [];
-			for (let index = 0; index < upperLowerCross.length; index++) {
-				const possibleMatchup = upperLowerCross[index];
-				if (this.playedAlready(possibleMatchup[0], possibleMatchup[1])) {
-					nonValidIndex.push(index);
-				}
-			}
 
-			// using the list of invalid indexes, create a new list that does not have those index values
-			const seedsCrossClean: Seed[][] = [];
-			for (let index = 0; index < upperLowerCross.length; index++) {
-				if (!nonValidIndex.includes(index)) {
-					const matchup = upperLowerCross[index];
-					seedsCrossClean.push(matchup);
-				}
-			}
+			const seedsCrossClean = this.removeRematches(upperLowerCross);
 
-			// backtracking algorithm
-			const stack: MatchTracker[] = [];
-			let invalidIndexes: number[] = [];
-			let index = 0;
-			const matchLength = (upperSeeds.length + lowerSeeds.length) / 2;
-			while (stack.length < matchLength) {
-				// if this condition holds, then we have not generate enough matches for the round
-				// this means that we selected a matchup that causes some other invalidity
-				// we need to get rid of that matchup and restore the state of invalidIndexes
-				if (index >= seedsCrossClean.length) {
-					const badMatch = stack.pop();
-					if (badMatch) {
-						invalidIndexes = badMatch.invalidIndexes;
-						invalidIndexes.push(badMatch.index);
-						index = 0;
-					} else {
-						let message = `
-							Error: Due to rematches rule, there may no more possible matchups...
-							Popped from stack when stack length is 0 
-							(matchLength: ${matchLength}, stackLength: ${stack.length}, 
-							index: ${index}, seedsCrossClean: ${seedsCrossClean.length})\n
-							`;
-						for (let index = 0; index < seedsCrossClean.length; index++) {
-							const element = seedsCrossClean[index];
-							message = message.concat(`(${element[0]}, ${element[1]})\n`);
-						}
-						throw new Error(message);
-					}
-				}
-
-				if (invalidIndexes.includes(index)) {
-					index++;
-					continue;
-				}
-
-				// key line, we need to preserve the state of invalidIndexes for each potential matchup
-				// so that we can backtrack
-				const invalidIndexesCopy = structuredClone(invalidIndexes);
-
-				// if we select this matchup, then those 2 seeds can no longer play
-				// so we remove potential pairings with those seeds by adding the index of that matchup
-				// to invalidIndexes
-				const match = seedsCrossClean[index];
-				const seed1 = match[0];
-				const seed2 = match[1];
-				for (let i = 0; i < seedsCrossClean.length; i++) {
-					if (
-						seedsCrossClean[i][0] === seed1 ||
-						seedsCrossClean[i][0] === seed2 ||
-						seedsCrossClean[i][1] === seed1 ||
-						seedsCrossClean[i][1] === seed2
-					) {
-						invalidIndexes.push(i);
-					}
-				}
-
-				stack.push({
-					upperSeed: seed1,
-					lowerSeed: seed2,
-					invalidIndexes: invalidIndexesCopy,
-					index: index,
-				});
-			}
-
-			for (const matchTrackerObject of stack) {
-				matchups.push([matchTrackerObject.upperSeed, matchTrackerObject.lowerSeed]);
-			}
+			matchups = this.backTrackingAlgorithm(seedsCrossClean, (upperSeeds.length + lowerSeeds.length) / 2)
 		} else {
 			// implementation when round node has 1 parent
 			let i = 0;
@@ -337,7 +346,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		return gamesWon - gamesLost;
 	}
 
-	private playedAlready(seed1: Seed, seed2: Seed) {
+	protected playedAlready(seed1: Seed, seed2: Seed) {
 		const seed1MatchHistory = this.getMatchHistory(seed1);
 		for (let index = 0; index < seed1MatchHistory.length; index++) {
 			const matchRecord = seed1MatchHistory[index];
@@ -348,7 +357,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		return false;
 	}
 
-	private processRound(round: RoundNode, seeds: Seed[]) {
+	protected processRound(round: RoundNode, seeds: Seed[]) {
 		if (round.has2Parents) {
 			const [roundWins, roundLosses] = round.name.split("-");
 			const upperParentNode = this.getRoundNode(`${roundWins}-${parseInt(roundLosses) - 1}`);

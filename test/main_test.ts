@@ -424,6 +424,8 @@ Deno.test(function clearSelfTest1() {
 	assertEquals(round3Upper.promotionSeeds.length, 0);
 });
 
+// tests for new swiss bracket
+
 Deno.test(function eightApartMatchUpsTest() {
 	const seeds = createSeeds(16);
 	const matchups = eightApartMatchups(seeds);
@@ -441,4 +443,29 @@ Deno.test(function eightApartSwissBracketTest() {
 	const swissBracket = new SwissBracketFlow8Apart(16, 3);
 	assertEquals(swissBracket.rootRound.matches[0].matchRecord?.upperSeed, 1);
 	assertEquals(swissBracket.rootRound.matches[0].matchRecord?.lowerSeed, 9);
+});
+
+Deno.test(function round1Test() {
+	const swissBracket = new SwissBracketFlow8Apart(16, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 0), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 1), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 2), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 3), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 4), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 5), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 6), 1, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 7), 3, 0);
+	const r2Upper = swissBracket.getRoundNode("1-0");
+	console.log(r2Upper.matches);
+	assertEquals(r2Upper.matches[0].matchRecord?.upperSeed, 1)
+	assertEquals(r2Upper.matches[0].matchRecord?.lowerSeed, 15)
+
+	assertEquals(r2Upper.matches[1].matchRecord?.upperSeed, 2)
+	assertEquals(r2Upper.matches[1].matchRecord?.lowerSeed, 8)
+
+	assertEquals(r2Upper.matches[2].matchRecord?.upperSeed, 3)
+	assertEquals(r2Upper.matches[2].matchRecord?.lowerSeed, 6)
+
+	assertEquals(r2Upper.matches[3].matchRecord?.upperSeed, 4)
+	assertEquals(r2Upper.matches[3].matchRecord?.lowerSeed, 5)
 });
