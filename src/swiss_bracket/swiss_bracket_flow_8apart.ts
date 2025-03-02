@@ -10,6 +10,7 @@ import {
 } from "../util/util.ts";
 import { SwissBracketFlow } from "./swiss_backet_flow.ts";
 import { levelOrderTraversal } from "../util/util.ts";
+import { retry } from "jsr:@std/async@0.223.0/retry";
 
 export class SwissBracketFlow8Apart extends SwissBracketFlow {
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
@@ -85,25 +86,40 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 			populateMatches(r2LowerRoundNode.lowerRound!.matches, round3LowerMatchups);
 
 			const round3MiddleSeeds = r2UpperLosers.concat(r2LowerWinners);
-			// TODO: need to write new implementation
-			// sort round3MiddleSeeds with swiss sort
-			const sortedSeeds = this.swissSort(round3MiddleSeeds);
-
-			// create cross product between itself and the reverse while removing matches of seed vs same seed
-			const reverseSortedSeeds = sortedSeeds.toReversed();
-			const crossProduct = cartesianProduct(sortedSeeds, reverseSortedSeeds);
-			const withoutSameSeedMatchups = crossProduct.filter(([a, b]) => {
-				return a !== b;
-			});
-
-			// get rid of rematches based on match history
-			const cleanMatches = this.removeRematches(withoutSameSeedMatchups);
-
-			// use the backtracking algorithm
-			const matchups = this.backTrackingAlgorithm(cleanMatches, round3MiddleSeeds.length / 2);
+			const matchups = this.calcuate(round3MiddleSeeds);
 			populateMatches(r2UpperRoundNode.lowerRound!.matches, matchups);
+		} else if (curLevelNum === 3) {
+			const r3Upper = this.getRoundNode("2-0");
+			const r3Middle = this.getRoundNode("1-1");
+			const r3Lower = this.getRoundNode("0-2");
+
+			const r4UpperSeeds = getLosers(r3Upper.matches).concat(getWinners(r3Middle.matches));
+			const r4UpperMatchups = this.calcuate(r4UpperSeeds);
+			populateMatches(r3Upper.lowerRound!.matches, r4UpperMatchups);
+
+			const r4LowerSeeds = getLosers(r3Middle.matches).concat(getWinners(r3Lower.matches));
+			const r4LowerMatchups = this.calcuate(r4LowerSeeds);
+			populateMatches(r3Middle.lowerRound!.matches, r4LowerMatchups);
 		} else {
 			console.log("not implemented yet");
 		}
+	}
+
+	protected calcuate(seeds: Seed[]) {
+		const sortedSeeds = this.swissSort(seeds);
+
+		// create cross product between itself and the reverse while removing matches of seed vs same seed
+		const reverseSortedSeeds = sortedSeeds.toReversed();
+		const crossProduct = cartesianProduct(sortedSeeds, reverseSortedSeeds);
+		const withoutSameSeedMatchups = crossProduct.filter(([a, b]) => {
+			return a !== b;
+		});
+
+		// get rid of rematches based on match history
+		const cleanMatches = this.removeRematches(withoutSameSeedMatchups);
+
+		// use the backtracking algorithm
+		const matchups = this.backTrackingAlgorithm(cleanMatches, seeds.length / 2);
+		return matchups;
 	}
 }

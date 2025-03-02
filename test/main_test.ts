@@ -579,8 +579,6 @@ Deno.test(function round1Test() {
 
 	const r3Middle = swissBracket.getRoundNode("1-1");
 
-	// console.log(r3Middle.matches);
-	// printRound(r3Middle.matches, teamNameMap);
 	assertEquals(r3Middle.matches[0].matchRecord?.upperSeed, 2);
 	assertEquals(r3Middle.matches[0].matchRecord?.lowerSeed, 12);
 
@@ -592,4 +590,38 @@ Deno.test(function round1Test() {
 
 	assertEquals(r3Middle.matches[3].matchRecord?.upperSeed, 6);
 	assertEquals(r3Middle.matches[3].matchRecord?.lowerSeed, 7);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("2-0", 0), 3, 1);
+	swissBracket.setMatchRecordAndFlow(getMatchId("2-0", 1), 3, 2);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-1", 0), 3, 1);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-1", 1), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-1", 2), 0, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-1", 3), 1, 3);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-2", 0), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-2", 1), 3, 1);
+
+	const r4Upper = swissBracket.getRoundNode("2-1");
+	assertEquals(r4Upper.matches[0].matchRecord?.upperSeed, 5);
+	assertEquals(r4Upper.matches[0].matchRecord?.lowerSeed, 7);
+
+	assertEquals(r4Upper.matches[1].matchRecord?.upperSeed, 8);
+	assertEquals(r4Upper.matches[1].matchRecord?.lowerSeed, 9);
+
+	assertEquals(r4Upper.matches[2].matchRecord?.upperSeed, 2);
+	assertEquals(r4Upper.matches[2].matchRecord?.lowerSeed, 4);
+
+	const r4Lower = swissBracket.getRoundNode("1-2");
+	assertEquals(r4Lower.matches[0].matchRecord?.upperSeed, 15);
+	assertEquals(r4Lower.matches[0].matchRecord?.lowerSeed, 13);
+
+	assertEquals(r4Lower.matches[1].matchRecord?.upperSeed, 6);
+	assertEquals(r4Lower.matches[1].matchRecord?.lowerSeed, 11);
+
+	assertEquals(r4Lower.matches[2].matchRecord?.upperSeed, 10);
+	assertEquals(r4Lower.matches[2].matchRecord?.lowerSeed, 12);
+
+	// console.log(r4Lower.matches);
+	// printRound(r4Lower.matches, teamNameMap);
 });
