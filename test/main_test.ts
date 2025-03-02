@@ -11,6 +11,8 @@ import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
 import { getMatchId } from "../src/models/match.ts";
 import { createSeeds, eightApartMatchups } from "../src/util/util.ts";
 import { SwissBracketFlow8Apart } from "../src/swiss_bracket/swiss_bracket_flow_8apart.ts";
+import { printRound } from "./util/util.ts";
+import { TeamNameMap } from "./models.ts";
 
 Deno.test(function structureTest1() {
 	const swissBracket = new SwissBracketFlow(16, 3);
@@ -446,6 +448,72 @@ Deno.test(function eightApartSwissBracketTest() {
 });
 
 Deno.test(function round1Test() {
+	const teamNameMap: TeamNameMap[] = [
+		{
+			seed: 1,
+			name: "TU",
+		},
+		{
+			seed: 2,
+			name: "9L",
+		},
+		{
+			seed: 3,
+			name: "DG",
+		},
+		{
+			seed: 4,
+			name: "NET",
+		},
+		{
+			seed: 5,
+			name: "GENG",
+		},
+		{
+			seed: 6,
+			name: "WSUP",
+		},
+		{
+			seed: 7,
+			name: "TALL",
+		},
+		{
+			seed: 8,
+			name: "TECH",
+		},
+		{
+			seed: 9,
+			name: "GAS",
+		},
+		{
+			seed: 10,
+			name: "WRST",
+		},
+		{
+			seed: 11,
+			name: "LOT8",
+		},
+		{
+			seed: 12,
+			name: "100X",
+		},
+		{
+			seed: 13,
+			name: "ARSY",
+		},
+		{
+			seed: 14,
+			name: "AN",
+		},
+		{
+			seed: 15,
+			name: "PINE",
+		},
+		{
+			seed: 16,
+			name: "NOR",
+		},
+	];
 	const swissBracket = new SwissBracketFlow8Apart(16, 3);
 	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 0), 3, 0);
 	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 1), 3, 0);
@@ -491,10 +559,37 @@ Deno.test(function round1Test() {
 	assertEquals(r3Upper.matches[0].matchRecord, undefined);
 
 	swissBracket.setMatchRecordAndFlow(getMatchId("0-1", 0), 3, 2);
-	swissBracket.setMatchRecordAndFlow(getMatchId("0-1", 1), 1, 3);
-	swissBracket.setMatchRecordAndFlow(getMatchId("0-1", 2), 0, 3);
-	swissBracket.setMatchRecordAndFlow(getMatchId("0-1", 3), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-1", 1), 3, 1);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-1", 2), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-1", 3), 0, 3);
 
-	console.log(r3Upper.matches);
-	// assertEquals(r3Upper.matches[0].matchRecord?.upperSeed, 1, 8);
+	// console.log(r3Upper.matches);
+	assertEquals(r3Upper.matches[0].matchRecord?.upperSeed, 1);
+	assertEquals(r3Upper.matches[0].matchRecord?.lowerSeed, 8);
+
+	assertEquals(r3Upper.matches[1].matchRecord?.upperSeed, 3);
+	assertEquals(r3Upper.matches[1].matchRecord?.lowerSeed, 5);
+
+	const r3Lower = swissBracket.getRoundNode("0-2");
+	assertEquals(r3Lower.matches[0].matchRecord?.upperSeed, 11);
+	assertEquals(r3Lower.matches[0].matchRecord?.lowerSeed, 14);
+
+	assertEquals(r3Lower.matches[1].matchRecord?.upperSeed, 13);
+	assertEquals(r3Lower.matches[1].matchRecord?.lowerSeed, 16);
+
+	const r3Middle = swissBracket.getRoundNode("1-1");
+
+	// console.log(r3Middle.matches);
+	// printRound(r3Middle.matches, teamNameMap);
+	assertEquals(r3Middle.matches[0].matchRecord?.upperSeed, 2);
+	assertEquals(r3Middle.matches[0].matchRecord?.lowerSeed, 12);
+
+	assertEquals(r3Middle.matches[1].matchRecord?.upperSeed, 4);
+	assertEquals(r3Middle.matches[1].matchRecord?.lowerSeed, 10);
+
+	assertEquals(r3Middle.matches[2].matchRecord?.upperSeed, 15);
+	assertEquals(r3Middle.matches[2].matchRecord?.lowerSeed, 9);
+
+	assertEquals(r3Middle.matches[3].matchRecord?.upperSeed, 6);
+	assertEquals(r3Middle.matches[3].matchRecord?.lowerSeed, 7);
 });
