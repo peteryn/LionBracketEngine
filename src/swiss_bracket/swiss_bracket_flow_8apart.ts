@@ -100,6 +100,12 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 			const r4LowerSeeds = getLosers(r3Middle.matches).concat(getWinners(r3Lower.matches));
 			const r4LowerMatchups = this.calcuate(r4LowerSeeds);
 			populateMatches(r3Middle.lowerRound!.matches, r4LowerMatchups);
+		} else if (curLevelNum === 4) {
+			const r4Upper = this.getRoundNode("2-1");
+			const r4Lower = this.getRoundNode("1-2");
+			const r5Seeds = getLosers(r4Upper.matches).concat(getWinners(r4Lower.matches));
+			const r5Matchups = this.calcuate(r5Seeds);
+			populateMatches(r4Upper.lowerRound!.matches, r5Matchups);
 		} else {
 			console.log("not implemented yet");
 		}

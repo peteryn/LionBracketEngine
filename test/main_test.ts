@@ -622,6 +622,24 @@ Deno.test(function round1Test() {
 	assertEquals(r4Lower.matches[2].matchRecord?.upperSeed, 10);
 	assertEquals(r4Lower.matches[2].matchRecord?.lowerSeed, 12);
 
-	// console.log(r4Lower.matches);
-	// printRound(r4Lower.matches, teamNameMap);
+	swissBracket.setMatchRecordAndFlow(getMatchId("2-1", 0), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("2-1", 1), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("2-1", 2), 3, 1);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-2", 0), 0, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-2", 1), 0, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-2", 2), 3, 0);
+
+	const r5 = swissBracket.getRoundNode("2-2");
+	// console.log(r5.matches);
+	// printRound(r5.matches, teamNameMap);
+
+	assertEquals(r5.matches[0].matchRecord?.upperSeed, 4);
+	assertEquals(r5.matches[0].matchRecord?.lowerSeed, 7);
+
+	assertEquals(r5.matches[1].matchRecord?.upperSeed, 9);
+	assertEquals(r5.matches[1].matchRecord?.lowerSeed, 13);
+
+	assertEquals(r5.matches[2].matchRecord?.upperSeed, 10);
+	assertEquals(r5.matches[2].matchRecord?.lowerSeed, 11);
 });
