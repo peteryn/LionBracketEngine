@@ -83,7 +83,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		}
 	}
 
-	protected swissSort(seeds: Seed[]): Seed[] {
+	public swissSort(seeds: Seed[]): Seed[] {
 		return seeds.sort((a, b) => {
 			return (
 				this.getMatchDifferential(b) - this.getMatchDifferential(a) || // descending
