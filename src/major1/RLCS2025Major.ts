@@ -96,7 +96,7 @@ export class RLCS2025Major {
 	}
 }
 
-function populateMatchRecord(
+export function populateMatchRecord(
 	promotedSeeds: Seed[],
 	aflBracket: AFLBracketFlow,
 	index1: number,
