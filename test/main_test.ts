@@ -578,6 +578,8 @@ Deno.test(function round1Test() {
 	assertEquals(r3Lower.matches[1].matchRecord?.lowerSeed, 16);
 
 	const r3Middle = swissBracket.getRoundNode("1-1");
+	console.log(r3Middle.matches);
+	printRound(r3Middle.matches, teamNameMap);
 
 	assertEquals(r3Middle.matches[0].matchRecord?.upperSeed, 2);
 	assertEquals(r3Middle.matches[0].matchRecord?.lowerSeed, 12);

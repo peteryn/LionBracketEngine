@@ -379,7 +379,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		}
 	}
 
-	private clearDependents(round: RoundNode | undefined) {
+	protected clearDependents(round: RoundNode | undefined) {
 		if (round) {
 			levelOrderTraversal(round, (node) => {
 				const matches = node.matches;
