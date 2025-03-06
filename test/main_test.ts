@@ -645,3 +645,25 @@ Deno.test(function round1Test() {
 	assertEquals(r5.matches[2].matchRecord?.upperSeed, 10);
 	assertEquals(r5.matches[2].matchRecord?.lowerSeed, 11);
 });
+
+Deno.test(function clearDependentsTest1() {
+	const swissBracket = new SwissBracketFlow8Apart(16, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 0), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 1), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 2), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 3), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 4), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 5), 3, 0);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 6), 1, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 7), 3, 0);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-0", 0), 3, 2);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-0", 1), 1, 3);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-0", 2), 3, 1);
+	swissBracket.setMatchRecordAndFlow(getMatchId("1-0", 3), 0, 3);
+
+	swissBracket.setMatchRecordAndFlow(getMatchId("0-0", 0), 3, 3);
+
+	const r2Upper = swissBracket.getRoundNode("1-0");
+	assertEquals(r2Upper.matches[0].matchRecord, undefined);
+})

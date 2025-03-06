@@ -10,7 +10,6 @@ import {
 } from "../util/util.ts";
 import { SwissBracketFlow } from "./swiss_backet_flow.ts";
 import { levelOrderTraversal } from "../util/util.ts";
-import { retry } from "jsr:@std/async@0.223.0/retry";
 
 export class SwissBracketFlow8Apart extends SwissBracketFlow {
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {
@@ -56,7 +55,27 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 			return match.matchRecord.upperSeedWins === match.matchRecord.lowerSeedWins;
 		});
 
+		switch (curLevelNum) {
+			case 1:
+				this.clearDependents(roundNode.upperRound);
+				this.clearDependents(roundNode.lowerRound);
+				break;
+			case 2:
+				this.clearDependents(this.getRoundNode("2-0"));
+				this.clearDependents(this.getRoundNode("1-1"));
+				this.clearDependents(this.getRoundNode("0-2"));
+				break;
+			case 3:
+				this.clearDependents(this.getRoundNode("2-1"));
+				this.clearDependents(this.getRoundNode("1-2"));
+				break;
+			case 4:
+				this.clearDependents(this.getRoundNode("2-2"));
+				break;
+		}
+
 		if (unfinishedMatches.length > 0) {
+			console.log(`should have printed. this is node ${roundNode.name}`);
 			return;
 		}
 
