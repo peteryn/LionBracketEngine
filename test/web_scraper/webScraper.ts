@@ -1,6 +1,6 @@
 import { scrape } from "@panha/scrape/";
 import { TeamNameMap, TournamentData } from "../models.ts";
-import { MatchRecord, Seed } from "@/models/match_record.ts";
+import { MatchRecord, Seed, FullRecordFactory } from "../../src/models/match_record.ts"
 
 const url = Deno.args[0];
 const scraper = await scrape(url);
@@ -53,7 +53,7 @@ for (let i = 0; i < res.length; i += 4) {
 	const s1 = res[i + 1];
 	const s2 = res[i + 2];
 
-	const mr = new MatchRecord(team1!, team2!);
+	const mr = FullRecordFactory(team1!, team2!)
 	mr.upperSeedWins = parseInt(s1);
 	mr.lowerSeedWins = parseInt(s2);
 	if (i >= 0 && i < 8 * 4) {
