@@ -1,0 +1,236 @@
+{
+  "teamNames": [
+    { "seed": 1, "name": "" },
+    { "seed": 2, "name": "" },
+    { "seed": 3, "name": "" },
+    { "seed": 4, "name": "" },
+    { "seed": 5, "name": "" },
+    { "seed": 6, "name": "" },
+    { "seed": 7, "name": "" },
+    { "seed": 8, "name": "" },
+    { "seed": 9, "name": "" },
+    { "seed": 10, "name": "" },
+    { "seed": 11, "name": "" },
+    { "seed": 12, "name": "" },
+    { "seed": 13, "name": "" },
+    { "seed": 14, "name": "" },
+    { "seed": 15, "name": "" },
+    { "seed": 16, "name": "" }
+  ],
+  "0-0": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "1-0": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "0-1": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "2-0": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "1-1": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "0-2": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "2-1": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "1-2": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ],
+  "2-2": [
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    },
+    {
+      "upperTeam": "",
+      "upperTeamWins": "",
+      "lowerTeam": "",
+      "lowerTeamWins": ""
+    }
+  ]
+}

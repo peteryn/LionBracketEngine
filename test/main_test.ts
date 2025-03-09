@@ -664,3 +664,7 @@ Deno.test(function clearDependentsTest1() {
 	const r2Upper = swissBracket.getRoundNode("1-0");
 	assertEquals(r2Upper.matches[0].matchRecord, undefined);
 })
+
+Deno.test(function na1a() {
+	const teamtoSeed
+})
