@@ -133,7 +133,8 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 		const sortedSeeds = this.swissSort(seeds);
 
 		// create cross product between itself and the reverse while removing matches of seed vs same seed
-		const reverseSortedSeeds = sortedSeeds.toReversed();
+		const clone = structuredClone(sortedSeeds);
+		const reverseSortedSeeds = clone.reverse();
 		const crossProduct = cartesianProduct(sortedSeeds, reverseSortedSeeds);
 		const withoutSameSeedMatchups = crossProduct.filter(([a, b]) => {
 			return a !== b;
