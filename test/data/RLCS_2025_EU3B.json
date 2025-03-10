@@ -1,0 +1,237 @@
+{
+	"teamNames": [
+		{ "seed": 1, "name": "vitality" },
+		{ "seed": 2, "name": "ninjas" },
+		{ "seed": 3, "name": "startpoint" },
+		{ "seed": 4, "name": "ascend" },
+		{ "seed": 5, "name": "rrg" },
+		{ "seed": 6, "name": "jjrox" },
+		{ "seed": 7, "name": "redemption" },
+		{ "seed": 8, "name": "sick" },
+		{ "seed": 9, "name": "sel" },
+		{ "seed": 10, "name": "arrogant" },
+		{ "seed": 11, "name": "atom" },
+		{ "seed": 12, "name": "cashonly" },
+		{ "seed": 13, "name": "eyeofrah" },
+		{ "seed": 14, "name": "lenovo" },
+		{ "seed": 15, "name": "nebulous" },
+		{ "seed": 16, "name": "evoza" }
+	],
+	"0-0": [
+		{
+			"upperTeam": "vitality",
+			"upperTeamWins": "2",
+			"lowerTeam": "sel",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "ninjas",
+			"upperTeamWins": "3",
+			"lowerTeam": "arrogant",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "startpoint",
+			"upperTeamWins": "3",
+			"lowerTeam": "atom",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "ascend",
+			"upperTeamWins": "3",
+			"lowerTeam": "cashonly",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "3",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "jjrox",
+			"upperTeamWins": "3",
+			"lowerTeam": "lenovo",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "redemption",
+			"upperTeamWins": "3",
+			"lowerTeam": "nebulous",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "sick",
+			"upperTeamWins": "3",
+			"lowerTeam": "evoza",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-0": [
+		{
+			"upperTeam": "ninjas",
+			"upperTeamWins": "3",
+			"lowerTeam": "sel",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "startpoint",
+			"upperTeamWins": "3",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "ascend",
+			"upperTeamWins": "3",
+			"lowerTeam": "redemption",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "2",
+			"lowerTeam": "jjrox",
+			"lowerTeamWins": "3"
+		}
+	],
+	"0-1": [
+		{
+			"upperTeam": "vitality",
+			"upperTeamWins": "3",
+			"lowerTeam": "evoza",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "arrogant",
+			"upperTeamWins": "3",
+			"lowerTeam": "nebulous",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "atom",
+			"upperTeamWins": "3",
+			"lowerTeam": "lenovo",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "cashonly",
+			"upperTeamWins": "3",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "0"
+		}
+	],
+	"2-0": [
+		{
+			"upperTeam": "ninjas",
+			"upperTeamWins": "3",
+			"lowerTeam": "jjrox",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "startpoint",
+			"upperTeamWins": "3",
+			"lowerTeam": "ascend",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-1": [
+		{
+			"upperTeam": "sel",
+			"upperTeamWins": "1",
+			"lowerTeam": "cashonly",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "1",
+			"lowerTeam": "vitality",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "redemption",
+			"upperTeamWins": "3",
+			"lowerTeam": "atom",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "sick",
+			"upperTeamWins": "3",
+			"lowerTeam": "arrogant",
+			"lowerTeamWins": "2"
+		}
+	],
+	"0-2": [
+		{
+			"upperTeam": "lenovo",
+			"upperTeamWins": "2",
+			"lowerTeam": "evoza",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "eyeofrah",
+			"upperTeamWins": "3",
+			"lowerTeam": "nebulous",
+			"lowerTeamWins": "2"
+		}
+	],
+	"2-1": [
+		{
+			"upperTeam": "ascend",
+			"upperTeamWins": "0",
+			"lowerTeam": "vitality",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "sick",
+			"upperTeamWins": "0",
+			"lowerTeam": "redemption",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "jjrox",
+			"upperTeamWins": "3",
+			"lowerTeam": "cashonly",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-2": [
+		{
+			"upperTeam": "sel",
+			"upperTeamWins": "2",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "3",
+			"lowerTeam": "evoza",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "arrogant",
+			"upperTeamWins": "1",
+			"lowerTeam": "atom",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-2": [
+		{
+			"upperTeam": "ascend",
+			"upperTeamWins": "3",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "3",
+			"lowerTeam": "cashonly",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "sick",
+			"upperTeamWins": "3",
+			"lowerTeam": "atom",
+			"lowerTeamWins": "1"
+		}
+	],
+	"promoted": ["startpoint", "ninjas", "jjrox", "vitality", "redemption", "ascend", "rrg", "sick"]
+}

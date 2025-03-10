@@ -1,0 +1,237 @@
+{
+	"teamNames": [
+		{ "seed": 1, "name": "vitality" },
+		{ "seed": 2, "name": "ninjas" },
+		{ "seed": 3, "name": "gentlemates" },
+		{ "seed": 4, "name": "rrg" },
+		{ "seed": 5, "name": "novo" },
+		{ "seed": 6, "name": "wylde" },
+		{ "seed": 7, "name": "jjrox" },
+		{ "seed": 8, "name": "teamhsk" },
+		{ "seed": 9, "name": "ascend" },
+		{ "seed": 10, "name": "startpoint" },
+		{ "seed": 11, "name": "sick" },
+		{ "seed": 12, "name": "threeaces" },
+		{ "seed": 13, "name": "scaldesports" },
+		{ "seed": 14, "name": "jopie" },
+		{ "seed": 15, "name": "nomster" },
+		{ "seed": 16, "name": "eyeofrah" }
+	],
+	"0-0": [
+		{
+			"upperTeam": "vitality",
+			"upperTeamWins": "3",
+			"lowerTeam": "ascend",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "ninjas",
+			"upperTeamWins": "3",
+			"lowerTeam": "startpoint",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "gentlemates",
+			"upperTeamWins": "3",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "3",
+			"lowerTeam": "threeaces",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "novo",
+			"upperTeamWins": "3",
+			"lowerTeam": "scaldesports",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "wylde",
+			"upperTeamWins": "3",
+			"lowerTeam": "jopie",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "jjrox",
+			"upperTeamWins": "3",
+			"lowerTeam": "nomster",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "teamhsk",
+			"upperTeamWins": "3",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "1"
+		}
+	],
+	"1-0": [
+		{
+			"upperTeam": "vitality",
+			"upperTeamWins": "3",
+			"lowerTeam": "teamhsk",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "ninjas",
+			"upperTeamWins": "3",
+			"lowerTeam": "jjrox",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "gentlemates",
+			"upperTeamWins": "3",
+			"lowerTeam": "wylde",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "3",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "1"
+		}
+	],
+	"0-1": [
+		{
+			"upperTeam": "ascend",
+			"upperTeamWins": "3",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "startpoint",
+			"upperTeamWins": "3",
+			"lowerTeam": "nomster",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "sick",
+			"upperTeamWins": "3",
+			"lowerTeam": "jopie",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "threeaces",
+			"upperTeamWins": "3",
+			"lowerTeam": "scaldesports",
+			"lowerTeamWins": "2"
+		}
+	],
+	"2-0": [
+		{
+			"upperTeam": "vitality",
+			"upperTeamWins": "3",
+			"lowerTeam": "rrg",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "ninjas",
+			"upperTeamWins": "3",
+			"lowerTeam": "gentlemates",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-1": [
+		{
+			"upperTeam": "novo",
+			"upperTeamWins": "3",
+			"lowerTeam": "threeaces",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "wylde",
+			"upperTeamWins": "3",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "jjrox",
+			"upperTeamWins": "0",
+			"lowerTeam": "startpoint",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "teamhsk",
+			"upperTeamWins": "1",
+			"lowerTeam": "ascend",
+			"lowerTeamWins": "3"
+		}
+	],
+	"0-2": [
+		{
+			"upperTeam": "scaldesports",
+			"upperTeamWins": "1",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "jopie",
+			"upperTeamWins": "0",
+			"lowerTeam": "nomster",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-1": [
+		{
+			"upperTeam": "gentlemates",
+			"upperTeamWins": "3",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "3",
+			"lowerTeam": "wylde",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "ascend",
+			"upperTeamWins": "3",
+			"lowerTeam": "startpoint",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-2": [
+		{
+			"upperTeam": "jjrox",
+			"upperTeamWins": "3",
+			"lowerTeam": "eyeofrah",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "teamhsk",
+			"upperTeamWins": "0",
+			"lowerTeam": "nomster",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "sick",
+			"upperTeamWins": "3",
+			"lowerTeam": "threeaces",
+			"lowerTeamWins": "1"
+		}
+	],
+	"2-2": [
+		{
+			"upperTeam": "startpoint",
+			"upperTeamWins": "3",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "wylde",
+			"upperTeamWins": "2",
+			"lowerTeam": "nomster",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "jjrox",
+			"upperTeamWins": "3",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "1"
+		}
+	],
+	"promoted": ["ninjas", "vitality", "gentlemates", "ascend", "rrg", "startpoint", "jjrox", "nomster"]
+}

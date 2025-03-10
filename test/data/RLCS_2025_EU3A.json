@@ -1,0 +1,246 @@
+{
+	"teamNames": [
+		{ "seed": 1, "name": "karmine" },
+		{ "seed": 2, "name": "dignitas" },
+		{ "seed": 3, "name": "100%" },
+		{ "seed": 4, "name": "geekay" },
+		{ "seed": 5, "name": "gentlemates" },
+		{ "seed": 6, "name": "caliente" },
+		{ "seed": 7, "name": "synergy" },
+		{ "seed": 8, "name": "f4wd" },
+		{ "seed": 9, "name": "novo" },
+		{ "seed": 10, "name": "wylde" },
+		{ "seed": 11, "name": "chippychips" },
+		{ "seed": 12, "name": "badnewslions" },
+		{ "seed": 13, "name": "teamhsk" },
+		{ "seed": 14, "name": "eighty" },
+		{ "seed": 15, "name": "ogcfc" },
+		{ "seed": 16, "name": "123" }
+	],
+	"0-0": [
+		{
+			"upperTeam": "karmine",
+			"upperTeamWins": "3",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "dignitas",
+			"upperTeamWins": "3",
+			"lowerTeam": "wylde",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "chippychips",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "geekay",
+			"upperTeamWins": "3",
+			"lowerTeam": "badnewslions",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "gentlemates",
+			"upperTeamWins": "3",
+			"lowerTeam": "teamhsk",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "caliente",
+			"upperTeamWins": "3",
+			"lowerTeam": "eighty",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "synergy",
+			"upperTeamWins": "3",
+			"lowerTeam": "ogcfc",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "3",
+			"lowerTeam": "123",
+			"lowerTeamWins": "2"
+		}
+	],
+	"1-0": [
+		{
+			"upperTeam": "karmine",
+			"upperTeamWins": "3",
+			"lowerTeam": "f4wd",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "dignitas",
+			"upperTeamWins": "3",
+			"lowerTeam": "synergy",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "caliente",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "geekay",
+			"upperTeamWins": "1",
+			"lowerTeam": "gentlemates",
+			"lowerTeamWins": "3"
+		}
+	],
+	"0-1": [
+		{
+			"upperTeam": "novo",
+			"upperTeamWins": "3",
+			"lowerTeam": "123",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "wylde",
+			"upperTeamWins": "3",
+			"lowerTeam": "ogcfc",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "chippychips",
+			"upperTeamWins": "1",
+			"lowerTeam": "eighty",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "badnewslions",
+			"upperTeamWins": "2",
+			"lowerTeam": "teamhsk",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-0": [
+		{
+			"upperTeam": "karmine",
+			"upperTeamWins": "3",
+			"lowerTeam": "100%",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "dignitas",
+			"upperTeamWins": "3",
+			"lowerTeam": "gentlemates",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-1": [
+		{
+			"upperTeam": "caliente",
+			"upperTeamWins": "1",
+			"lowerTeam": "teamhsk",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "geekay",
+			"upperTeamWins": "3",
+			"lowerTeam": "eighty",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "synergy",
+			"upperTeamWins": "2",
+			"lowerTeam": "wylde",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "2",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "3"
+		}
+	],
+	"0-2": [
+		{
+			"upperTeam": "chippychips",
+			"upperTeamWins": "3",
+			"lowerTeam": "123",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "badnewslions",
+			"upperTeamWins": "3",
+			"lowerTeam": "ogcfc",
+			"lowerTeamWins": "1"
+		}
+	],
+	"2-1": [
+		{
+			"upperTeam": "gentlemates",
+			"upperTeamWins": "3",
+			"lowerTeam": "wylde",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "teamhsk",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "geekay",
+			"upperTeamWins": "3",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-2": [
+		{
+			"upperTeam": "caliente",
+			"upperTeamWins": "3",
+			"lowerTeam": "chippychips",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "synergy",
+			"upperTeamWins": "3",
+			"lowerTeam": "eighty",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "3",
+			"lowerTeam": "badnewslions",
+			"lowerTeamWins": "0"
+		}
+	],
+	"2-2": [
+		{
+			"upperTeam": "novo",
+			"upperTeamWins": "0",
+			"lowerTeam": "synergy",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "wylde",
+			"upperTeamWins": "0",
+			"lowerTeam": "caliente",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "teamhsk",
+			"upperTeamWins": "2",
+			"lowerTeam": "f4wd",
+			"lowerTeamWins": "3"
+		}
+	],
+	"promoted": [
+		"karmine",
+		"dignitas",
+		"gentlemates",
+		"100%",
+		"geekay",
+		"caliente",
+		"synergy",
+		"f4wd"
+	]
+}
