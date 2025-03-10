@@ -3,7 +3,6 @@ import { FullRecord, FullRecordFactory, MatchRecord, Seed } from "../models/matc
 import { AFLBracket } from "./afl_bracket.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { levelOrderTraversal } from "../util/util.ts";
-import { Match } from "../models/match.ts";
 
 export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode> {
 	constructor(initialize: boolean = true) {

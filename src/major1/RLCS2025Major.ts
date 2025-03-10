@@ -113,14 +113,14 @@ export function populateMatchRecord(
 	}
 }
 
-function getUpperSeed(matchNode: MatchNode) {
-	if (matchNode.match.matchRecord) {
-		if (
-			matchNode.match.matchRecord.type === "FullRecord" ||
-			matchNode.match.matchRecord.type === "UpperRecord"
-		) {
-			const upperSeed = matchNode.match.matchRecord.upperSeed;
-			return upperSeed;
-		}
-	}
-}
+// function getUpperSeed(matchNode: MatchNode) {
+// 	if (matchNode.match.matchRecord) {
+// 		if (
+// 			matchNode.match.matchRecord.type === "FullRecord" ||
+// 			matchNode.match.matchRecord.type === "UpperRecord"
+// 		) {
+// 			const upperSeed = matchNode.match.matchRecord.upperSeed;
+// 			return upperSeed;
+// 		}
+// 	}
+// }
