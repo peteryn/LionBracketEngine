@@ -1,0 +1,237 @@
+{
+	"teamNames": [
+		{ "seed": 1, "name": "m8" },
+		{ "seed": 2, "name": "kc" },
+		{ "seed": 3, "name": "gk" },
+		{ "seed": 4, "name": "sng" },
+		{ "seed": 5, "name": "100%" },
+		{ "seed": 6, "name": "jjx" },
+		{ "seed": 7, "name": "arro" },
+		{ "seed": 8, "name": "asc" },
+		{ "seed": 9, "name": "wyl" },
+		{ "seed": 10, "name": "novo" },
+		{ "seed": 11, "name": "clnt" },
+		{ "seed": 12, "name": "mrw" },
+		{ "seed": 13, "name": "hvlp" },
+		{ "seed": 14, "name": "nc" },
+		{ "seed": 15, "name": "sick" },
+		{ "seed": 16, "name": "duck" }
+	],
+	"0-0": [
+		{
+			"upperTeam": "m8",
+			"upperTeamWins": "3",
+			"lowerTeam": "wyl",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "kc",
+			"upperTeamWins": "3",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "gk",
+			"upperTeamWins": "3",
+			"lowerTeam": "clnt",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "sng",
+			"upperTeamWins": "3",
+			"lowerTeam": "mrw",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "hvlp",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "jjx",
+			"upperTeamWins": "0",
+			"lowerTeam": "nc",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "arro",
+			"upperTeamWins": "1",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "asc",
+			"upperTeamWins": "3",
+			"lowerTeam": "duck",
+			"lowerTeamWins": "1"
+		}
+	],
+	"1-0": [
+		{
+			"upperTeam": "m8",
+			"upperTeamWins": "3",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "kc",
+			"upperTeamWins": "3",
+			"lowerTeam": "nc",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "gk",
+			"upperTeamWins": "3",
+			"lowerTeam": "asc",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "sng",
+			"upperTeamWins": "3",
+			"lowerTeam": "100%",
+			"lowerTeamWins": "0"
+		}
+	],
+	"0-1": [
+		{
+			"upperTeam": "jjx",
+			"upperTeamWins": "3",
+			"lowerTeam": "duck",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "arro",
+			"upperTeamWins": "2",
+			"lowerTeam": "hvlp",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "wyl",
+			"upperTeamWins": "3",
+			"lowerTeam": "mrw",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "novo",
+			"upperTeamWins": "2",
+			"lowerTeam": "clnt",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-0": [
+		{
+			"upperTeam": "m8",
+			"upperTeamWins": "3",
+			"lowerTeam": "sng",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "gk",
+			"upperTeamWins": "1",
+			"lowerTeam": "kc",
+			"lowerTeamWins": "3"
+		}
+	],
+	"1-1": [
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "jjx",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "nc",
+			"upperTeamWins": "3",
+			"lowerTeam": "hvlp",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "asc",
+			"upperTeamWins": "0",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "wyl",
+			"upperTeamWins": "3",
+			"lowerTeam": "clnt",
+			"lowerTeamWins": "0"
+		}
+	],
+	"0-2": [
+		{
+			"upperTeam": "novo",
+			"upperTeamWins": "3",
+			"lowerTeam": "duck",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "mrw",
+			"upperTeamWins": "1",
+			"lowerTeam": "arro",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-1": [
+		{
+			"upperTeam": "gk",
+			"upperTeamWins": "3",
+			"lowerTeam": "wyl",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "sng",
+			"upperTeamWins": "3",
+			"lowerTeam": "sick",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "nc",
+			"upperTeamWins": "0",
+			"lowerTeam": "100%",
+			"lowerTeamWins": "3"
+		}
+	],
+	"1-2": [
+		{
+			"upperTeam": "clnt",
+			"upperTeamWins": "3",
+			"lowerTeam": "arro",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "hvlp",
+			"upperTeamWins": "2",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "jjx",
+			"upperTeamWins": "1",
+			"lowerTeam": "asc",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-2": [
+		{
+			"upperTeam": "sick",
+			"upperTeamWins": "2",
+			"lowerTeam": "novo",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "wyl",
+			"upperTeamWins": "0",
+			"lowerTeam": "asc",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "nc",
+			"upperTeamWins": "1",
+			"lowerTeam": "clnt",
+			"lowerTeamWins": "3"
+		}
+	],
+	"promoted": ["kc", "m8", "gk", "sng", "100%", "clnt", "novo", "asc"]
+}

@@ -3,6 +3,7 @@ import { TournamentData, type MatchRecordSerialized } from "./models.ts";
 import { getJsonSync } from "./util/file.ts";
 import {
 	checkVersusData,
+	checkVersusData2,
 	populateMatchRecordFromData,
 	testTournament,
 } from "./util/testFunctions.ts";
@@ -663,8 +664,85 @@ Deno.test(function clearDependentsTest1() {
 
 	const r2Upper = swissBracket.getRoundNode("1-0");
 	assertEquals(r2Upper.matches[0].matchRecord, undefined);
-})
+});
 
-Deno.test(function na1a() {
-	const teamtoSeed
-})
+Deno.test(function eu1a() {
+	const tournamentPath = "./data/RLCS_2025_EU1A.json";
+	const teamToSeed: Map<string, number> = new Map();
+	const tournament: TournamentData & { promoted: string[] } = getJsonSync(tournamentPath);
+	const teams = tournament.teamNames;
+	for (const team of teams) {
+		teamToSeed.set(team.name, team.seed);
+	}
+	const swissBracket = new SwissBracketFlow8Apart(16, 3);
+	checkVersusData2(swissBracket, tournament, "0-0", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+	checkVersusData2(swissBracket, tournament, "1-0", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "0-1", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	const r3Middle = swissBracket.getRoundNode("1-1");
+	assertEquals(r3Middle.matches[0].matchRecord, undefined);
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData2(swissBracket, tournament, "2-0", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "1-1", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "0-2", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	const r4Upper = swissBracket.getRoundNode("2-1");
+	assertEquals(r4Upper.matches[0].matchRecord, undefined);
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	assertEquals(r4Upper.matches[0].matchRecord, undefined);
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	checkVersusData2(swissBracket, tournament, "2-1", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "1-2", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+	checkVersusData2(swissBracket, tournament, "2-2", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
+	const expectedPromotedSeeds = tournament.promoted.map((team) => teamToSeed.get(team) as number);
+	assertEquals(swissBracket.getPromotedSeeds(), expectedPromotedSeeds);
+});
+
+Deno.test(function eu1b() {
+	const tournamentPath = "./data/RLCS_2025_EU1B.json";
+	const teamToSeed: Map<string, number> = new Map();
+	const tournament: TournamentData & { promoted: string[] } = getJsonSync(tournamentPath);
+	const teams = tournament.teamNames;
+	for (const team of teams) {
+		teamToSeed.set(team.name, team.seed);
+	}
+	const swissBracket = new SwissBracketFlow8Apart(16, 3);
+	checkVersusData2(swissBracket, tournament, "0-0", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "0-0");
+	checkVersusData2(swissBracket, tournament, "1-0", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "0-1", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "1-0");
+	populateMatchRecordFromData(swissBracket, tournament, "0-1");
+
+	checkVersusData2(swissBracket, tournament, "2-0", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "1-1", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "0-2", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-0");
+	populateMatchRecordFromData(swissBracket, tournament, "1-1");
+	populateMatchRecordFromData(swissBracket, tournament, "0-2");
+
+	checkVersusData2(swissBracket, tournament, "2-1", teamToSeed);
+	checkVersusData2(swissBracket, tournament, "1-2", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-1");
+	populateMatchRecordFromData(swissBracket, tournament, "1-2");
+	checkVersusData2(swissBracket, tournament, "2-2", teamToSeed);
+
+	populateMatchRecordFromData(swissBracket, tournament, "2-2");
+	const expectedPromotedSeeds = tournament.promoted.map((team) => teamToSeed.get(team) as number);
+	assertEquals(swissBracket.getPromotedSeeds(), expectedPromotedSeeds);
+});

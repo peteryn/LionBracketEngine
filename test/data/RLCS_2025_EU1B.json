@@ -1,0 +1,237 @@
+{
+	"teamNames": [
+		{ "seed": 1, "name": "vit" },
+		{ "seed": 2, "name": "nip" },
+		{ "seed": 3, "name": "dig" },
+		{ "seed": 4, "name": "red" },
+		{ "seed": 5, "name": "sp" },
+		{ "seed": 6, "name": "riv" },
+		{ "seed": 7, "name": "gm" },
+		{ "seed": 8, "name": "stg" },
+		{ "seed": 9, "name": "f4wd" },
+		{ "seed": 10, "name": "rrg" },
+		{ "seed": 11, "name": "jc" },
+		{ "seed": 12, "name": "tbb" },
+		{ "seed": 13, "name": "aces" },
+		{ "seed": 14, "name": "sco" },
+		{ "seed": 15, "name": "hbd" },
+		{ "seed": 16, "name": "sel" }
+	],
+	"0-0": [
+		{
+			"upperTeam": "vit",
+			"upperTeamWins": "1",
+			"lowerTeam": "f4wd",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "nip",
+			"upperTeamWins": "3",
+			"lowerTeam": "rrg",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "dig",
+			"upperTeamWins": "3",
+			"lowerTeam": "jc",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "red",
+			"upperTeamWins": "2",
+			"lowerTeam": "tbb",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "sp",
+			"upperTeamWins": "3",
+			"lowerTeam": "aces",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "riv",
+			"upperTeamWins": "3",
+			"lowerTeam": "sco",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "gm",
+			"upperTeamWins": "3",
+			"lowerTeam": "hbd",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "stg",
+			"upperTeamWins": "3",
+			"lowerTeam": "sel",
+			"lowerTeamWins": "1"
+		}
+	],
+	"1-0": [
+		{
+			"upperTeam": "nip",
+			"upperTeamWins": "3",
+			"lowerTeam": "tbb",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "dig",
+			"upperTeamWins": "3",
+			"lowerTeam": "f4wd",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "sp",
+			"upperTeamWins": "0",
+			"lowerTeam": "stg",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "riv",
+			"upperTeamWins": "1",
+			"lowerTeam": "gm",
+			"lowerTeamWins": "3"
+		}
+	],
+	"0-1": [
+		{
+			"upperTeam": "vit",
+			"upperTeamWins": "3",
+			"lowerTeam": "sel",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "red",
+			"upperTeamWins": "3",
+			"lowerTeam": "hbd",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "rrg",
+			"upperTeamWins": "3",
+			"lowerTeam": "sco",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "jc",
+			"upperTeamWins": "1",
+			"lowerTeam": "aces",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-0": [
+		{
+			"upperTeam": "nip",
+			"upperTeamWins": "3",
+			"lowerTeam": "stg",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "dig",
+			"upperTeamWins": "3",
+			"lowerTeam": "gm",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-1": [
+		{
+			"upperTeam": "sp",
+			"upperTeamWins": "2",
+			"lowerTeam": "red",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "3",
+			"lowerTeam": "aces",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "tbb",
+			"upperTeamWins": "1",
+			"lowerTeam": "vit",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "riv",
+			"upperTeamWins": "0",
+			"lowerTeam": "rrg",
+			"lowerTeamWins": "3"
+		}
+	],
+	"0-2": [
+		{
+			"upperTeam": "jc",
+			"upperTeamWins": "3",
+			"lowerTeam": "sco",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "hbd",
+			"upperTeamWins": "1",
+			"lowerTeam": "sel",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-1": [
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "1",
+			"lowerTeam": "red",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "stg",
+			"upperTeamWins": "2",
+			"lowerTeam": "rrg",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "vit",
+			"upperTeamWins": "3",
+			"lowerTeam": "gm",
+			"lowerTeamWins": "0"
+		}
+	],
+	"1-2": [
+		{
+			"upperTeam": "tbb",
+			"upperTeamWins": "1",
+			"lowerTeam": "sel",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "sp",
+			"upperTeamWins": "3",
+			"lowerTeam": "jc",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "riv",
+			"upperTeamWins": "0",
+			"lowerTeam": "aces",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-2": [
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "2",
+			"lowerTeam": "sel",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "stg",
+			"upperTeamWins": "3",
+			"lowerTeam": "aces",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "sp",
+			"upperTeamWins": "3",
+			"lowerTeam": "gm",
+			"lowerTeamWins": "1"
+		}
+	],
+	"promoted": ["nip", "dig", "rrg", "vit", "red", "stg", "sp", "sel"]
+}

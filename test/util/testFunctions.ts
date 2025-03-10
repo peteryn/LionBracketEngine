@@ -32,6 +32,40 @@ export function checkVersusData(
 	}
 }
 
+export function checkVersusData2(
+	swissBracket: SwissBracket,
+	// deno-lint-ignore no-explicit-any
+	tournament: any,
+	roundName: string,
+	teamNameMap: Map<string, number>,
+) {
+	// const roundNode = swissBracket.data.roundNodes.get(roundName);
+	const roundNode = swissBracket.getRoundNode(roundName);
+	if (!roundNode) {
+		throw new Error("roundNode doesn't exist when it should");
+	}
+	const numMatches = roundNode.matches.length;
+	for (let j = 0; j < numMatches; j++) {
+		const calculated = swissBracket.getMatchRecord(getMatchId(roundName, j));
+		if (calculated) {
+			const actualUpperSeed = calculated.upperSeed;
+			const expectedUpperSeed = teamNameMap.get(tournament[roundName][j].upperTeam);
+			if (!expectedUpperSeed) {
+				throw new Error("seed does not exist")
+			}
+			const actualLowerSeed = calculated.lowerSeed;
+			const expectedLowerSeed = teamNameMap.get(tournament[roundName][j].lowerTeam);
+			if (!expectedLowerSeed) {
+				throw new Error("seed does not exist")
+			}
+			assertEquals(actualUpperSeed, expectedUpperSeed);
+			assertEquals(actualLowerSeed, expectedLowerSeed);
+		} else {
+			throw new Error(`match record doesn't exist when it should`);
+		}
+	}
+}
+
 export function populateMatchRecordFromData(
 	swissBracket: SwissBracketFlow,
 	// deno-lint-ignore no-explicit-any
