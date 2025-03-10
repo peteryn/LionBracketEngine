@@ -1,0 +1,237 @@
+{
+	"teamNames": [
+		{ "seed": 1, "name": "karmine" },
+		{ "seed": 2, "name": "100%" },
+		{ "seed": 3, "name": "dignitas" },
+		{ "seed": 4, "name": "geekay" },
+		{ "seed": 5, "name": "savethegame" },
+		{ "seed": 6, "name": "redemption" },
+		{ "seed": 7, "name": "thebigboys" },
+		{ "seed": 8, "name": "arrogant" },
+		{ "seed": 9, "name": "synergy" },
+		{ "seed": 10, "name": "caliente" },
+		{ "seed": 11, "name": "f4wd" },
+		{ "seed": 12, "name": "kyle mode" },
+		{ "seed": 13, "name": "atom unity" },
+		{ "seed": 14, "name": "team tsk" },
+		{ "seed": 15, "name": "super team" },
+		{ "seed": 16, "name": "musk" }
+	],
+	"0-0": [
+		{
+			"upperTeam": "karmine",
+			"upperTeamWins": "3",
+			"lowerTeam": "synergy",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "caliente",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "dignitas",
+			"upperTeamWins": "3",
+			"lowerTeam": "f4wd",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "geekay",
+			"upperTeamWins": "3",
+			"lowerTeam": "kyle mode",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "savethegame",
+			"upperTeamWins": "3",
+			"lowerTeam": "atom unity",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "redemption",
+			"upperTeamWins": "3",
+			"lowerTeam": "team tsk",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "thebigboys",
+			"upperTeamWins": "2",
+			"lowerTeam": "super team",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "arrogant",
+			"upperTeamWins": "3",
+			"lowerTeam": "musk",
+			"lowerTeamWins": "1"
+		}
+	],
+	"1-0": [
+		{
+			"upperTeam": "karmine",
+			"upperTeamWins": "3",
+			"lowerTeam": "super team",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "arrogant",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "dignitas",
+			"upperTeamWins": "3",
+			"lowerTeam": "redemption",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "geekay",
+			"upperTeamWins": "3",
+			"lowerTeam": "savethegame",
+			"lowerTeamWins": "0"
+		}
+	],
+	"0-1": [
+		{
+			"upperTeam": "thebigboys",
+			"upperTeamWins": "3",
+			"lowerTeam": "musk",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "synergy",
+			"upperTeamWins": "3",
+			"lowerTeam": "team tsk",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "caliente",
+			"upperTeamWins": "3",
+			"lowerTeam": "atom unity",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "3",
+			"lowerTeam": "kyle mode",
+			"lowerTeamWins": "1"
+		}
+	],
+	"2-0": [
+		{
+			"upperTeam": "karmine",
+			"upperTeamWins": "3",
+			"lowerTeam": "geekay",
+			"lowerTeamWins": "1"
+		},
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "2",
+			"lowerTeam": "dignitas",
+			"lowerTeamWins": "3"
+		}
+	],
+	"1-1": [
+		{
+			"upperTeam": "super team",
+			"upperTeamWins": "0",
+			"lowerTeam": "f4wd",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "savethegame",
+			"upperTeamWins": "3",
+			"lowerTeam": "thebigboys",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "redemption",
+			"upperTeamWins": "3",
+			"lowerTeam": "caliente",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "arrogant",
+			"upperTeamWins": "3",
+			"lowerTeam": "synergy",
+			"lowerTeamWins": "1"
+		}
+	],
+	"0-2": [
+		{
+			"upperTeam": "kyle mode",
+			"upperTeamWins": "3",
+			"lowerTeam": "musk",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "atom unity",
+			"upperTeamWins": "1",
+			"lowerTeam": "team tsk",
+			"lowerTeamWins": "3"
+		}
+	],
+	"2-1": [
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "2",
+			"lowerTeam": "savethegame",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "geekay",
+			"upperTeamWins": "3",
+			"lowerTeam": "arrogant",
+			"lowerTeamWins": "0"
+		},
+		{
+			"upperTeam": "redemption",
+			"upperTeamWins": "3",
+			"lowerTeam": "f4wd",
+			"lowerTeamWins": "1"
+		}
+	],
+	"1-2": [
+		{
+			"upperTeam": "synergy",
+			"upperTeamWins": "3",
+			"lowerTeam": "thebigboys",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "super team",
+			"upperTeamWins": "1",
+			"lowerTeam": "team tsk",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "caliente",
+			"upperTeamWins": "3",
+			"lowerTeam": "kyle mode",
+			"lowerTeamWins": "1"
+		}
+	],
+	"2-2": [
+		{
+			"upperTeam": "100%",
+			"upperTeamWins": "3",
+			"lowerTeam": "team tsk",
+			"lowerTeamWins": "2"
+		},
+		{
+			"upperTeam": "synergy",
+			"upperTeamWins": "1",
+			"lowerTeam": "caliente",
+			"lowerTeamWins": "3"
+		},
+		{
+			"upperTeam": "f4wd",
+			"upperTeamWins": "3",
+			"lowerTeam": "arrogant",
+			"lowerTeamWins": "0"
+		}
+	],
+	"promoted": ["dignitas", "karmine", "redemption", "geekay", "savethegame", "100%", "f4wd", "caliente"]
+}

@@ -51,11 +51,13 @@ export function checkVersusData2(
 			const actualUpperSeed = calculated.upperSeed;
 			const expectedUpperSeed = teamNameMap.get(tournament[roundName][j].upperTeam);
 			if (!expectedUpperSeed) {
+				console.log("seed not found")
 				throw new Error("seed does not exist")
 			}
 			const actualLowerSeed = calculated.lowerSeed;
 			const expectedLowerSeed = teamNameMap.get(tournament[roundName][j].lowerTeam);
 			if (!expectedLowerSeed) {
+				console.log("seed not found")
 				throw new Error("seed does not exist")
 			}
 			assertEquals(actualUpperSeed, expectedUpperSeed);
