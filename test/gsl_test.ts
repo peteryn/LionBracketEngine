@@ -7,7 +7,7 @@ Deno.test(function gslTest1() {
 	gslBracket.setMatchRecordAndFlow("UpperQuarterFinal1", 1, 0);
 	gslBracket.setMatchRecordAndFlow("UpperQuarterFinal2", 1, 0);
 
-	const upperSemiFinal1 = gslBracket.getRoundNode("UpperSemiFinal1");
+	const upperSemiFinal1 = gslBracket.getBracketNode("UpperSemiFinal1");
 	assertEquals(upperSemiFinal1.match.matchRecord?.type, "FullRecord");
 	const uSFMR = upperSemiFinal1.match.matchRecord as FullRecord;
 	assertEquals(uSFMR.upperSeed, 1);

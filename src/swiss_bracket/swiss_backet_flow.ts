@@ -32,7 +32,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
 		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getRoundNode(roundNodeName);
+		const roundNode = this.getBracketNode(roundNodeName);
 		if (res) {
 			this.updateFlow(roundNode);
 		}
@@ -184,7 +184,7 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 		for (const matchTrackerObject of stack) {
 			matchups.push([matchTrackerObject.upperSeed, matchTrackerObject.lowerSeed]);
 		}
-		return matchups
+		return matchups;
 	}
 
 	// 1. Match differential
@@ -220,7 +220,10 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 
 			const seedsCrossClean = this.removeRematches(upperLowerCross);
 
-			matchups = this.backTrackingAlgorithm(seedsCrossClean, (upperSeeds.length + lowerSeeds.length) / 2)
+			matchups = this.backTrackingAlgorithm(
+				seedsCrossClean,
+				(upperSeeds.length + lowerSeeds.length) / 2
+			);
 		} else {
 			// implementation when round node has 1 parent
 			let i = 0;
@@ -360,8 +363,12 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 	protected processRound(round: RoundNode, seeds: Seed[]) {
 		if (round.has2Parents) {
 			const [roundWins, roundLosses] = round.name.split("-");
-			const upperParentNode = this.getRoundNode(`${roundWins}-${parseInt(roundLosses) - 1}`);
-			const lowerParentNode = this.getRoundNode(`${parseInt(roundWins) - 1}-${roundLosses}`);
+			const upperParentNode = this.getBracketNode(
+				`${roundWins}-${parseInt(roundLosses) - 1}`
+			);
+			const lowerParentNode = this.getBracketNode(
+				`${parseInt(roundWins) - 1}-${roundLosses}`
+			);
 			const upperLosers = getLosers(upperParentNode.matches);
 			const lowerWinners = getWinners(lowerParentNode.matches);
 			if (
@@ -399,9 +406,9 @@ export class SwissBracketFlow extends SwissBracket implements FlowBracket<RoundN
 	}
 
 	getPromotedSeeds() {
-		const upperRound3 = this.getRoundNode("2-0");
-		const upperRound4 = this.getRoundNode("2-1");
-		const round5 = this.getRoundNode("2-2");
+		const upperRound3 = this.getBracketNode("2-0");
+		const upperRound4 = this.getBracketNode("2-1");
+		const round5 = this.getBracketNode("2-2");
 		const promotionSeeds = getWinners(upperRound3.matches)
 			.concat(getWinners(upperRound4.matches))
 			.concat(getWinners(round5.matches));

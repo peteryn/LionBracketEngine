@@ -5,7 +5,7 @@ import { Match } from "./match.ts";
 import { MatchRecord } from "./match_record.ts";
 
 export interface Bracket<NodeType extends BracketNode> {
-	getRoundNode(nodeName: string): NodeType;
+	getBracketNode(nodeName: string): NodeType;
 
 	getMatch(matchId: string): Match;
 

@@ -61,16 +61,16 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 				this.clearDependents(roundNode.lowerRound);
 				break;
 			case 2:
-				this.clearDependents(this.getRoundNode("2-0"));
-				this.clearDependents(this.getRoundNode("1-1"));
-				this.clearDependents(this.getRoundNode("0-2"));
+				this.clearDependents(this.getBracketNode("2-0"));
+				this.clearDependents(this.getBracketNode("1-1"));
+				this.clearDependents(this.getBracketNode("0-2"));
 				break;
 			case 3:
-				this.clearDependents(this.getRoundNode("2-1"));
-				this.clearDependents(this.getRoundNode("1-2"));
+				this.clearDependents(this.getBracketNode("2-1"));
+				this.clearDependents(this.getBracketNode("1-2"));
 				break;
 			case 4:
-				this.clearDependents(this.getRoundNode("2-2"));
+				this.clearDependents(this.getBracketNode("2-2"));
 				break;
 		}
 
@@ -90,11 +90,11 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 			const r2LowerMatchups = this.evaluationSort(losers);
 			populateMatches(roundNode.lowerRound!.matches, r2LowerMatchups);
 		} else if (curLevelNum === 2) {
-			const r2UpperRoundNode = this.getRoundNode("1-0");
+			const r2UpperRoundNode = this.getBracketNode("1-0");
 			const r2UpperWinners = getWinners(r2UpperRoundNode.matches);
 			const r2UpperLosers = getLosers(r2UpperRoundNode.matches);
 
-			const r2LowerRoundNode = this.getRoundNode("0-1");
+			const r2LowerRoundNode = this.getBracketNode("0-1");
 			const r2LowerWinners = getWinners(r2LowerRoundNode.matches);
 			const r2LowerLosers = getLosers(r2LowerRoundNode.matches);
 
@@ -107,9 +107,9 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 			const matchups = this.calcuate(round3MiddleSeeds);
 			populateMatches(r2UpperRoundNode.lowerRound!.matches, matchups);
 		} else if (curLevelNum === 3) {
-			const r3Upper = this.getRoundNode("2-0");
-			const r3Middle = this.getRoundNode("1-1");
-			const r3Lower = this.getRoundNode("0-2");
+			const r3Upper = this.getBracketNode("2-0");
+			const r3Middle = this.getBracketNode("1-1");
+			const r3Lower = this.getBracketNode("0-2");
 
 			const r4UpperSeeds = getLosers(r3Upper.matches).concat(getWinners(r3Middle.matches));
 			const r4UpperMatchups = this.calcuate(r4UpperSeeds);
@@ -119,8 +119,8 @@ export class SwissBracketFlow8Apart extends SwissBracketFlow {
 			const r4LowerMatchups = this.calcuate(r4LowerSeeds);
 			populateMatches(r3Middle.lowerRound!.matches, r4LowerMatchups);
 		} else if (curLevelNum === 4) {
-			const r4Upper = this.getRoundNode("2-1");
-			const r4Lower = this.getRoundNode("1-2");
+			const r4Upper = this.getBracketNode("2-1");
+			const r4Lower = this.getBracketNode("1-2");
 			const r5Seeds = getLosers(r4Upper.matches).concat(getWinners(r4Lower.matches));
 			const r5Matchups = this.calcuate(r5Seeds);
 			populateMatches(r4Upper.lowerRound!.matches, r5Matchups);

@@ -12,7 +12,7 @@ export function checkVersusData(
 	roundName: string
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
-	const roundNode = swissBracket.getRoundNode(roundName);
+	const roundNode = swissBracket.getBracketNode(roundName);
 	if (!roundNode) {
 		throw new Error("roundNode doesn't exist when it should");
 	}
@@ -37,10 +37,10 @@ export function checkVersusData2(
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
 	roundName: string,
-	teamNameMap: Map<string, number>,
+	teamNameMap: Map<string, number>
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
-	const roundNode = swissBracket.getRoundNode(roundName);
+	const roundNode = swissBracket.getBracketNode(roundName);
 	if (!roundNode) {
 		throw new Error("roundNode doesn't exist when it should");
 	}
@@ -51,14 +51,14 @@ export function checkVersusData2(
 			const actualUpperSeed = calculated.upperSeed;
 			const expectedUpperSeed = teamNameMap.get(tournament[roundName][j].upperTeam);
 			if (!expectedUpperSeed) {
-				console.log("seed not found")
-				throw new Error("seed does not exist")
+				console.log("seed not found");
+				throw new Error("seed does not exist");
 			}
 			const actualLowerSeed = calculated.lowerSeed;
 			const expectedLowerSeed = teamNameMap.get(tournament[roundName][j].lowerTeam);
 			if (!expectedLowerSeed) {
-				console.log("seed not found")
-				throw new Error("seed does not exist")
+				console.log("seed not found");
+				throw new Error("seed does not exist");
 			}
 			assertEquals(actualUpperSeed, expectedUpperSeed);
 			assertEquals(actualLowerSeed, expectedLowerSeed);
@@ -75,7 +75,7 @@ export function populateMatchRecordFromData(
 	roundName: string
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
-	const roundNode = swissBracket.getRoundNode(roundName);
+	const roundNode = swissBracket.getBracketNode(roundName);
 	if (!roundNode) {
 		throw new Error("roundNode doesn't exist when it should");
 	}

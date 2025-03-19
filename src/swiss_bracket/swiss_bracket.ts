@@ -13,10 +13,10 @@ export class SwissBracket implements Bracket<RoundNode> {
 
 	static getRoundNodeName(matchId: string) {
 		const [roundName, _] = matchId.split(".");
-		return roundName
+		return roundName;
 	}
 
-	getRoundNode(nodeName: string): RoundNode {
+	getBracketNode(nodeName: string): RoundNode {
 		let roundNode: RoundNode | undefined = undefined;
 		levelOrderTraversal(this.rootRound, (node: RoundNode) => {
 			if (node.name === nodeName) {
@@ -32,7 +32,7 @@ export class SwissBracket implements Bracket<RoundNode> {
 	getMatch(matchId: string) {
 		const [roundName, matchIndexString] = matchId.split(".");
 		const matchIndex = parseInt(matchIndexString);
-		const roundNode = this.getRoundNode(roundName);
+		const roundNode = this.getBracketNode(roundName);
 		const matches = roundNode.matches;
 		return matches[matchIndex];
 	}
@@ -50,7 +50,7 @@ export class SwissBracket implements Bracket<RoundNode> {
 		if (match) {
 			match.matchRecord = matchRecord;
 			const roundNodeName = match.id.split(".")[0];
-			const roundNode = this.getRoundNode(roundNodeName);
+			const roundNode = this.getBracketNode(roundNodeName);
 			if (roundNode) {
 				return true;
 			}

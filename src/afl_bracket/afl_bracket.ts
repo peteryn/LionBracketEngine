@@ -20,7 +20,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 		] = this.createTree();
 	}
 
-	getRoundNode(nodeName: string): MatchNode {
+	getBracketNode(nodeName: string): MatchNode {
 		if (this.upperQuarterFinal1.name === nodeName) {
 			return this.upperQuarterFinal1;
 		}
@@ -44,7 +44,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 
 	getMatch(matchId: string): Match {
 		const [roundName] = matchId.split(".");
-		const matchNode = this.getRoundNode(roundName);
+		const matchNode = this.getBracketNode(roundName);
 		return matchNode.match;
 	}
 
@@ -61,7 +61,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 		if (match) {
 			match.matchRecord = matchRecord;
 			const matchNodeName = match.id.split(".")[0];
-			const matchNode = this.getRoundNode(matchNodeName);
+			const matchNode = this.getBracketNode(matchNodeName);
 			if (matchNode) {
 				return true;
 			}

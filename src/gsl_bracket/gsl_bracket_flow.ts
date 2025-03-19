@@ -33,7 +33,7 @@ export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode>
 	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
 		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getRoundNode(roundNodeName);
+		const roundNode = this.getBracketNode(roundNodeName);
 		if (res) {
 			this.updateFlow(roundNode);
 		}

@@ -7,10 +7,10 @@ import { levelOrderTraversal } from "../util/util.ts";
 export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode> {
 	constructor(initialize: boolean = true) {
 		super();
-		const upperQuarterFinal1 = this.getRoundNode("upperQuarterFinal1");
-		const upperQuarterFinal2 = this.getRoundNode("upperQuarterFinal2");
-		const lowerBracketRound1 = this.getRoundNode("lowerBracketRound1");
-		const lowerBracketRound2 = this.getRoundNode("lowerBracketRound2");
+		const upperQuarterFinal1 = this.getBracketNode("upperQuarterFinal1");
+		const upperQuarterFinal2 = this.getBracketNode("upperQuarterFinal2");
+		const lowerBracketRound1 = this.getBracketNode("lowerBracketRound1");
+		const lowerBracketRound2 = this.getBracketNode("lowerBracketRound2");
 		if (initialize) {
 			const seeds = [1, 2, 3, 4, 5, 6, 7, 8];
 			upperQuarterFinal1.match.matchRecord = FullRecordFactory(seeds[0], seeds[3]);
@@ -153,7 +153,7 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
 		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getRoundNode(roundNodeName);
+		const roundNode = this.getBracketNode(roundNodeName);
 		if (res) {
 			this.updateFlow(roundNode);
 		}
@@ -196,10 +196,10 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		uqf1.lowerRound = lbqf1;
 		uqf2.lowerRound = lbqf2;
 
-		this.upperQuarterFinal1 = uqf1
-		this.upperQuarterFinal2 = uqf2
-		this.lowerBracketRound1 = lbr1
-		this.lowerBracketRound2 = lbr2
+		this.upperQuarterFinal1 = uqf1;
+		this.upperQuarterFinal2 = uqf2;
+		this.lowerBracketRound1 = lbr1;
+		this.lowerBracketRound2 = lbr2;
 	}
 
 	clearAllMatchRecords() {

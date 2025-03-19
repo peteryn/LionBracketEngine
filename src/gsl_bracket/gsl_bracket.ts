@@ -49,7 +49,7 @@ export class GSLBracket implements Bracket<MatchNode> {
 		upperSemiFinal2.lowerRound = lowerSemiFinal1;
 	}
 
-	getRoundNode(nodeName: string): MatchNode {
+	getBracketNode(nodeName: string): MatchNode {
 		for (const node of this.upperMatches) {
 			if (node.name === nodeName) {
 				return node;
@@ -86,7 +86,7 @@ export class GSLBracket implements Bracket<MatchNode> {
 
 	getMatch(matchId: string): Match {
 		const [roundName] = matchId.split(".");
-		const matchNode = this.getRoundNode(roundName);
+		const matchNode = this.getBracketNode(roundName);
 		return matchNode.match;
 	}
 
@@ -103,7 +103,7 @@ export class GSLBracket implements Bracket<MatchNode> {
 		if (match) {
 			match.matchRecord = matchRecord;
 			const matchNodeName = match.id.split(".")[0];
-			const matchNode = this.getRoundNode(matchNodeName);
+			const matchNode = this.getBracketNode(matchNodeName);
 			if (matchNode) {
 				return true;
 			}
