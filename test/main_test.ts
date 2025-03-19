@@ -11,7 +11,7 @@ import { RoundNode } from "../src/models/round_node.ts";
 import { SwissBracketFlow } from "../src/swiss_bracket/swiss_backet_flow.ts";
 import { getMatchId } from "../src/models/match.ts";
 import { createSeeds, eightApartMatchups } from "../src/util/util.ts";
-import { SwissBracketFlow8Apart } from "../src/swiss_bracket/swiss_bracket_flow_8apart.ts";
+import { SwissBracketFlow8Apart } from "../src/swiss_bracket/swiss_bracket_flow_buchholz.ts";
 import { printRound } from "./util/util.ts";
 import { TeamNameMap } from "./models.ts";
 
