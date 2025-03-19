@@ -26,8 +26,8 @@ export class GSLBracket implements Bracket<MatchNode> {
 		upperSemiFinal1.upperRound = upperFinal;
 		upperSemiFinal2.upperRound = upperFinal;
 
-		this.lowerMatches.push(new MatchNode("LowerQuarterFinal5", false));
-		this.lowerMatches.push(new MatchNode("LowerQuarterFinal6", false));
+		this.lowerMatches.push(new MatchNode("LowerQuarterFinal1", false));
+		this.lowerMatches.push(new MatchNode("LowerQuarterFinal2", false));
 
 		const lowerSemiFinal1 = new MatchNode("LowerSemiFinal1", true);
 		this.lowerMatches[0].upperRound = lowerSemiFinal1;

@@ -8,9 +8,9 @@ export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode>
 	constructor() {
 		super();
 		this.upperMatches[0].match.matchRecord = FullRecordFactory(1, 8);
-		this.upperMatches[1].match.matchRecord = FullRecordFactory(3, 6);
+		this.upperMatches[1].match.matchRecord = FullRecordFactory(4, 5);
 		this.upperMatches[2].match.matchRecord = FullRecordFactory(2, 7);
-		this.upperMatches[3].match.matchRecord = FullRecordFactory(4, 5);
+		this.upperMatches[3].match.matchRecord = FullRecordFactory(3, 6);
 	}
 
 	updateFlow(root: MatchNode): void {
