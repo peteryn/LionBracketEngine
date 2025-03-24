@@ -3,6 +3,7 @@ import { getMatchId, Match } from "../models/match.ts";
 import { type Seed, FullRecord, FullRecordFactory } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
+import { MultiProgressBar } from "jsr:@deno-library/progress@1.4.9";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -55,6 +56,25 @@ export function getLosers(matches: SwissMatch[]) {
 	}
 
 	return result;
+}
+
+export function isFilledMatch(match: Match): boolean {
+	if (match.matchRecord?.type === "FullRecord") {
+		return match.matchRecord.upperSeedWins - match.matchRecord.lowerSeedWins !== 0;
+	}
+	return false;
+}
+
+export function getWinner(match: Match) {
+	if (match.matchRecord?.type !== "FullRecord") {
+		return;
+	}
+	if (match.matchRecord.upperSeed > match.matchRecord.lowerSeed) {
+		return match.matchRecord.upperSeed;
+	}
+	if (match.matchRecord.lowerSeed < match.matchRecord.lowerSeed) {
+		return match.matchRecord.lowerSeed;
+	}
 }
 
 export function populateMatches(matches: Match[], seeds: Seed[][]) {
