@@ -144,12 +144,6 @@ export class AFLBracketFlow extends AFLBracket implements FlowBracket<MatchNode>
 		levelOrderTraversal(root, update);
 	}
 
-	// perhaps we should change this name so that it can be included in the flow interface
-	// and then we can get rid of updateRounds
-	// updateRounds is implementation specific and that's why there is a unused root variable
-	// in the function above
-	// or refactor it so that there are multiple roots in a tree that eventually land at the
-	// same child (maybe a future factor that doesn't use recursion to traverse tree)
 	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
 		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
 		const roundNodeName = matchId.split(".")[0];

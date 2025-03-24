@@ -30,60 +30,6 @@ export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode>
 		}
 	}
 
-	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
-		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
-		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getBracketNode(roundNodeName);
-		if (res) {
-			this.updateFlow(roundNode);
-		}
-		return res;
-	}
-
-	private clearDependents(root: MatchNode | undefined, upperSeed: Seed, lowerSeed: Seed) {
-		if (!root) {
-			return;
-		}
-
-		const update = (node: MatchNode) => {
-			const mr = node.match.matchRecord;
-			if (!mr) {
-				return;
-			}
-
-			switch (mr.type) {
-				case "UpperRecord":
-					if (mr.upperSeed === upperSeed) {
-						node.match.matchRecord = undefined;
-					}
-					break;
-				case "LowerRecord":
-					if (mr.lowerSeed === lowerSeed) {
-						node.match.matchRecord = undefined;
-					}
-					break;
-				case "FullRecord":
-					if (mr.upperSeed === upperSeed) {
-						node.match.matchRecord = {
-							type: "LowerRecord",
-							lowerSeed: mr.lowerSeed,
-							// potentially want to reset this to 0 if we deem their previous
-							// guess invalid when the match up changes
-							lowerSeedWins: mr.lowerSeedWins,
-						};
-					}
-					if (mr.lowerSeed === lowerSeed) {
-						node.match.matchRecord = {
-							type: "UpperRecord",
-							upperSeed: mr.upperSeed,
-							upperSeedWins: mr.upperSeedWins,
-						};
-					}
-			}
-		};
-		levelOrderTraversal(root, update);
-	}
-
 	private handleScores(root: MatchNode, matchRecord: FullRecord) {
 		if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
 			this.updateRound(root.upperRound, matchRecord.upperSeed, root.isUpper);
@@ -144,5 +90,59 @@ export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode>
 				// the compiler just doesn't know it yet.
 				return undefined;
 		}
+	}
+
+	private clearDependents(root: MatchNode | undefined, upperSeed: Seed, lowerSeed: Seed) {
+		if (!root) {
+			return;
+		}
+
+		const update = (node: MatchNode) => {
+			const mr = node.match.matchRecord;
+			if (!mr) {
+				return;
+			}
+
+			switch (mr.type) {
+				case "UpperRecord":
+					if (mr.upperSeed === upperSeed) {
+						node.match.matchRecord = undefined;
+					}
+					break;
+				case "LowerRecord":
+					if (mr.lowerSeed === lowerSeed) {
+						node.match.matchRecord = undefined;
+					}
+					break;
+				case "FullRecord":
+					if (mr.upperSeed === upperSeed) {
+						node.match.matchRecord = {
+							type: "LowerRecord",
+							lowerSeed: mr.lowerSeed,
+							// potentially want to reset this to 0 if we deem their previous
+							// guess invalid when the match up changes
+							lowerSeedWins: mr.lowerSeedWins,
+						};
+					}
+					if (mr.lowerSeed === lowerSeed) {
+						node.match.matchRecord = {
+							type: "UpperRecord",
+							upperSeed: mr.upperSeed,
+							upperSeedWins: mr.upperSeedWins,
+						};
+					}
+			}
+		};
+		levelOrderTraversal(root, update);
+	}
+
+	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
+		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getBracketNode(roundNodeName);
+		if (res) {
+			this.updateFlow(roundNode);
+		}
+		return res;
 	}
 }
