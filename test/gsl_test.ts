@@ -1,6 +1,7 @@
 import { assertEquals } from "@std/assert/equals";
 import { GSLBracketFlow } from "../src/gsl_bracket/gsl_bracket_flow.ts";
 import { FullRecord } from "../src/models/match_record.ts";
+import { checkMatchNodeSeeds } from "./util/testFunctions.ts";
 
 Deno.test(function gslTest1() {
 	const gslBracket = new GSLBracketFlow();
@@ -21,15 +22,34 @@ Deno.test(function gslTest1() {
 	assertEquals(uSF2MR.upperSeed, 2);
 	assertEquals(uSF2MR.lowerSeed, 3);
 
-	const LowerQuarterFinal1 = gslBracket.getBracketNode("LowerQuarterFinal1");
-	assertEquals(LowerQuarterFinal1.match.matchRecord?.type, "FullRecord");
-	const lQF1MR = LowerQuarterFinal1.match.matchRecord as FullRecord;
+	const lowerQuarterFinal1 = gslBracket.getBracketNode("LowerQuarterFinal1");
+	assertEquals(lowerQuarterFinal1.match.matchRecord?.type, "FullRecord");
+	const lQF1MR = lowerQuarterFinal1.match.matchRecord as FullRecord;
 	assertEquals(lQF1MR.upperSeed, 8);
 	assertEquals(lQF1MR.lowerSeed, 5);
 
-	const LowerQuarterFinal2 = gslBracket.getBracketNode("LowerQuarterFinal2");
-	assertEquals(LowerQuarterFinal2.match.matchRecord?.type, "FullRecord");
-	const lQF2MR = LowerQuarterFinal2.match.matchRecord as FullRecord;
+	const lowerQuarterFinal2 = gslBracket.getBracketNode("LowerQuarterFinal2");
+	assertEquals(lowerQuarterFinal2.match.matchRecord?.type, "FullRecord");
+	const lQF2MR = lowerQuarterFinal2.match.matchRecord as FullRecord;
 	assertEquals(lQF2MR.upperSeed, 7);
 	assertEquals(lQF2MR.lowerSeed, 6);
+
+	gslBracket.setMatchRecordAndFlow("UpperSemiFinal1", 1, 0);
+	gslBracket.setMatchRecordAndFlow("UpperSemiFinal2", 1, 0);
+	const upperFinal = gslBracket.getBracketNode("UpperFinal");
+	assertEquals(upperFinal.match.matchRecord?.type, "FullRecord");
+	const uFMR = upperFinal.match.matchRecord as FullRecord;
+	assertEquals(uFMR.upperSeed, 1);
+	assertEquals(uFMR.lowerSeed, 2);
+
+	gslBracket.setMatchRecordAndFlow("LowerQuarterFinal1", 1, 0);
+	gslBracket.setMatchRecordAndFlow("LowerQuarterFinal2", 1, 0);
+
+	checkMatchNodeSeeds(gslBracket, "LowerSemiFinal1", 3, 8);
+	checkMatchNodeSeeds(gslBracket, "LowerSemiFinal2", 4, 7);
+
+	gslBracket.setMatchRecordAndFlow("LowerSemiFinal1", 1, 0);
+	gslBracket.setMatchRecordAndFlow("LowerSemiFinal2", 1, 0);
+
+	checkMatchNodeSeeds(gslBracket, "LowerFinal", 3, 4);
 });

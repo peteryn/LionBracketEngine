@@ -4,6 +4,9 @@ import { getJsonSync } from "./file.ts";
 import { assertEquals } from "@std/assert/equals";
 import { SwissBracketFlow } from "../../src/swiss_bracket/swiss_backet_flow.ts";
 import { getMatchId } from "../../src/models/match.ts";
+import { Bracket } from "../../src/models/bracket.ts";
+import { MatchNode } from "../../src/models/match_node.ts";
+import { FullRecord } from "../../src/models/match_record.ts";
 
 export function checkVersusData(
 	swissBracket: SwissBracket,
@@ -123,4 +126,12 @@ export function testTournament(tournamentPath: string) {
 	checkVersusData(swissBracket, tournament, "2-2");
 
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
+}
+
+export function checkMatchNodeSeeds(bracket: Bracket<MatchNode>, matchNodeName: string, expectedUpperSeed: number, expectedLowerSeed: number) {
+	const matchNode = bracket.getBracketNode(matchNodeName);
+	assertEquals(matchNode.match.matchRecord?.type, "FullRecord");
+	const matchRecord = matchNode.match.matchRecord as FullRecord;
+	assertEquals(matchRecord.upperSeed, expectedUpperSeed);
+	assertEquals(matchRecord.lowerSeed, expectedLowerSeed);
 }
