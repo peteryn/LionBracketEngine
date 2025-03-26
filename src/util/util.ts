@@ -66,14 +66,11 @@ export function isFilledMatch(match: Match): boolean {
 }
 
 export function getWinner(match: Match) {
-	if (match.matchRecord?.type !== "FullRecord") {
-		return;
-	}
-	if (match.matchRecord.upperSeed > match.matchRecord.lowerSeed) {
-		return match.matchRecord.upperSeed;
-	}
-	if (match.matchRecord.lowerSeed < match.matchRecord.lowerSeed) {
-		return match.matchRecord.lowerSeed;
+	const mr = match.matchRecord as FullRecord;
+	if (mr.upperSeed > mr.lowerSeed) {
+		return mr.upperSeed;
+	} else {
+		return mr.lowerSeed;
 	}
 }
 
