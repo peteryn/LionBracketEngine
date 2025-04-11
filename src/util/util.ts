@@ -3,7 +3,7 @@ import { getMatchId, Match } from "../models/match.ts";
 import { type Seed, FullRecord, FullRecordFactory } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
-import { MultiProgressBar } from "jsr:@deno-library/progress@1.4.9";
+import { MatchNode } from "../models/match_node.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -189,4 +189,35 @@ export function postOrderTraversal<NodeType extends BracketNode>(
 
 	perNodeCallBack(root);
 	visited.add(root.name);
+}
+
+export function addBackwardsPointers(matchNodes: MatchNode[]) {
+	matchNodes.forEach((matchNode) => {
+		let curNode = matchNode;
+		while (curNode.upperRound) {
+			const childNode = curNode.upperRound;
+			if (curNode.isUpper) {
+				childNode.upperParent = curNode;
+			} else {
+				childNode.lowerParent = curNode;
+			}
+			curNode = curNode.upperRound;
+		}
+	});
+}
+
+export function bfsWithParentPointers(root: MatchNode) {
+	const queue: MatchNode[] = [];
+	queue.push(root);
+	while (queue.length > 0) {
+		const node = queue.shift();
+		console.log(node?.name);
+
+		if (node?.upperParent) {
+			queue.push(node.upperParent);
+		}
+		if (node?.lowerParent) {
+			queue.push(node.lowerParent);
+		}
+	}
 }

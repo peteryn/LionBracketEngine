@@ -1,9 +1,9 @@
 import { FlowBracket } from "../models/flow_bracket.ts";
 import { MatchNode } from "../models/match_node.ts";
-import { GSLBracket } from "./gsl_bracket.ts";
 import { FullRecordFactory, Seed } from "../models/match_record.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
 import { getWinner, isFilledMatch } from "../util/util.ts";
+import { GSLBracket } from "./gsl_bracket.ts";
 
 export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode> {
 	eliminationBracket: EliminationBracket;

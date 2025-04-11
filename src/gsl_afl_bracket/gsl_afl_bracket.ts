@@ -1,5 +1,5 @@
 import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
-import { GSLBracket } from "../gsl_bracket/gsl_bracket.ts";
+import { GSLBracket } from "../gsl_bracket/GSLBracket.ts";
 import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
@@ -27,11 +27,11 @@ export class GSL_AFL_Bracket implements Bracket<MatchNode> {
 			this.lowerBracketRound2,
 		] = AFLBracket.createAFLBracket();
 
-        const GSLAUpperFinal = this.gslAUpperMatches[0].upperRound!.upperRound!;
-        const GSLALLowerFinal = this.gslALowerMatches[0].upperRound!.upperRound!;
+		const GSLAUpperFinal = this.gslAUpperMatches[0].upperRound!.upperRound!;
+		const GSLALLowerFinal = this.gslALowerMatches[0].upperRound!.upperRound!;
 
-        const GSLBUpperFinal = this.gslBUpperMatches[0].upperRound!.upperRound!;
-        const GSLBLLowerFinal = this.gslBLowerMatches[0].upperRound!.upperRound!;
+		const GSLBUpperFinal = this.gslBUpperMatches[0].upperRound!.upperRound!;
+		const GSLBLLowerFinal = this.gslBLowerMatches[0].upperRound!.upperRound!;
 	}
 
 	getBracketNode(nodeName: string): MatchNode {
