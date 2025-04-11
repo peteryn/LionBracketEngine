@@ -9,44 +9,53 @@ export class GSLBracket implements Bracket<MatchNode> {
 	lowerMatches: MatchNode[] = [];
 
 	constructor() {
-		this.upperMatches.push(new MatchNode("UpperQuarterFinal1", true));
-		this.upperMatches.push(new MatchNode("UpperQuarterFinal2", false));
-		this.upperMatches.push(new MatchNode("UpperQuarterFinal3", true));
-		this.upperMatches.push(new MatchNode("UpperQuarterFinal4", false));
+		[this.upperMatches, this.lowerMatches] = GSLBracket.createGSLBracket();
+	}
+
+	static createGSLBracket() {
+		const upperMatches: MatchNode[] = [];
+		const lowerMatches: MatchNode[] = [];
+
+		upperMatches.push(new MatchNode("UpperQuarterFinal1", true));
+		upperMatches.push(new MatchNode("UpperQuarterFinal2", false));
+		upperMatches.push(new MatchNode("UpperQuarterFinal3", true));
+		upperMatches.push(new MatchNode("UpperQuarterFinal4", false));
 
 		const upperSemiFinal1 = new MatchNode("UpperSemiFinal1", true);
-		this.upperMatches[0].upperRound = upperSemiFinal1;
-		this.upperMatches[1].upperRound = upperSemiFinal1;
+		upperMatches[0].upperRound = upperSemiFinal1;
+		upperMatches[1].upperRound = upperSemiFinal1;
 
 		const upperSemiFinal2 = new MatchNode("UpperSemiFinal2", false);
-		this.upperMatches[2].upperRound = upperSemiFinal2;
-		this.upperMatches[3].upperRound = upperSemiFinal2;
+		upperMatches[2].upperRound = upperSemiFinal2;
+		upperMatches[3].upperRound = upperSemiFinal2;
 
 		const upperFinal = new MatchNode("UpperFinal", true);
 		upperSemiFinal1.upperRound = upperFinal;
 		upperSemiFinal2.upperRound = upperFinal;
 
-		this.lowerMatches.push(new MatchNode("LowerQuarterFinal1", false));
-		this.lowerMatches.push(new MatchNode("LowerQuarterFinal2", false));
+		lowerMatches.push(new MatchNode("LowerQuarterFinal1", false));
+		lowerMatches.push(new MatchNode("LowerQuarterFinal2", false));
 
 		const lowerSemiFinal1 = new MatchNode("LowerSemiFinal1", true);
-		this.lowerMatches[0].upperRound = lowerSemiFinal1;
+		lowerMatches[0].upperRound = lowerSemiFinal1;
 
 		const lowerSemiFinal2 = new MatchNode("LowerSemiFinal2", false);
-		this.lowerMatches[1].upperRound = lowerSemiFinal2;
+		lowerMatches[1].upperRound = lowerSemiFinal2;
 
 		const lowerFinal = new MatchNode("LowerFinal", true);
 		lowerSemiFinal1.upperRound = lowerFinal;
 		lowerSemiFinal2.upperRound = lowerFinal;
 
-		this.upperMatches[0].lowerRound = this.lowerMatches[0];
-		this.upperMatches[1].lowerRound = this.lowerMatches[0];
+		upperMatches[0].lowerRound = lowerMatches[0];
+		upperMatches[1].lowerRound = lowerMatches[0];
 
-		this.upperMatches[2].lowerRound = this.lowerMatches[1];
-		this.upperMatches[3].lowerRound = this.lowerMatches[1];
+		upperMatches[2].lowerRound = lowerMatches[1];
+		upperMatches[3].lowerRound = lowerMatches[1];
 
 		upperSemiFinal1.lowerRound = lowerSemiFinal2;
 		upperSemiFinal2.lowerRound = lowerSemiFinal1;
+
+		return [upperMatches, lowerMatches];
 	}
 
 	getBracketNode(nodeName: string): MatchNode {

@@ -17,7 +17,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 			this.upperQuarterFinal2,
 			this.lowerBracketRound1,
 			this.lowerBracketRound2,
-		] = this.createTree();
+		] = AFLBracket.createAFLBracket();
 	}
 
 	getBracketNode(nodeName: string): MatchNode {
@@ -90,7 +90,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 		return this.setMatchRecord(matchId, mr);
 	}
 
-	private createTree(): MatchNode[] {
+	static createAFLBracket(): MatchNode[] {
 		const grandFinal = new MatchNode("grandFinal", false);
 
 		const semiFinal1 = new MatchNode("semiFinal1", true);
