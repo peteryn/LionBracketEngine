@@ -1,5 +1,5 @@
 import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
-import { GSLBracket } from "../gsl_bracket/GSLBracket.ts";
+import { GSLBracket } from "../gsl_bracket/gsl_bracket.ts";
 import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";

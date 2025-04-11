@@ -65,12 +65,22 @@ export function isFilledMatch(match: Match): boolean {
 	return false;
 }
 
+// getWinner and getLoser should only be called in block verified by isFilledMatch
 export function getWinner(match: Match) {
 	const mr = match.matchRecord as FullRecord;
 	if (mr.upperSeed > mr.lowerSeed) {
 		return mr.upperSeed;
 	} else {
 		return mr.lowerSeed;
+	}
+}
+
+export function getLoser(match: Match) {
+	const mr = match.matchRecord as FullRecord;
+	if (mr.upperSeed > mr.lowerSeed) {
+		return mr.lowerSeed
+	} else {
+		return mr.upperSeed
 	}
 }
 

@@ -2,7 +2,7 @@ import { FlowBracket } from "../models/flow_bracket.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { FullRecordFactory, Seed } from "../models/match_record.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
-import { getWinner, isFilledMatch } from "../util/util.ts";
+import { getLoser, getWinner, isFilledMatch } from "../util/util.ts";
 import { GSLBracket } from "./gsl_bracket.ts";
 
 export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode> {
@@ -31,15 +31,23 @@ export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode>
 		return res;
 	}
 
-	getWinners(): Seed[] {
-		const res: Seed[] = [];
+	getPromoted(): (Seed | undefined)[] {
+		const res: (Seed | undefined)[] = [];
 		const upperFinal = this.getBracketNode("UpperFinal");
 		if (isFilledMatch(upperFinal.match)) {
 			res.push(getWinner(upperFinal.match));
+			res.push(getLoser(upperFinal.match));
+		} else {
+			res.push(undefined);
+			res.push(undefined);
 		}
 		const lowerFinal = this.getBracketNode("LowerFinal");
 		if (isFilledMatch(lowerFinal.match)) {
 			res.push(getWinner(lowerFinal.match));
+			res.push(getLoser(lowerFinal.match));
+		} else {
+			res.push(undefined);
+			res.push(undefined);
 		}
 		return res;
 	}
