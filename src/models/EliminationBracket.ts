@@ -3,7 +3,7 @@ import { MatchNode } from "./match_node.ts";
 import { FullRecord, MatchRecord, Seed } from "./match_record.ts";
 
 export class EliminationBracket {
-    updateFlow(root: MatchNode): void {
+	updateFlow(root: MatchNode): void {
 		if (!root.match.matchRecord) {
 			return;
 		}
