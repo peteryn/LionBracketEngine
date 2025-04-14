@@ -1,6 +1,6 @@
 import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
 import { SwissBracketFlow } from "../swiss_bracket/swiss_backet_flow.ts";
-import { FullRecordFactory, Seed, UpperRecordFactory } from "../models/match_record.ts";
+import { populateMatchRecord } from "../util/util.ts";
 
 export class RLCS2025Major {
 	swissBracket: SwissBracketFlow;
@@ -95,22 +95,6 @@ export class RLCS2025Major {
 	}
 }
 
-export function populateMatchRecord(
-	promotedSeeds: Seed[],
-	aflBracket: AFLBracketFlow,
-	index1: number,
-	index2: number,
-	matchNodeId: string
-) {
-	if (promotedSeeds[index1] && promotedSeeds[index2]) {
-		aflBracket.setMatchRecord(
-			matchNodeId,
-			FullRecordFactory(promotedSeeds[index1], promotedSeeds[index2])
-		);
-	} else if (promotedSeeds[index1]) {
-		aflBracket.setMatchRecord(matchNodeId, UpperRecordFactory(promotedSeeds[index1]));
-	}
-}
 
 // function getUpperSeed(matchNode: MatchNode) {
 // 	if (matchNode.match.matchRecord) {

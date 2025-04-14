@@ -1,5 +1,7 @@
 import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
 import { GSLBracketFlow } from "../gsl_bracket/gsl_bracket_flow.ts";
+import { Seed } from "../models/match_record.ts";
+import { populateMatchRecord } from "../util/util.ts";
 
 export class RegionalTournament {
 	GSL_A: GSLBracketFlow;
@@ -9,24 +11,38 @@ export class RegionalTournament {
 	constructor() {
 		this.GSL_A = new GSLBracketFlow();
 		this.GSL_B = new GSLBracketFlow();
-		this.AFL = new AFLBracketFlow();
+		this.AFL = new AFLBracketFlow(false);
 	}
 
-	updateFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number, bracketId: number) {
-        switch (bracketId) {
-            case 0:
-                this.GSL_A.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
-                break
-            case 1:
-                this.GSL_B.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
-                break
-            case 2:
-                this.AFL.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
-                break
-        }
+	updateFlow(bracketId: number, matchId: string, upperSeedWins: number, lowerSeedWins: number) {
+		switch (bracketId) {
+			case 0:
+				this.GSL_A.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+				break;
+			case 1:
+				this.GSL_B.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+				break;
+			case 2:
+				this.AFL.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+				break;
+		}
 
-        if (bracketId === 0 || bracketId === 1) {
-            this.AFL.clearAllMatchRecords();
-        }
-    }
+		if (bracketId === 0 || bracketId === 1) {
+			this.AFL.clearAllMatchRecords();
+			// [1, 3, 5, 7]
+			const GSL_A_results = this.GSL_A.getPromoted();
+			// [2, 4, 6, 8]
+			const GSL_B_results = this.GSL_B.getPromoted();
+			const promotedSeeds: (Seed | undefined)[] = [];
+			for (let index = 0; index < GSL_A_results.length; index++) {
+				promotedSeeds.push(GSL_A_results[index]);
+				promotedSeeds.push(GSL_B_results[index]);
+			}
+			// need to transform seeds into 1 list
+			populateMatchRecord(promotedSeeds, this.AFL, 0, 3, "upperQuarterFinal1");
+			populateMatchRecord(promotedSeeds, this.AFL, 1, 2, "upperQuarterFinal2");
+			populateMatchRecord(promotedSeeds, this.AFL, 4, 7, "lowerBracketRound1");
+			populateMatchRecord(promotedSeeds, this.AFL, 5, 6, "lowerBracketRound2");
+		}
+	}
 }

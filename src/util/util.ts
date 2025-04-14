@@ -1,9 +1,10 @@
 import { BracketNode } from "../models/bracket_node.ts";
 import { getMatchId, Match } from "../models/match.ts";
-import { type Seed, FullRecord, FullRecordFactory } from "../models/match_record.ts";
+import { type Seed, FullRecord, FullRecordFactory, UpperRecordFactory } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
+import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -229,5 +230,22 @@ export function bfsWithParentPointers(root: MatchNode) {
 		if (node?.lowerParent) {
 			queue.push(node.lowerParent);
 		}
+	}
+}
+
+export function populateMatchRecord(
+	promotedSeeds: (Seed | undefined)[],
+	aflBracket: AFLBracketFlow,
+	index1: number,
+	index2: number,
+	matchNodeId: string
+) {
+	if (promotedSeeds[index1] && promotedSeeds[index2]) {
+		aflBracket.setMatchRecord(
+			matchNodeId,
+			FullRecordFactory(promotedSeeds[index1], promotedSeeds[index2])
+		);
+	} else if (promotedSeeds[index1]) {
+		aflBracket.setMatchRecord(matchNodeId, UpperRecordFactory(promotedSeeds[index1]));
 	}
 }
