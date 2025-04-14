@@ -202,37 +202,6 @@ export function postOrderTraversal<NodeType extends BracketNode>(
 	visited.add(root.name);
 }
 
-export function addBackwardsPointers(matchNodes: MatchNode[]) {
-	matchNodes.forEach((matchNode) => {
-		let curNode = matchNode;
-		while (curNode.upperRound) {
-			const childNode = curNode.upperRound;
-			if (curNode.isUpper) {
-				childNode.upperParent = curNode;
-			} else {
-				childNode.lowerParent = curNode;
-			}
-			curNode = curNode.upperRound;
-		}
-	});
-}
-
-export function bfsWithParentPointers(root: MatchNode) {
-	const queue: MatchNode[] = [];
-	queue.push(root);
-	while (queue.length > 0) {
-		const node = queue.shift();
-		console.log(node?.name);
-
-		if (node?.upperParent) {
-			queue.push(node.upperParent);
-		}
-		if (node?.lowerParent) {
-			queue.push(node.lowerParent);
-		}
-	}
-}
-
 export function populateMatchRecord(
 	promotedSeeds: (Seed | undefined)[],
 	aflBracket: AFLBracketFlow,

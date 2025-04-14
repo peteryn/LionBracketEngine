@@ -2,7 +2,7 @@ import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { MatchRecord } from "../models/match_record.ts";
-import { addBackwardsPointers, levelOrderTraversal } from "../util/util.ts";
+import { levelOrderTraversal } from "../util/util.ts";
 
 export class GSLBracket implements Bracket<MatchNode> {
 	upperMatches: MatchNode[] = [];
@@ -54,9 +54,6 @@ export class GSLBracket implements Bracket<MatchNode> {
 
 		upperSemiFinal1.lowerRound = lowerSemiFinal2;
 		upperSemiFinal2.lowerRound = lowerSemiFinal1;
-
-		addBackwardsPointers(upperMatches);
-		addBackwardsPointers(lowerMatches);
 
 		return [upperMatches, lowerMatches];
 	}
