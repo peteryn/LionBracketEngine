@@ -1,6 +1,11 @@
 import { BracketNode } from "../models/bracket_node.ts";
 import { getMatchId, Match } from "../models/match.ts";
-import { type Seed, FullRecord, FullRecordFactory, UpperRecordFactory } from "../models/match_record.ts";
+import {
+	type Seed,
+	FullRecord,
+	FullRecordFactory,
+	UpperRecordFactory,
+} from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
@@ -69,7 +74,7 @@ export function isFilledMatch(match: Match): boolean {
 // getWinner and getLoser should only be called in block verified by isFilledMatch
 export function getWinner(match: Match) {
 	const mr = match.matchRecord as FullRecord;
-	if (mr.upperSeed > mr.lowerSeed) {
+	if (mr.upperSeedWins > mr.lowerSeedWins) {
 		return mr.upperSeed;
 	} else {
 		return mr.lowerSeed;
@@ -78,10 +83,10 @@ export function getWinner(match: Match) {
 
 export function getLoser(match: Match) {
 	const mr = match.matchRecord as FullRecord;
-	if (mr.upperSeed > mr.lowerSeed) {
-		return mr.lowerSeed
+	if (mr.upperSeedWins > mr.lowerSeedWins) {
+		return mr.lowerSeed;
 	} else {
-		return mr.upperSeed
+		return mr.upperSeed;
 	}
 }
 

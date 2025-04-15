@@ -1,5 +1,7 @@
+import { assertEquals } from "@std/assert/equals";
 import { GSLBracketFlow } from "../src/gsl_bracket/gsl_bracket_flow.ts";
 import { checkMatchNodeSeeds } from "./util/testFunctions.ts";
+import { getWinner } from "../src/util/util.ts";
 
 Deno.test(function gslTest1() {
 	const gslBracket = new GSLBracketFlow();
@@ -10,7 +12,6 @@ Deno.test(function gslTest1() {
 
 	checkMatchNodeSeeds(gslBracket, "UpperSemiFinal1", 1, 4);
 	checkMatchNodeSeeds(gslBracket, "UpperSemiFinal2", 2, 3);
-
 	checkMatchNodeSeeds(gslBracket, "LowerQuarterFinal1", 8, 5);
 	checkMatchNodeSeeds(gslBracket, "LowerQuarterFinal2", 7, 6);
 
@@ -29,4 +30,14 @@ Deno.test(function gslTest1() {
 	gslBracket.setMatchRecordAndFlow("LowerSemiFinal2", 1, 0);
 
 	checkMatchNodeSeeds(gslBracket, "LowerFinal", 3, 4);
+
+	gslBracket.setMatchRecordAndFlow("UpperFinal", 1, 0);
+	gslBracket.setMatchRecordAndFlow("LowerFinal", 1, 0);
+
+	const promotedSeeds = gslBracket.getPromoted();
+
+	assertEquals(promotedSeeds[0], 1);
+	assertEquals(promotedSeeds[1], 2);
+	assertEquals(promotedSeeds[2], 3);
+	assertEquals(promotedSeeds[3], 4);
 });
