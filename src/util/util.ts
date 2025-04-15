@@ -8,7 +8,6 @@ import {
 } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
-import { MatchNode } from "../models/match_node.ts";
 import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {

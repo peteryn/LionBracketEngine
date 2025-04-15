@@ -8,13 +8,20 @@ import { GSLBracket } from "./gsl_bracket.ts";
 export class GSLBracketFlow extends GSLBracket implements FlowBracket<MatchNode> {
 	eliminationBracket: EliminationBracket;
 
-	constructor() {
+	constructor(seeds?: Seed[]) {
 		super();
 		this.eliminationBracket = new EliminationBracket();
-		this.upperMatches[0].match.matchRecord = FullRecordFactory(1, 8);
-		this.upperMatches[1].match.matchRecord = FullRecordFactory(4, 5);
-		this.upperMatches[2].match.matchRecord = FullRecordFactory(2, 7);
-		this.upperMatches[3].match.matchRecord = FullRecordFactory(3, 6);
+		if (!seeds) {
+			this.upperMatches[0].match.matchRecord = FullRecordFactory(1, 8);
+			this.upperMatches[1].match.matchRecord = FullRecordFactory(4, 5);
+			this.upperMatches[2].match.matchRecord = FullRecordFactory(2, 7);
+			this.upperMatches[3].match.matchRecord = FullRecordFactory(3, 6);
+		} else {
+			this.upperMatches[0].match.matchRecord = FullRecordFactory(seeds[0], seeds[7]);
+			this.upperMatches[1].match.matchRecord = FullRecordFactory(seeds[3], seeds[4]);
+			this.upperMatches[2].match.matchRecord = FullRecordFactory(seeds[1], seeds[6]);
+			this.upperMatches[3].match.matchRecord = FullRecordFactory(seeds[2], seeds[5]);
+		}
 	}
 
 	updateFlow(root: MatchNode): void {

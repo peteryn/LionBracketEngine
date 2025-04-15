@@ -9,8 +9,8 @@ export class RegionalTournament {
 	AFL: AFLBracketFlow;
 
 	constructor() {
-		this.GSL_A = new GSLBracketFlow();
-		this.GSL_B = new GSLBracketFlow();
+		this.GSL_A = new GSLBracketFlow([1, 3, 5, 7, 9, 11, 13, 15]);
+		this.GSL_B = new GSLBracketFlow([2, 4, 6, 8, 10, 12, 14, 16]);
 		this.AFL = new AFLBracketFlow(false);
 	}
 
@@ -44,5 +44,17 @@ export class RegionalTournament {
 			populateMatchRecord(promotedSeeds, this.AFL, 4, 7, "lowerBracketRound1");
 			populateMatchRecord(promotedSeeds, this.AFL, 5, 6, "lowerBracketRound2");
 		}
+	}
+
+	GSL_A_updateFunction(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
+		this.updateFlow(0, matchId, upperSeedWins, lowerSeedWins);
+	}
+
+	GSL_B_updateFunction(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
+		this.updateFlow(1, matchId, upperSeedWins, lowerSeedWins);
+	}
+
+	AFL_updateFunction(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
+		this.updateFlow(2, matchId, upperSeedWins, lowerSeedWins);
 	}
 }
