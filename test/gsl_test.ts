@@ -1,7 +1,6 @@
 import { assertEquals } from "@std/assert/equals";
 import { GSLBracketFlow } from "../src/gsl_bracket/gsl_bracket_flow.ts";
 import { checkMatchNodeSeeds } from "./util/testFunctions.ts";
-import { getWinner } from "../src/util/util.ts";
 
 Deno.test(function gslTest1() {
 	const gslBracket = new GSLBracketFlow();
