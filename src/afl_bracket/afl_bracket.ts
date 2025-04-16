@@ -5,7 +5,21 @@ import { FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { levelOrderTraversal } from "../util/util.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
 
-export class AFLBracket implements Bracket<MatchNode> {
+const AFL_nodes = [
+	"GrandFinal",
+	"SemiFinal1",
+	"SemiFinal2",
+	"UpperQuarterFinal1",
+	"UpperQuarterFinal2",
+	"LowerQuarterFinal1",
+	"LowerQuarterFinal2",
+	"LowerBracketRound1",
+	"LowerBracketRound2",
+] as const;
+
+type AFLNodeTypes = typeof AFL_nodes[number];
+
+export class AFLBracket implements Bracket<MatchNode, AFLNodeTypes> {
 	upperQuarterFinal1: MatchNode;
 	upperQuarterFinal2: MatchNode;
 	lowerBracketRound1: MatchNode;
@@ -33,7 +47,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 		}
 	}
 
-	getBracketNode(nodeName: string): MatchNode {
+	getBracketNode(nodeName: AFLNodeTypes): MatchNode {
 		if (this.upperQuarterFinal1.name === nodeName) {
 			return this.upperQuarterFinal1;
 		}
