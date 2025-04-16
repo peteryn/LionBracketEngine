@@ -10,6 +10,7 @@ Deno.test(function aflStructureTest() {});
 
 Deno.test(function genericsTest() {
 	const afl_bracket = new AFLBracket();
+	afl_bracket.getBracketNode("GrandFinal")
 	const matchNode = afl_bracket.getBracketNode("grandFinal");
 	assertEquals(matchNode instanceof MatchNode, true, "grandFinal is not of type matchNode");
 
