@@ -58,6 +58,24 @@ export class GSLBracket implements Bracket<MatchNode> {
 		return [upperMatches, lowerMatches];
 	}
 
+	getAllMatchNodes() {
+		const uqf1 = this.upperMatches[0];
+		const uqf2 = this.upperMatches[1];
+		const uqf3 = this.upperMatches[2];
+		const uqf4 = this.upperMatches[3];
+		const usf1 = uqf1.upperRound as MatchNode;
+		const usf2 = uqf3.upperRound as MatchNode;
+		const uf = usf1.upperRound as MatchNode;
+
+		const lqf1 = this.lowerMatches[0];
+		const lqf2 = this.lowerMatches[1];
+		const lsf1 = lqf1.upperRound as MatchNode;
+		const lsf2 = lqf2.upperRound as MatchNode;
+		const lf = lsf1.upperRound as MatchNode;
+
+		return [uqf1, uqf2, uqf3, uqf4, usf1, usf2, uf, lqf1, lqf2, lsf1, lsf2, lf];
+	}
+
 	getBracketNode(nodeName: string): MatchNode {
 		for (const node of this.upperMatches) {
 			if (node.name === nodeName) {
