@@ -5,7 +5,24 @@ import { FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts"
 import { getLoser, getWinner, isFilledMatch, levelOrderTraversal } from "../util/util.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
 
-export class GSLBracket implements Bracket<MatchNode> {
+const GSL_nodes = [
+	"UpperQuarterFinal1",
+	"UpperQuarterFinal2",
+	"UpperQuarterFinal3",
+	"UpperQuarterFinal4",
+	"UpperSemiFinal1",
+	"UpperSemiFinal2",
+	"UpperFinal",
+	"LowerQuarterFinal1",
+	"LowerQuarterFinal2",
+	"LowerSemiFinal1",
+	"LowerSemiFinal2",
+	"LowerFinal"
+] as const;
+
+type GSLNodeTypes = typeof GSL_nodes[number];
+
+export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
 	upperMatches: MatchNode[] = [];
 	lowerMatches: MatchNode[] = [];
 	eliminationBracket: EliminationBracket;
