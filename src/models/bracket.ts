@@ -5,11 +5,11 @@ import { MatchRecord } from "./match_record.ts";
 export interface Bracket<NodeType extends BracketNode, NodeNames extends string> {
 	getBracketNode(nodeName: NodeNames): NodeType;
 
-	getMatch(matchId: string): Match;
+	// getMatch(matchId: string): Match;
 
-	getMatchRecord(matchId: string): MatchRecord | undefined;
+	getMatchRecord(nodeName: NodeNames): MatchRecord | undefined;
 
-	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean;
+	setMatchRecord(nodeName: NodeNames, matchRecord: MatchRecord): void;
 
-	setMatchRecordWithValue(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean;
+	setMatchRecordWithValue(nodeName: NodeNames, upperSeedWins: number, lowerSeedWins: number): boolean;
 }

@@ -42,6 +42,7 @@ export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
 			this.upperMatches[2].match.matchRecord = FullRecordFactory(seeds[1], seeds[6]);
 			this.upperMatches[3].match.matchRecord = FullRecordFactory(seeds[2], seeds[5]);
 		}
+
 	}
 
 	static createGSLBracket() {

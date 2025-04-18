@@ -5,6 +5,7 @@ import { FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { levelOrderTraversal } from "../util/util.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
 import { GenericMatchNode } from "../models/generic_match_node.ts";
+import { FlowBracket } from "../models/flow_bracket.ts";
 
 const AFL_nodes = [
 	"GrandFinal",
@@ -20,6 +21,7 @@ const AFL_nodes = [
 
 type AFLNodeTypes = typeof AFL_nodes[number];
 
+// export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes>, FlowBracket<GenericMatchNode<AFLNodeTypes>> {
 export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes> {
 	upperQuarterFinal1: MatchNode;
 	upperQuarterFinal2: MatchNode;
@@ -72,42 +74,24 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 		return new GenericMatchNode("UpperQuarterFinal1", false);
 	}
 
-	getMatch(matchId: string): Match {
-		const [roundName] = matchId.split(".");
-		const matchNode = this.getBracketNode(roundName);
-		return matchNode.match;
+	getMatchRecord(nodeName: AFLNodeTypes): MatchRecord | undefined {
+		return this.getBracketNode(nodeName).matchRecord;
 	}
 
-	getMatchRecord(matchId: string): MatchRecord | undefined {
-		const matchRecord = this.getMatch(matchId)?.matchRecord;
-		if (!matchRecord) {
-			return undefined;
-		}
-		return structuredClone(matchRecord);
-	}
-
-	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean {
-		const match = this.getMatch(matchId);
-		if (match) {
-			match.matchRecord = matchRecord;
-			const matchNodeName = match.id.split(".")[0];
-			const matchNode = this.getBracketNode(matchNodeName);
-			if (matchNode) {
-				return true;
-			}
-		}
-		return false;
+	setMatchRecord(nodeName: AFLNodeTypes, matchRecord: MatchRecord) {
+		this.getBracketNode(nodeName).matchRecord = matchRecord;
 	}
 
 	setMatchRecordWithValue(
-		matchId: string,
+		nodeName: AFLNodeTypes,
 		upperSeedWins: number,
 		lowerSeedWins: number,
 	): boolean {
-		const mr = this.getMatchRecord(matchId);
+		const mr = this.getMatchRecord(nodeName);
 		if (!mr) {
 			return false;
 		}
+
 		switch (mr.type) {
 			case "UpperRecord":
 			case "LowerRecord":
@@ -117,7 +101,8 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 				mr.lowerSeedWins = lowerSeedWins;
 		}
 
-		return this.setMatchRecord(matchId, mr);
+		this.setMatchRecord(nodeName, mr);
+		return true;
 	}
 
 	static createAFLBracket(): MatchNode[] {
@@ -208,12 +193,13 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 		});
 	}
 
-	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
-		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
-		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getBracketNode(roundNodeName);
+	setMatchRecordAndFlow(nodeName: AFLNodeTypes, upperSeedWins: number, lowerSeedWins: number): boolean {
+		const res = this.setMatchRecordWithValue(nodeName, upperSeedWins, lowerSeedWins);
+		// const roundNodeName = matchId.split(".")[0];
+		// const roundNode = this.getBracketNode(roundNodeName);
+		const node = this.getBracketNode(nodeName);
 		if (res) {
-			this.updateFlow(roundNode);
+			this.updateFlow(node);
 		}
 		return res;
 	}
