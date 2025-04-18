@@ -85,12 +85,12 @@ export class RLCS2025Major {
 			// 5 8
 			// 6 7
 			const promotedSeeds = this.swissBracket.getPromotedSeeds();
-			initializeAFLBracket(promotedSeeds, this.aflBracket, 0, 3, "upperQuarterFinal1");
-			initializeAFLBracket(promotedSeeds, this.aflBracket, 1, 2, "upperQuarterFinal2");
-			initializeAFLBracket(promotedSeeds, this.aflBracket, 4, 7, "lowerBracketRound1");
-			initializeAFLBracket(promotedSeeds, this.aflBracket, 5, 6, "lowerBracketRound2");
+			// initializeAFLBracket(promotedSeeds, this.aflBracket, 0, 3, "upperQuarterFinal1");
+			// initializeAFLBracket(promotedSeeds, this.aflBracket, 1, 2, "upperQuarterFinal2");
+			// initializeAFLBracket(promotedSeeds, this.aflBracket, 4, 7, "lowerBracketRound1");
+			// initializeAFLBracket(promotedSeeds, this.aflBracket, 5, 6, "lowerBracketRound2");
 		} else {
-			this.aflBracket.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+			// this.aflBracket.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
 		}
 	}
 }

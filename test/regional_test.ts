@@ -4,22 +4,23 @@ import { checkMatchNodeSeeds } from "./util/testFunctions.ts";
 
 Deno.test(function upperSeedVictories() {
 	const tournament = new RegionalTournament();
-	tournament.updateFlow(0, "UpperQuarterFinal1", 1, 0);
-	tournament.updateFlow(0, "UpperQuarterFinal2", 1, 0);
-	tournament.updateFlow(0, "UpperQuarterFinal3", 1, 0);
-	tournament.updateFlow(0, "UpperQuarterFinal4", 1, 0);
 
-	tournament.updateFlow(0, "UpperSemiFinal1", 1, 0);
-	tournament.updateFlow(0, "UpperSemiFinal2", 1, 0);
+	tournament.GSL_A_updateFunction("UpperQuarterFinal1", 1, 0);
+	tournament.GSL_A_updateFunction("UpperQuarterFinal2", 1, 0);
+	tournament.GSL_A_updateFunction("UpperQuarterFinal3", 1, 0);
+	tournament.GSL_A_updateFunction("UpperQuarterFinal4", 1, 0);
 
-	tournament.updateFlow(0, "LowerQuarterFinal1", 1, 0);
-	tournament.updateFlow(0, "LowerQuarterFinal2", 1, 0);
+	tournament.GSL_A_updateFunction("UpperSemiFinal1", 1, 0);
+	tournament.GSL_A_updateFunction("UpperSemiFinal2", 1, 0);
 
-	tournament.updateFlow(0, "LowerSemiFinal1", 1, 0);
-	tournament.updateFlow(0, "LowerSemiFinal2", 1, 0);
+	tournament.GSL_A_updateFunction("LowerQuarterFinal1", 1, 0);
+	tournament.GSL_A_updateFunction("LowerQuarterFinal2", 1, 0);
 
-	tournament.updateFlow(0, "UpperFinal", 1, 0);
-	tournament.updateFlow(0, "LowerFinal", 1, 0);
+	tournament.GSL_A_updateFunction("LowerSemiFinal1", 1, 0);
+	tournament.GSL_A_updateFunction("LowerSemiFinal2", 1, 0);
+
+	tournament.GSL_A_updateFunction("UpperFinal", 1, 0);
+	tournament.GSL_A_updateFunction("LowerFinal", 1, 0);
 
 	const GSL_A_results = tournament.GSL_A.getPromoted();
 	assertEquals(GSL_A_results[0], 1);
@@ -50,9 +51,9 @@ Deno.test(function upperSeedVictories() {
 	assertEquals(GSL_B_results[2], 6);
 	assertEquals(GSL_B_results[3], 8);
 
-	checkMatchNodeSeeds(tournament.AFL, "upperQuarterFinal1", 1, 4);
-	checkMatchNodeSeeds(tournament.AFL, "upperQuarterFinal2", 2, 3);
+	checkMatchNodeSeeds(tournament.AFL, "UpperQuarterFinal1", 1, 4);
+	checkMatchNodeSeeds(tournament.AFL, "UpperQuarterFinal2", 2, 3);
 
-	checkMatchNodeSeeds(tournament.AFL, "lowerBracketRound1", 5, 8);
-	checkMatchNodeSeeds(tournament.AFL, "lowerBracketRound2", 6, 7);
+	checkMatchNodeSeeds(tournament.AFL, "LowerBracketRound1", 5, 8);
+	checkMatchNodeSeeds(tournament.AFL, "LowerBracketRound2", 6, 7);
 });
