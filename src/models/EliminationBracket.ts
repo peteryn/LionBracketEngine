@@ -1,14 +1,15 @@
 import { levelOrderTraversal } from "../util/util.ts";
 import { MatchNode } from "./match_node.ts";
 import { FullRecord, MatchRecord, Seed } from "./match_record.ts";
+import { GenericMatchNode } from "./generic_match_node.ts";
 
-export class EliminationBracket {
-	updateFlow(root: MatchNode): void {
-		if (!root.match.matchRecord) {
+export class EliminationBracket<NodeNames extends string> {
+	updateFlow(root: GenericMatchNode<NodeNames>): void {
+		if (!root.matchRecord) {
 			return;
 		}
 
-		const matchRecord = root.match.matchRecord;
+		const matchRecord = root.matchRecord;
 		switch (matchRecord.type) {
 			case "UpperRecord":
 			case "LowerRecord":
@@ -20,7 +21,7 @@ export class EliminationBracket {
 		}
 	}
 
-	handleScores(root: MatchNode, matchRecord: FullRecord) {
+	handleScores(root: GenericMatchNode<NodeNames>, matchRecord: FullRecord) {
 		if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
 			this.updateRound(root.upperRound, matchRecord.upperSeed, root.isUpper);
 			this.updateRound(root.lowerRound, matchRecord.lowerSeed, true);
@@ -31,16 +32,16 @@ export class EliminationBracket {
 		}
 	}
 
-	updateRound(round: MatchNode | undefined, seed: number, isUpper: boolean) {
+	updateRound(round: GenericMatchNode<NodeNames> | undefined, seed: number, isUpper: boolean) {
 		if (round) {
-			round.match.matchRecord = this.processTeam(round.match.matchRecord, seed, isUpper);
+			round.matchRecord = this.processTeam(round.matchRecord, seed, isUpper);
 		}
 	}
 
 	processTeam(
 		matchRecord: MatchRecord | undefined,
 		curSeed: Seed,
-		fromUpper: boolean
+		fromUpper: boolean,
 	): MatchRecord | undefined {
 		if (!matchRecord) {
 			// there needs to be another condition to determine if you are lowerRound1 or upperQuarterFinal1
@@ -82,13 +83,17 @@ export class EliminationBracket {
 		}
 	}
 
-	clearDependents(root: MatchNode | undefined, upperSeed: Seed, lowerSeed: Seed) {
+	clearDependents(
+		root: GenericMatchNode<NodeNames> | undefined,
+		upperSeed: Seed,
+		lowerSeed: Seed,
+	) {
 		if (!root) {
 			return;
 		}
 
-		const update = (node: MatchNode) => {
-			const mr = node.match.matchRecord;
+		const update = (node: GenericMatchNode<NodeNames>) => {
+			const mr = node.matchRecord;
 			if (!mr) {
 				return;
 			}
@@ -96,17 +101,17 @@ export class EliminationBracket {
 			switch (mr.type) {
 				case "UpperRecord":
 					if (mr.upperSeed === upperSeed || mr.upperSeed === lowerSeed) {
-						node.match.matchRecord = undefined;
+						node.matchRecord = undefined;
 					}
 					break;
 				case "LowerRecord":
 					if (mr.lowerSeed === lowerSeed || mr.lowerSeed === upperSeed) {
-						node.match.matchRecord = undefined;
+						node.matchRecord = undefined;
 					}
 					break;
 				case "FullRecord":
 					if (mr.upperSeed === upperSeed || mr.upperSeed === lowerSeed) {
-						node.match.matchRecord = {
+						node.matchRecord = {
 							type: "LowerRecord",
 							lowerSeed: mr.lowerSeed,
 							// potentially want to reset this to 0 if we deem their previous
@@ -115,7 +120,7 @@ export class EliminationBracket {
 						};
 					}
 					if (mr.lowerSeed === lowerSeed || mr.lowerSeed === upperSeed) {
-						node.match.matchRecord = {
+						node.matchRecord = {
 							type: "UpperRecord",
 							upperSeed: mr.upperSeed,
 							upperSeedWins: mr.upperSeedWins,
@@ -123,6 +128,6 @@ export class EliminationBracket {
 					}
 			}
 		};
-		levelOrderTraversal(root, update);
+		levelOrderTraversal<GenericMatchNode<NodeNames>>(root, update);
 	}
 }

@@ -1,11 +1,10 @@
 import { Bracket } from "../models/bracket.ts";
-import { MatchNode } from "../models/match_node.ts";
 import { FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { levelOrderTraversal } from "../util/util.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
 import { GenericMatchNode } from "../models/generic_match_node.ts";
 
-const AFL_nodes = [
+export const AFL_nodes = [
 	"GrandFinal",
 	"SemiFinal1",
 	"SemiFinal2",
@@ -17,7 +16,7 @@ const AFL_nodes = [
 	"LowerBracketRound2",
 ] as const;
 
-type AFLNodeTypes = typeof AFL_nodes[number];
+export type AFLNodeTypes = typeof AFL_nodes[number];
 
 // export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes>, FlowBracket<GenericMatchNode<AFLNodeTypes>> {
 export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes> {
@@ -26,7 +25,7 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 	lowerBracketRound1: GenericMatchNode<AFLNodeTypes>;
 	lowerBracketRound2: GenericMatchNode<AFLNodeTypes>;
 
-	eliminationBracket: EliminationBracket;
+	eliminationBracket: EliminationBracket<AFLNodeTypes>;
 
 	// by definition, there are 8 seeds for this bracket
 	constructor(initialize: boolean = true) {
@@ -37,7 +36,7 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 			this.lowerBracketRound2,
 		] = AFLBracket.createAFLBracket();
 
-		this.eliminationBracket = new EliminationBracket();
+		this.eliminationBracket = new EliminationBracket<AFLNodeTypes>();
 
 		if (initialize) {
 			const seeds = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -64,11 +63,14 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 			case "SemiFinal2":
 			case "GrandFinal": {
 				let bracketNode: GenericMatchNode<AFLNodeTypes> | undefined;
-				levelOrderTraversal<GenericMatchNode<AFLNodeTypes>>(this.lowerBracketRound1, (node) => {
-					if (node.name === nodeName) {
-						bracketNode = node;
-					}
-				});
+				levelOrderTraversal<GenericMatchNode<AFLNodeTypes>>(
+					this.lowerBracketRound1,
+					(node) => {
+						if (node.name === nodeName) {
+							bracketNode = node;
+						}
+					},
+				);
 				levelOrderTraversal(this.lowerBracketRound2, (node) => {
 					if (node.name === nodeName) {
 						bracketNode = node;
@@ -120,7 +122,7 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 
 		const upperQuarterFinal2 = new GenericMatchNode<AFLNodeTypes>("UpperQuarterFinal2", true);
 
-		const lowerQuarterFinal1 = new  GenericMatchNode<AFLNodeTypes>("LowerQuarterFinal1", false);
+		const lowerQuarterFinal1 = new GenericMatchNode<AFLNodeTypes>("LowerQuarterFinal1", false);
 
 		const lowerQuarterFinal2 = new GenericMatchNode<AFLNodeTypes>("LowerQuarterFinal2", false);
 
@@ -214,7 +216,7 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 	}
 
 	// this will only be called if called on a node with a FullRecord
-	updateFlow(root: MatchNode): void {
+	updateFlow(root: GenericMatchNode<AFLNodeTypes>): void {
 		this.eliminationBracket.updateFlow(root);
 	}
 }
