@@ -23,10 +23,10 @@ type AFLNodeTypes = typeof AFL_nodes[number];
 
 // export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes>, FlowBracket<GenericMatchNode<AFLNodeTypes>> {
 export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes> {
-	upperQuarterFinal1: MatchNode;
-	upperQuarterFinal2: MatchNode;
-	lowerBracketRound1: MatchNode;
-	lowerBracketRound2: MatchNode;
+	upperQuarterFinal1: GenericMatchNode<AFLNodeTypes>;
+	upperQuarterFinal2: GenericMatchNode<AFLNodeTypes>;
+	lowerBracketRound1: GenericMatchNode<AFLNodeTypes>;
+	lowerBracketRound2: GenericMatchNode<AFLNodeTypes>;
 
 	eliminationBracket: EliminationBracket;
 
@@ -43,10 +43,10 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 
 		if (initialize) {
 			const seeds = [1, 2, 3, 4, 5, 6, 7, 8];
-			this.upperQuarterFinal1.match.matchRecord = FullRecordFactory(seeds[0], seeds[3]);
-			this.upperQuarterFinal2.match.matchRecord = FullRecordFactory(seeds[1], seeds[2]);
-			this.lowerBracketRound1.match.matchRecord = FullRecordFactory(seeds[4], seeds[7]);
-			this.lowerBracketRound2.match.matchRecord = FullRecordFactory(seeds[5], seeds[6]);
+			this.upperQuarterFinal1.matchRecord = FullRecordFactory(seeds[0], seeds[3]);
+			this.upperQuarterFinal2.matchRecord = FullRecordFactory(seeds[1], seeds[2]);
+			this.lowerBracketRound1.matchRecord = FullRecordFactory(seeds[4], seeds[7]);
+			this.lowerBracketRound2.matchRecord = FullRecordFactory(seeds[5], seeds[6]);
 		}
 	}
 
@@ -105,23 +105,23 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 		return true;
 	}
 
-	static createAFLBracket(): MatchNode[] {
-		const grandFinal = new MatchNode("grandFinal", false);
+	static createAFLBracket(): GenericMatchNode<AFLNodeTypes>[] {
+		const grandFinal = new GenericMatchNode<AFLNodeTypes>("GrandFinal", false);
 
-		const semiFinal1 = new MatchNode("semiFinal1", true);
-		const semiFinal2 = new MatchNode("semiFinal2", false);
+		const semiFinal1 = new GenericMatchNode<AFLNodeTypes>("SemiFinal1", true);
+		const semiFinal2 = new GenericMatchNode<AFLNodeTypes>("SemiFinal2", false);
 
-		const upperQuarterFinal1 = new MatchNode("upperQuarterFinal1", true);
+		const upperQuarterFinal1 = new GenericMatchNode<AFLNodeTypes>("UpperQuarterFinal1", true);
 
-		const upperQuarterFinal2 = new MatchNode("upperQuarterFinal2", true);
+		const upperQuarterFinal2 = new GenericMatchNode<AFLNodeTypes>("UpperQuarterFinal2", true);
 
-		const lowerQuarterFinal1 = new MatchNode("lowerQuarterFinal1", false);
+		const lowerQuarterFinal1 = new  GenericMatchNode<AFLNodeTypes>("LowerQuarterFinal1", false);
 
-		const lowerQuarterFinal2 = new MatchNode("lowerQuarterFinal2", false);
+		const lowerQuarterFinal2 = new GenericMatchNode<AFLNodeTypes>("LowerQuarterFinal2", false);
 
-		const lowerBracketRound1 = new MatchNode("lowerBracketRound1", false);
+		const lowerBracketRound1 = new GenericMatchNode<AFLNodeTypes>("LowerBracketRound1", false);
 
-		const lowerBracketRound2 = new MatchNode("lowerBracketRound2", false);
+		const lowerBracketRound2 = new GenericMatchNode<AFLNodeTypes>("LowerBracketRound2", false);
 
 		lowerBracketRound1.upperRound = lowerQuarterFinal1;
 		lowerQuarterFinal1.upperRound = semiFinal1;
@@ -193,7 +193,11 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 		});
 	}
 
-	setMatchRecordAndFlow(nodeName: AFLNodeTypes, upperSeedWins: number, lowerSeedWins: number): boolean {
+	setMatchRecordAndFlow(
+		nodeName: AFLNodeTypes,
+		upperSeedWins: number,
+		lowerSeedWins: number,
+	): boolean {
 		const res = this.setMatchRecordWithValue(nodeName, upperSeedWins, lowerSeedWins);
 		// const roundNodeName = matchId.split(".")[0];
 		// const roundNode = this.getBracketNode(roundNodeName);
