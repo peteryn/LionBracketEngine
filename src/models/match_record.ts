@@ -1,8 +1,5 @@
 export type Seed = number;
 
-export type MatchId = {
-	matchId: string;
-};
 
 export type UpperRecord = {
 	type: "UpperRecord";
