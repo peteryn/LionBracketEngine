@@ -108,37 +108,14 @@ export class GSLBracket implements Bracket<GenericMatchNode<GSLNodeTypes>, GSLNo
 	}
 
 	getBracketNode(nodeName: string): GenericMatchNode<GSLNodeTypes> {
-		for (const node of this.upperMatches) {
-			if (node.name === nodeName) {
-				return node;
-			}
-		}
-		for (const node of this.lowerMatches) {
-			if (node.name === nodeName) {
-				return node;
-			}
-		}
+		const allNodes = this.getAllMatchNodes();
 		let resultNode: GenericMatchNode<GSLNodeTypes> | undefined;
-		levelOrderTraversal(this.upperMatches[0], (node) => {
+		for (const node of allNodes) {
 			if (node.name === nodeName) {
 				resultNode = node;
+				break;
 			}
-		});
-		levelOrderTraversal(this.upperMatches[2], (node) => {
-			if (node.name === nodeName) {
-				resultNode = node;
-			}
-		});
-		levelOrderTraversal(this.lowerMatches[0], (node) => {
-			if (node.name === nodeName) {
-				resultNode = node;
-			}
-		});
-		levelOrderTraversal(this.lowerMatches[1], (node) => {
-			if (node.name === nodeName) {
-				resultNode = node;
-			}
-		});
+		}
 		return resultNode as GenericMatchNode<GSLNodeTypes>;
 	}
 
