@@ -107,7 +107,7 @@ export class GSLBracket implements Bracket<GenericMatchNode<GSLNodeTypes>, GSLNo
 		return [uqf1, uqf2, uqf3, uqf4, usf1, usf2, uf, lqf1, lqf2, lsf1, lsf2, lf];
 	}
 
-	getBracketNode(nodeName: string): GenericMatchNode<GSLNodeTypes> {
+	getBracketNode(nodeName: GSLNodeTypes): GenericMatchNode<GSLNodeTypes> {
 		const allNodes = this.getAllMatchNodes();
 		let resultNode: GenericMatchNode<GSLNodeTypes> | undefined;
 		for (const node of allNodes) {
