@@ -1,11 +1,9 @@
 import { Bracket } from "../models/bracket.ts";
-import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
 import { FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { levelOrderTraversal } from "../util/util.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
 import { GenericMatchNode } from "../models/generic_match_node.ts";
-import { FlowBracket } from "../models/flow_bracket.ts";
 
 const AFL_nodes = [
 	"GrandFinal",
@@ -51,27 +49,34 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 	}
 
 	getBracketNode(nodeName: AFLNodeTypes): GenericMatchNode<AFLNodeTypes> {
-		// if (this.upperQuarterFinal1.name === nodeName) {
-		// 	return this.upperQuarterFinal1;
-		// }
-		// if (this.upperQuarterFinal2.name === nodeName) {
-		// 	return this.upperQuarterFinal2;
-		// }
-		//
-		// let matchNode: MatchNode | undefined;
-		// levelOrderTraversal(this.lowerBracketRound1, (node) => {
-		// 	if (node.name === nodeName) {
-		// 		matchNode = node;
-		// 	}
-		// });
-		// levelOrderTraversal(this.lowerBracketRound2, (node) => {
-		// 	if (node.name === nodeName) {
-		// 		matchNode = node;
-		// 	}
-		// });
-		// return matchNode as MatchNode;
-
-		return new GenericMatchNode("UpperQuarterFinal1", false);
+		switch (nodeName) {
+			case "UpperQuarterFinal1":
+				return this.upperQuarterFinal1;
+			case "UpperQuarterFinal2":
+				return this.upperQuarterFinal2;
+			case "LowerBracketRound1":
+				return this.lowerBracketRound1;
+			case "LowerBracketRound2":
+				return this.lowerBracketRound2;
+			case "LowerQuarterFinal1":
+			case "LowerQuarterFinal2":
+			case "SemiFinal1":
+			case "SemiFinal2":
+			case "GrandFinal": {
+				let bracketNode: GenericMatchNode<AFLNodeTypes> | undefined;
+				levelOrderTraversal<GenericMatchNode<AFLNodeTypes>>(this.lowerBracketRound1, (node) => {
+					if (node.name === nodeName) {
+						bracketNode = node;
+					}
+				});
+				levelOrderTraversal(this.lowerBracketRound2, (node) => {
+					if (node.name === nodeName) {
+						bracketNode = node;
+					}
+				});
+				return bracketNode as GenericMatchNode<AFLNodeTypes>;
+			}
+		}
 	}
 
 	getMatchRecord(nodeName: AFLNodeTypes): MatchRecord | undefined {
@@ -140,12 +145,12 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 		return [upperQuarterFinal1, upperQuarterFinal2, lowerBracketRound1, lowerBracketRound2];
 	}
 
-	getAllMatchNodes(): MatchNode[] {
-		const lbqf1 = this.lowerBracketRound1.upperRound as MatchNode;
-		const lbqf2 = this.lowerBracketRound2.upperRound as MatchNode;
-		const sf1 = this.upperQuarterFinal2.upperRound as MatchNode;
-		const sf2 = this.upperQuarterFinal1.upperRound as MatchNode;
-		const gf = sf1.upperRound as MatchNode;
+	getAllMatchNodes(): GenericMatchNode<AFLNodeTypes>[] {
+		const lbqf1 = this.lowerBracketRound1.upperRound as GenericMatchNode<AFLNodeTypes>;
+		const lbqf2 = this.lowerBracketRound2.upperRound as GenericMatchNode<AFLNodeTypes>;
+		const sf1 = this.upperQuarterFinal2.upperRound as GenericMatchNode<AFLNodeTypes>;
+		const sf2 = this.upperQuarterFinal1.upperRound as GenericMatchNode<AFLNodeTypes>;
+		const gf = sf1.upperRound as GenericMatchNode<AFLNodeTypes>;
 
 		return [
 			this.upperQuarterFinal1,
@@ -160,7 +165,7 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 		];
 	}
 
-	buildBracket(matchNodes: MatchNode[]) {
+	buildBracket(matchNodes: GenericMatchNode<AFLNodeTypes>[]) {
 		const [uqf1, uqf2, lbr1, lbr2, lbqf1, lbqf2, sf1, sf2, gf] = matchNodes;
 		lbr1.upperRound = lbqf1;
 		lbqf1.upperRound = sf1;
@@ -183,13 +188,13 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 	}
 
 	clearAllMatchRecords() {
-		this.upperQuarterFinal1.match.matchRecord = undefined;
-		this.upperQuarterFinal2.match.matchRecord = undefined;
+		this.upperQuarterFinal1.matchRecord = undefined;
+		this.upperQuarterFinal2.matchRecord = undefined;
 		levelOrderTraversal(this.lowerBracketRound1, (node) => {
-			node.match.matchRecord = undefined;
+			node.matchRecord = undefined;
 		});
 		levelOrderTraversal(this.lowerBracketRound2, (node) => {
-			node.match.matchRecord = undefined;
+			node.matchRecord = undefined;
 		});
 	}
 
