@@ -7,12 +7,13 @@ import { getMatchId } from "../../src/models/match.ts";
 import { Bracket } from "../../src/models/bracket.ts";
 import { MatchNode } from "../../src/models/match_node.ts";
 import { FullRecord } from "../../src/models/match_record.ts";
+import { GenericMatchNode } from "../../src/models/generic_match_node.ts";
 
 export function checkVersusData(
 	swissBracket: SwissBracket,
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
-	roundName: string
+	roundName: string,
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
 	const roundNode = swissBracket.getBracketNode(roundName);
@@ -40,7 +41,7 @@ export function checkVersusData2(
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
 	roundName: string,
-	teamNameMap: Map<string, number>
+	teamNameMap: Map<string, number>,
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
 	const roundNode = swissBracket.getBracketNode(roundName);
@@ -75,7 +76,7 @@ export function populateMatchRecordFromData(
 	swissBracket: SwissBracketFlow,
 	// deno-lint-ignore no-explicit-any
 	tournament: any,
-	roundName: string
+	roundName: string,
 ) {
 	// const roundNode = swissBracket.data.roundNodes.get(roundName);
 	const roundNode = swissBracket.getBracketNode(roundName);
@@ -128,10 +129,15 @@ export function testTournament(tournamentPath: string) {
 	populateMatchRecordFromData(swissBracket, tournament, "2-2");
 }
 
-export function checkMatchNodeSeeds(bracket: Bracket<MatchNode>, matchNodeName: string, expectedUpperSeed: number, expectedLowerSeed: number) {
+export function checkMatchNodeSeeds<NodeNames extends string>(
+	bracket: Bracket<GenericMatchNode<NodeNames>, NodeNames>,
+	matchNodeName: NodeNames,
+	expectedUpperSeed: number,
+	expectedLowerSeed: number,
+) {
 	const matchNode = bracket.getBracketNode(matchNodeName);
-	assertEquals(matchNode.match.matchRecord?.type, "FullRecord");
-	const matchRecord = matchNode.match.matchRecord as FullRecord;
+	assertEquals(matchNode.matchRecord?.type, "FullRecord");
+	const matchRecord = matchNode.matchRecord as FullRecord;
 	assertEquals(matchRecord.upperSeed, expectedUpperSeed);
 	assertEquals(matchRecord.lowerSeed, expectedLowerSeed);
 }
