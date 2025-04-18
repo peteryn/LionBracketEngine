@@ -1,14 +1,14 @@
 import { BracketNode } from "../models/bracket_node.ts";
 import { getMatchId, Match } from "../models/match.ts";
 import {
-	type Seed,
 	FullRecord,
 	FullRecordFactory,
+	type Seed,
 	UpperRecordFactory,
 } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
-import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
+import { AFLBracket, AFLNodeTypes } from "../afl_bracket/afl_bracket.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -92,7 +92,7 @@ export function getLoser(match: Match) {
 export function populateMatches(matches: Match[], seeds: Seed[][]) {
 	if (seeds.length !== matches.length) {
 		throw new Error(
-			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${seeds.length}`
+			`There must twice as many teams as matches. matches.length=${matches.length}, teams.length=${seeds.length}`,
 		);
 	}
 
@@ -148,7 +148,7 @@ export function eightApartMatchups(seeds: Seed[]) {
 export function levelOrderTraversal<NodeType extends BracketNode>(
 	root: NodeType,
 	perNodeCallBack?: (node: NodeType) => void,
-	perLevelCallBack?: (level: NodeType[]) => void
+	perLevelCallBack?: (level: NodeType[]) => void,
 ) {
 	let queue: NodeType[] = [];
 	const visited: string[] = [];
@@ -186,7 +186,7 @@ export function levelOrderTraversal<NodeType extends BracketNode>(
 export function postOrderTraversal<NodeType extends BracketNode>(
 	root: NodeType | undefined,
 	perNodeCallBack?: (node: NodeType) => void,
-	visited?: Set<string> | undefined
+	visited?: Set<string> | undefined,
 ) {
 	if (!visited) {
 		visited = new Set();
@@ -206,17 +206,17 @@ export function postOrderTraversal<NodeType extends BracketNode>(
 	visited.add(root.name);
 }
 
-export function populateMatchRecord(
+export function initializeAFLBracket(
 	promotedSeeds: (Seed | undefined)[],
 	aflBracket: AFLBracket,
 	index1: number,
 	index2: number,
-	matchNodeId: string
+	matchNodeId: AFLNodeTypes,
 ) {
 	if (promotedSeeds[index1] && promotedSeeds[index2]) {
 		aflBracket.setMatchRecord(
 			matchNodeId,
-			FullRecordFactory(promotedSeeds[index1], promotedSeeds[index2])
+			FullRecordFactory(promotedSeeds[index1], promotedSeeds[index2]),
 		);
 	} else if (promotedSeeds[index1]) {
 		aflBracket.setMatchRecord(matchNodeId, UpperRecordFactory(promotedSeeds[index1]));

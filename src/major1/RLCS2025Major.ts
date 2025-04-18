@@ -1,6 +1,6 @@
 import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
 import { SwissBracketFlow } from "../swiss_bracket/swiss_backet_flow.ts";
-import { populateMatchRecord } from "../util/util.ts";
+import { initializeAFLBracket } from "../util/util.ts";
 
 export class RLCS2025Major {
 	swissBracket: SwissBracketFlow;
@@ -15,7 +15,7 @@ export class RLCS2025Major {
 		forSwissBracket: boolean,
 		matchId: string,
 		upperSeedWins: number,
-		lowerSeedWins: number
+		lowerSeedWins: number,
 	) {
 		if (forSwissBracket) {
 			this.swissBracket.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
@@ -85,16 +85,15 @@ export class RLCS2025Major {
 			// 5 8
 			// 6 7
 			const promotedSeeds = this.swissBracket.getPromotedSeeds();
-			populateMatchRecord(promotedSeeds, this.aflBracket, 0, 3, "upperQuarterFinal1");
-			populateMatchRecord(promotedSeeds, this.aflBracket, 1, 2, "upperQuarterFinal2");
-			populateMatchRecord(promotedSeeds, this.aflBracket, 4, 7, "lowerBracketRound1");
-			populateMatchRecord(promotedSeeds, this.aflBracket, 5, 6, "lowerBracketRound2");
+			initializeAFLBracket(promotedSeeds, this.aflBracket, 0, 3, "upperQuarterFinal1");
+			initializeAFLBracket(promotedSeeds, this.aflBracket, 1, 2, "upperQuarterFinal2");
+			initializeAFLBracket(promotedSeeds, this.aflBracket, 4, 7, "lowerBracketRound1");
+			initializeAFLBracket(promotedSeeds, this.aflBracket, 5, 6, "lowerBracketRound2");
 		} else {
 			this.aflBracket.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
 		}
 	}
 }
-
 
 // function getUpperSeed(matchNode: MatchNode) {
 // 	if (matchNode.match.matchRecord) {

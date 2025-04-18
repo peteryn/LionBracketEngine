@@ -1,7 +1,7 @@
 import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
 import { GSLBracket } from "../gsl_bracket/gsl_bracket.ts";
 import { Seed } from "../models/match_record.ts";
-import { populateMatchRecord } from "../util/util.ts";
+import { initializeAFLBracket } from "../util/util.ts";
 
 export class RegionalTournament {
 	GSL_A: GSLBracket;
@@ -39,10 +39,10 @@ export class RegionalTournament {
 				promotedSeeds.push(GSL_B_results[index]);
 			}
 			// need to transform seeds into 1 list
-			populateMatchRecord(promotedSeeds, this.AFL, 0, 3, "upperQuarterFinal1");
-			populateMatchRecord(promotedSeeds, this.AFL, 1, 2, "upperQuarterFinal2");
-			populateMatchRecord(promotedSeeds, this.AFL, 4, 7, "lowerBracketRound1");
-			populateMatchRecord(promotedSeeds, this.AFL, 5, 6, "lowerBracketRound2");
+			initializeAFLBracket(promotedSeeds, this.AFL, 0, 3, "upperQuarterFinal1");
+			initializeAFLBracket(promotedSeeds, this.AFL, 1, 2, "upperQuarterFinal2");
+			initializeAFLBracket(promotedSeeds, this.AFL, 4, 7, "lowerBracketRound1");
+			initializeAFLBracket(promotedSeeds, this.AFL, 5, 6, "lowerBracketRound2");
 		}
 	}
 
