@@ -1,7 +1,27 @@
-import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
-import { GSLBracket } from "../gsl_bracket/gsl_bracket.ts";
+import { AFLBracket, AFLNodeTypes } from "../afl_bracket/afl_bracket.ts";
+import { GSLBracket, GSLNodeTypes } from "../gsl_bracket/gsl_bracket.ts";
 import { Seed } from "../models/match_record.ts";
 import { initializeAFLBracket } from "../util/util.ts";
+
+export type GSA_A_Bracket = {
+	bracket: "GSL_A";
+	nodeName: GSLNodeTypes;
+};
+
+export type GSA_B_Bracket = {
+	bracket: "GSL_B";
+	nodeName: GSLNodeTypes;
+};
+
+export type AFL_Bracket = {
+	bracket: "AFL";
+	nodeName: AFLNodeTypes;
+};
+
+export type BracketType =
+	| GSA_A_Bracket
+	| GSA_B_Bracket
+	| AFL_Bracket;
 
 export class RegionalTournament {
 	GSL_A: GSLBracket;
@@ -14,20 +34,23 @@ export class RegionalTournament {
 		this.AFL = new AFLBracket(false);
 	}
 
-	updateFlow(bracketId: number, matchId: string, upperSeedWins: number, lowerSeedWins: number) {
-		switch (bracketId) {
-			case 0:
-				this.GSL_A.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+	updateFlow(bracket: BracketType, upperSeedWins: number, lowerSeedWins: number) {
+		switch (bracket.bracket) {
+			case "GSL_A": {
+				this.GSL_A.setMatchRecordAndFlow(bracket.nodeName, upperSeedWins, lowerSeedWins);
 				break;
-			case 1:
-				this.GSL_B.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+			}
+			case "GSL_B": {
+				this.GSL_B.setMatchRecordAndFlow(bracket.nodeName, upperSeedWins, lowerSeedWins);
 				break;
-			case 2:
-				this.AFL.setMatchRecordAndFlow(matchId, upperSeedWins, lowerSeedWins);
+			}
+			case "AFL": {
+				this.AFL.setMatchRecordAndFlow(bracket.nodeName, upperSeedWins, lowerSeedWins);
 				break;
+			}
 		}
 
-		if (bracketId === 0 || bracketId === 1) {
+		if (bracket.bracket === "GSL_A" || bracket.bracket === "GSL_B") {
 			this.AFL.clearAllMatchRecords();
 			// [1, 3, 5, 7]
 			const GSL_A_results = this.GSL_A.getPromoted();
@@ -39,22 +62,22 @@ export class RegionalTournament {
 				promotedSeeds.push(GSL_B_results[index]);
 			}
 			// need to transform seeds into 1 list
-			initializeAFLBracket(promotedSeeds, this.AFL, 0, 3, "upperQuarterFinal1");
-			initializeAFLBracket(promotedSeeds, this.AFL, 1, 2, "upperQuarterFinal2");
-			initializeAFLBracket(promotedSeeds, this.AFL, 4, 7, "lowerBracketRound1");
-			initializeAFLBracket(promotedSeeds, this.AFL, 5, 6, "lowerBracketRound2");
+			initializeAFLBracket(promotedSeeds, this.AFL, 0, 3, "UpperQuarterFinal1");
+			initializeAFLBracket(promotedSeeds, this.AFL, 1, 2, "UpperQuarterFinal2");
+			initializeAFLBracket(promotedSeeds, this.AFL, 4, 7, "LowerBracketRound1");
+			initializeAFLBracket(promotedSeeds, this.AFL, 5, 6, "LowerBracketRound2");
 		}
 	}
 
-	GSL_A_updateFunction(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
-		this.updateFlow(0, matchId, upperSeedWins, lowerSeedWins);
+	GSL_A_updateFunction(nodeName: GSLNodeTypes, upperSeedWins: number, lowerSeedWins: number) {
+		this.updateFlow({ bracket: "GSL_A", nodeName: nodeName }, upperSeedWins, lowerSeedWins);
 	}
 
-	GSL_B_updateFunction(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
-		this.updateFlow(1, matchId, upperSeedWins, lowerSeedWins);
+	GSL_B_updateFunction(nodeName: GSLNodeTypes, upperSeedWins: number, lowerSeedWins: number) {
+		this.updateFlow({ bracket: "GSL_B", nodeName: nodeName }, upperSeedWins, lowerSeedWins);
 	}
 
-	AFL_updateFunction(matchId: string, upperSeedWins: number, lowerSeedWins: number) {
-		this.updateFlow(2, matchId, upperSeedWins, lowerSeedWins);
+	AFL_updateFunction(nodeName: AFLNodeTypes, upperSeedWins: number, lowerSeedWins: number) {
+		this.updateFlow({ bracket: "AFL", nodeName: nodeName }, upperSeedWins, lowerSeedWins);
 	}
 }

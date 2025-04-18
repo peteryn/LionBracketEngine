@@ -19,7 +19,7 @@ const GSL_nodes = [
 	"LowerFinal",
 ] as const;
 
-type GSLNodeTypes = typeof GSL_nodes[number];
+export type GSLNodeTypes = typeof GSL_nodes[number];
 
 export class GSLBracket implements Bracket<GenericMatchNode<GSLNodeTypes>, GSLNodeTypes> {
 	upperMatches: GenericMatchNode<GSLNodeTypes>[] = [];
