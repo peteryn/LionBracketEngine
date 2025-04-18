@@ -5,7 +5,6 @@ import { assertEquals } from "@std/assert/equals";
 import { SwissBracketFlow } from "../../src/swiss_bracket/swiss_backet_flow.ts";
 import { getMatchId } from "../../src/models/match.ts";
 import { Bracket } from "../../src/models/bracket.ts";
-import { MatchNode } from "../../src/models/match_node.ts";
 import { FullRecord } from "../../src/models/match_record.ts";
 import { GenericMatchNode } from "../../src/models/generic_match_node.ts";
 

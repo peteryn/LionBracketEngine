@@ -1,5 +1,4 @@
 import { levelOrderTraversal } from "../util/util.ts";
-import { MatchNode } from "./match_node.ts";
 import { FullRecord, MatchRecord, Seed } from "./match_record.ts";
 import { GenericMatchNode } from "./generic_match_node.ts";
 
