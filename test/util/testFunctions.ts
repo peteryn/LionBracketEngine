@@ -140,3 +140,15 @@ export function checkMatchNodeSeeds<NodeNames extends string>(
 	assertEquals(matchRecord.upperSeed, expectedUpperSeed);
 	assertEquals(matchRecord.lowerSeed, expectedLowerSeed);
 }
+export function checkMatchNodeSeedWins<NodeNames extends string>(
+	bracket: Bracket<GenericMatchNode<NodeNames>, NodeNames>,
+	matchNodeName: NodeNames,
+	expectedUpperSeedWins: number,
+	expectedLowerSeedWins: number,
+) {
+	const matchNode = bracket.getBracketNode(matchNodeName);
+	assertEquals(matchNode.matchRecord?.type, "FullRecord");
+	const matchRecord = matchNode.matchRecord as FullRecord;
+	assertEquals(matchRecord.upperSeedWins, expectedUpperSeedWins);
+	assertEquals(matchRecord.lowerSeedWins, expectedLowerSeedWins);
+}

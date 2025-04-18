@@ -3,7 +3,7 @@ import { SwissBracket } from "../src/swiss_bracket/swiss_bracket.ts";
 import { RoundNode } from "../src/models/round_node.ts";
 import { AFLBracket, AFLNodeTypes } from "../src/afl_bracket/afl_bracket.ts";
 import { FullRecord, LowerRecord, UpperRecord } from "../src/models/match_record.ts";
-import { checkMatchNodeSeeds } from "./util/testFunctions.ts";
+import { checkMatchNodeSeeds, checkMatchNodeSeedWins } from "./util/testFunctions.ts";
 import { GenericMatchNode } from "../src/models/generic_match_node.ts";
 
 Deno.test(function genericsTest() {
@@ -241,6 +241,22 @@ Deno.test(function getAllMatchNodesTest() {
 	assertEquals(sf1.name, "SemiFinal1");
 	assertEquals(sf2.name, "SemiFinal2");
 	assertEquals(gf.name, "GrandFinal");
+});
+
+Deno.test(function buildBracketTest() {
+	const afl_bracket = new AFLBracket();
+	afl_bracket.setMatchRecordAndFlow("UpperQuarterFinal1", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("UpperQuarterFinal2", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("LowerBracketRound1", 1, 0);
+	afl_bracket.setMatchRecordAndFlow("LowerBracketRound2", 1, 0);
+	const matchNodes = afl_bracket.getAllMatchNodes();
+
+	const afl_bracket2 = new AFLBracket();
+	afl_bracket2.buildBracket(matchNodes);
+	checkMatchNodeSeedWins<AFLNodeTypes>(afl_bracket2, "UpperQuarterFinal1", 1, 0);
+	checkMatchNodeSeedWins<AFLNodeTypes>(afl_bracket2, "UpperQuarterFinal2", 1, 0);
+	checkMatchNodeSeedWins<AFLNodeTypes>(afl_bracket2, "LowerBracketRound1", 1, 0);
+	checkMatchNodeSeedWins<AFLNodeTypes>(afl_bracket2, "LowerBracketRound2", 1, 0);
 });
 
 Deno.test(function clearAllMatchRecordsTest() {
