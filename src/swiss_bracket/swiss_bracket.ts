@@ -3,7 +3,7 @@ import { FullRecord } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { initializeEmptyMatches, levelOrderTraversal } from "../util/util.ts";
 
-export class SwissBracket implements Bracket<RoundNode> {
+export class SwissBracket {
 	rootRound: RoundNode;
 
 	constructor(numSeeds: number = 16, winRequirement: number = 3) {

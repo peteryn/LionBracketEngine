@@ -4,6 +4,7 @@ import { MatchNode } from "../models/match_node.ts";
 import { FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { levelOrderTraversal } from "../util/util.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
+import { GenericMatchNode } from "../models/generic_match_node.ts";
 
 const AFL_nodes = [
 	"GrandFinal",
@@ -19,7 +20,7 @@ const AFL_nodes = [
 
 type AFLNodeTypes = typeof AFL_nodes[number];
 
-export class AFLBracket implements Bracket<MatchNode, AFLNodeTypes> {
+export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes> {
 	upperQuarterFinal1: MatchNode;
 	upperQuarterFinal2: MatchNode;
 	lowerBracketRound1: MatchNode;
@@ -47,26 +48,28 @@ export class AFLBracket implements Bracket<MatchNode, AFLNodeTypes> {
 		}
 	}
 
-	getBracketNode(nodeName: AFLNodeTypes): MatchNode {
-		if (this.upperQuarterFinal1.name === nodeName) {
-			return this.upperQuarterFinal1;
-		}
-		if (this.upperQuarterFinal2.name === nodeName) {
-			return this.upperQuarterFinal2;
-		}
+	getBracketNode(nodeName: AFLNodeTypes): GenericMatchNode<AFLNodeTypes> {
+		// if (this.upperQuarterFinal1.name === nodeName) {
+		// 	return this.upperQuarterFinal1;
+		// }
+		// if (this.upperQuarterFinal2.name === nodeName) {
+		// 	return this.upperQuarterFinal2;
+		// }
+		//
+		// let matchNode: MatchNode | undefined;
+		// levelOrderTraversal(this.lowerBracketRound1, (node) => {
+		// 	if (node.name === nodeName) {
+		// 		matchNode = node;
+		// 	}
+		// });
+		// levelOrderTraversal(this.lowerBracketRound2, (node) => {
+		// 	if (node.name === nodeName) {
+		// 		matchNode = node;
+		// 	}
+		// });
+		// return matchNode as MatchNode;
 
-		let matchNode: MatchNode | undefined;
-		levelOrderTraversal(this.lowerBracketRound1, (node) => {
-			if (node.name === nodeName) {
-				matchNode = node;
-			}
-		});
-		levelOrderTraversal(this.lowerBracketRound2, (node) => {
-			if (node.name === nodeName) {
-				matchNode = node;
-			}
-		});
-		return matchNode as MatchNode;
+		return new GenericMatchNode("UpperQuarterFinal1", false);
 	}
 
 	getMatch(matchId: string): Match {
