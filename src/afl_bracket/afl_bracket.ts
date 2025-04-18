@@ -82,11 +82,12 @@ export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNo
 	}
 
 	getMatchRecord(nodeName: AFLNodeTypes): MatchRecord | undefined {
-		return this.getBracketNode(nodeName).matchRecord;
+		const matchRecord = this.getBracketNode(nodeName).matchRecord;
+		return structuredClone(matchRecord);
 	}
 
 	setMatchRecord(nodeName: AFLNodeTypes, matchRecord: MatchRecord) {
-		this.getBracketNode(nodeName).matchRecord = matchRecord;
+		this.getBracketNode(nodeName).matchRecord = structuredClone(matchRecord);
 	}
 
 	setMatchRecordWithValue(

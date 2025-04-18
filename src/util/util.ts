@@ -3,6 +3,7 @@ import { getMatchId, Match } from "../models/match.ts";
 import {
 	FullRecord,
 	FullRecordFactory,
+	MatchRecord,
 	type Seed,
 	UpperRecordFactory,
 } from "../models/match_record.ts";
@@ -63,29 +64,24 @@ export function getLosers(matches: SwissMatch[]) {
 	return result;
 }
 
-export function isFilledMatch(match: Match): boolean {
-	if (match.matchRecord?.type === "FullRecord") {
-		return match.matchRecord.upperSeedWins - match.matchRecord.lowerSeedWins !== 0;
-	}
-	return false;
+export function isFilledMatch(matchRecord: FullRecord): boolean {
+	return matchRecord.upperSeedWins - matchRecord.lowerSeedWins !== 0;
 }
 
 // getWinner and getLoser should only be called in block verified by isFilledMatch
-export function getWinner(match: Match) {
-	const mr = match.matchRecord as FullRecord;
-	if (mr.upperSeedWins > mr.lowerSeedWins) {
-		return mr.upperSeed;
+export function getWinner(matchRecord: FullRecord) {
+	if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
+		return matchRecord.upperSeed;
 	} else {
-		return mr.lowerSeed;
+		return matchRecord.lowerSeed;
 	}
 }
 
-export function getLoser(match: Match) {
-	const mr = match.matchRecord as FullRecord;
-	if (mr.upperSeedWins > mr.lowerSeedWins) {
-		return mr.lowerSeed;
+export function getLoser(matchRecord: FullRecord) {
+	if (matchRecord.upperSeedWins > matchRecord.lowerSeedWins) {
+		return matchRecord.lowerSeed;
 	} else {
-		return mr.upperSeed;
+		return matchRecord.upperSeed;
 	}
 }
 

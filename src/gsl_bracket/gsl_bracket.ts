@@ -1,9 +1,8 @@
 import { Bracket } from "../models/bracket.ts";
-import { Match } from "../models/match.ts";
-import { MatchNode } from "../models/match_node.ts";
 import { FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts";
 import { getLoser, getWinner, isFilledMatch, levelOrderTraversal } from "../util/util.ts";
 import { EliminationBracket } from "../models/EliminationBracket.ts";
+import { GenericMatchNode } from "../models/generic_match_node.ts";
 
 const GSL_nodes = [
 	"UpperQuarterFinal1",
@@ -17,65 +16,64 @@ const GSL_nodes = [
 	"LowerQuarterFinal2",
 	"LowerSemiFinal1",
 	"LowerSemiFinal2",
-	"LowerFinal"
+	"LowerFinal",
 ] as const;
 
 type GSLNodeTypes = typeof GSL_nodes[number];
 
-export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
-	upperMatches: MatchNode[] = [];
-	lowerMatches: MatchNode[] = [];
-	eliminationBracket: EliminationBracket;
+export class GSLBracket implements Bracket<GenericMatchNode<GSLNodeTypes>, GSLNodeTypes> {
+	upperMatches: GenericMatchNode<GSLNodeTypes>[] = [];
+	lowerMatches: GenericMatchNode<GSLNodeTypes>[] = [];
+	eliminationBracket: EliminationBracket<GSLNodeTypes>;
 
 	constructor(seeds?: Seed[]) {
 		[this.upperMatches, this.lowerMatches] = GSLBracket.createGSLBracket();
 		this.eliminationBracket = new EliminationBracket();
 
 		if (!seeds) {
-			this.upperMatches[0].match.matchRecord = FullRecordFactory(1, 8);
-			this.upperMatches[1].match.matchRecord = FullRecordFactory(4, 5);
-			this.upperMatches[2].match.matchRecord = FullRecordFactory(2, 7);
-			this.upperMatches[3].match.matchRecord = FullRecordFactory(3, 6);
+			this.upperMatches[0].matchRecord = FullRecordFactory(1, 8);
+			this.upperMatches[1].matchRecord = FullRecordFactory(4, 5);
+			this.upperMatches[2].matchRecord = FullRecordFactory(2, 7);
+			this.upperMatches[3].matchRecord = FullRecordFactory(3, 6);
 		} else {
-			this.upperMatches[0].match.matchRecord = FullRecordFactory(seeds[0], seeds[7]);
-			this.upperMatches[1].match.matchRecord = FullRecordFactory(seeds[3], seeds[4]);
-			this.upperMatches[2].match.matchRecord = FullRecordFactory(seeds[1], seeds[6]);
-			this.upperMatches[3].match.matchRecord = FullRecordFactory(seeds[2], seeds[5]);
+			this.upperMatches[0].matchRecord = FullRecordFactory(seeds[0], seeds[7]);
+			this.upperMatches[1].matchRecord = FullRecordFactory(seeds[3], seeds[4]);
+			this.upperMatches[2].matchRecord = FullRecordFactory(seeds[1], seeds[6]);
+			this.upperMatches[3].matchRecord = FullRecordFactory(seeds[2], seeds[5]);
 		}
-
 	}
 
 	static createGSLBracket() {
-		const upperMatches: MatchNode[] = [];
-		const lowerMatches: MatchNode[] = [];
+		const upperMatches: GenericMatchNode<GSLNodeTypes>[] = [];
+		const lowerMatches: GenericMatchNode<GSLNodeTypes>[] = [];
 
-		upperMatches.push(new MatchNode("UpperQuarterFinal1", true));
-		upperMatches.push(new MatchNode("UpperQuarterFinal2", false));
-		upperMatches.push(new MatchNode("UpperQuarterFinal3", true));
-		upperMatches.push(new MatchNode("UpperQuarterFinal4", false));
+		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal1", true));
+		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal2", false));
+		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal3", true));
+		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal4", false));
 
-		const upperSemiFinal1 = new MatchNode("UpperSemiFinal1", true);
+		const upperSemiFinal1 = new GenericMatchNode<GSLNodeTypes>("UpperSemiFinal1", true);
 		upperMatches[0].upperRound = upperSemiFinal1;
 		upperMatches[1].upperRound = upperSemiFinal1;
 
-		const upperSemiFinal2 = new MatchNode("UpperSemiFinal2", false);
+		const upperSemiFinal2 = new GenericMatchNode<GSLNodeTypes>("UpperSemiFinal2", false);
 		upperMatches[2].upperRound = upperSemiFinal2;
 		upperMatches[3].upperRound = upperSemiFinal2;
 
-		const upperFinal = new MatchNode("UpperFinal", true);
+		const upperFinal = new GenericMatchNode<GSLNodeTypes>("UpperFinal", true);
 		upperSemiFinal1.upperRound = upperFinal;
 		upperSemiFinal2.upperRound = upperFinal;
 
-		lowerMatches.push(new MatchNode("LowerQuarterFinal1", false));
-		lowerMatches.push(new MatchNode("LowerQuarterFinal2", false));
+		lowerMatches.push(new GenericMatchNode<GSLNodeTypes>("LowerQuarterFinal1", false));
+		lowerMatches.push(new GenericMatchNode<GSLNodeTypes>("LowerQuarterFinal2", false));
 
-		const lowerSemiFinal1 = new MatchNode("LowerSemiFinal1", true);
+		const lowerSemiFinal1 = new GenericMatchNode<GSLNodeTypes>("LowerSemiFinal1", true);
 		lowerMatches[0].upperRound = lowerSemiFinal1;
 
-		const lowerSemiFinal2 = new MatchNode("LowerSemiFinal2", false);
+		const lowerSemiFinal2 = new GenericMatchNode<GSLNodeTypes>("LowerSemiFinal2", false);
 		lowerMatches[1].upperRound = lowerSemiFinal2;
 
-		const lowerFinal = new MatchNode("LowerFinal", true);
+		const lowerFinal = new GenericMatchNode<GSLNodeTypes>("LowerFinal", true);
 		lowerSemiFinal1.upperRound = lowerFinal;
 		lowerSemiFinal2.upperRound = lowerFinal;
 
@@ -96,20 +94,20 @@ export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
 		const uqf2 = this.upperMatches[1];
 		const uqf3 = this.upperMatches[2];
 		const uqf4 = this.upperMatches[3];
-		const usf1 = uqf1.upperRound as MatchNode;
-		const usf2 = uqf3.upperRound as MatchNode;
-		const uf = usf1.upperRound as MatchNode;
+		const usf1 = uqf1.upperRound as GenericMatchNode<GSLNodeTypes>;
+		const usf2 = uqf3.upperRound as GenericMatchNode<GSLNodeTypes>;
+		const uf = usf1.upperRound as GenericMatchNode<GSLNodeTypes>;
 
 		const lqf1 = this.lowerMatches[0];
 		const lqf2 = this.lowerMatches[1];
-		const lsf1 = lqf1.upperRound as MatchNode;
-		const lsf2 = lqf2.upperRound as MatchNode;
-		const lf = lsf1.upperRound as MatchNode;
+		const lsf1 = lqf1.upperRound as GenericMatchNode<GSLNodeTypes>;
+		const lsf2 = lqf2.upperRound as GenericMatchNode<GSLNodeTypes>;
+		const lf = lsf1.upperRound as GenericMatchNode<GSLNodeTypes>;
 
 		return [uqf1, uqf2, uqf3, uqf4, usf1, usf2, uf, lqf1, lqf2, lsf1, lsf2, lf];
 	}
 
-	getBracketNode(nodeName: string): MatchNode {
+	getBracketNode(nodeName: string): GenericMatchNode<GSLNodeTypes> {
 		for (const node of this.upperMatches) {
 			if (node.name === nodeName) {
 				return node;
@@ -120,7 +118,7 @@ export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
 				return node;
 			}
 		}
-		let resultNode: MatchNode | undefined;
+		let resultNode: GenericMatchNode<GSLNodeTypes> | undefined;
 		levelOrderTraversal(this.upperMatches[0], (node) => {
 			if (node.name === nodeName) {
 				resultNode = node;
@@ -141,45 +139,28 @@ export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
 				resultNode = node;
 			}
 		});
-		return resultNode as MatchNode;
+		return resultNode as GenericMatchNode<GSLNodeTypes>;
 	}
 
-	getMatch(matchId: string): Match {
-		const [roundName] = matchId.split(".");
-		const matchNode = this.getBracketNode(roundName);
-		return matchNode.match;
-	}
-
-	getMatchRecord(matchId: string): MatchRecord | undefined {
-		const matchRecord = this.getMatch(matchId)?.matchRecord;
-		if (!matchRecord) {
-			return undefined;
-		}
+	getMatchRecord(nodeName: GSLNodeTypes): MatchRecord | undefined {
+		const matchRecord = this.getBracketNode(nodeName).matchRecord;
 		return structuredClone(matchRecord);
 	}
 
-	setMatchRecord(matchId: string, matchRecord: MatchRecord): boolean {
-		const match = this.getMatch(matchId);
-		if (match) {
-			match.matchRecord = matchRecord;
-			const matchNodeName = match.id.split(".")[0];
-			const matchNode = this.getBracketNode(matchNodeName);
-			if (matchNode) {
-				return true;
-			}
-		}
-		return false;
+	setMatchRecord(nodeName: GSLNodeTypes, matchRecord: MatchRecord) {
+		this.getBracketNode(nodeName).matchRecord = structuredClone(matchRecord);
 	}
 
 	setMatchRecordWithValue(
-		matchId: string,
+		nodeName: GSLNodeTypes,
 		upperSeedWins: number,
 		lowerSeedWins: number,
 	): boolean {
-		const mr = this.getMatchRecord(matchId);
+		const mr = this.getMatchRecord(nodeName);
 		if (!mr) {
 			return false;
 		}
+
 		switch (mr.type) {
 			case "UpperRecord":
 			case "LowerRecord":
@@ -189,17 +170,21 @@ export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
 				mr.lowerSeedWins = lowerSeedWins;
 		}
 
-		return this.setMatchRecord(matchId, mr);
+		this.setMatchRecord(nodeName, mr);
+		return true;
 	}
 
-	updateFlow(root: MatchNode): void {
+	updateFlow(root: GenericMatchNode<GSLNodeTypes>): void {
 		this.eliminationBracket.updateFlow(root);
 	}
 
-	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
-		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
-		const roundNodeName = matchId.split(".")[0];
-		const roundNode = this.getBracketNode(roundNodeName);
+	setMatchRecordAndFlow(
+		nodeName: GSLNodeTypes,
+		upperSeedWins: number,
+		lowerSeedWins: number,
+	): boolean {
+		const res = this.setMatchRecordWithValue(nodeName, upperSeedWins, lowerSeedWins);
+		const roundNode = this.getBracketNode(nodeName);
 		if (res) {
 			this.updateFlow(roundNode);
 		}
@@ -208,21 +193,30 @@ export class GSLBracket implements Bracket<MatchNode, GSLNodeTypes> {
 
 	getPromoted(): (Seed | undefined)[] {
 		const res: (Seed | undefined)[] = [];
+
 		const upperFinal = this.getBracketNode("UpperFinal");
-		if (isFilledMatch(upperFinal.match)) {
-			res.push(getWinner(upperFinal.match));
-			res.push(getLoser(upperFinal.match));
-		} else {
-			res.push(undefined);
-			res.push(undefined);
-		}
+		res.push(...this.addPromotedOrUndefined(upperFinal));
+
 		const lowerFinal = this.getBracketNode("LowerFinal");
-		if (isFilledMatch(lowerFinal.match)) {
-			res.push(getWinner(lowerFinal.match));
-			res.push(getLoser(lowerFinal.match));
-		} else {
-			res.push(undefined);
-			res.push(undefined);
+		res.push(...this.addPromotedOrUndefined(lowerFinal));
+
+		return res;
+	}
+
+	private addPromotedOrUndefined(node: GenericMatchNode<GSLNodeTypes>): (Seed | undefined)[] {
+		const res = [];
+		switch (node.matchRecord?.type) {
+			case "FullRecord": {
+				if (isFilledMatch(node.matchRecord)) {
+					res.push(getWinner(node.matchRecord));
+					res.push(getLoser(node.matchRecord));
+				}
+				break;
+			}
+			default: {
+				res.push(undefined);
+				res.push(undefined);
+			}
 		}
 		return res;
 	}
