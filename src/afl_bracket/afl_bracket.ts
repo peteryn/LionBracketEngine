@@ -1,8 +1,9 @@
 import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
-import { MatchRecord } from "../models/match_record.ts";
+import { FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { levelOrderTraversal } from "../util/util.ts";
+import { EliminationBracket } from "../models/EliminationBracket.ts";
 
 export class AFLBracket implements Bracket<MatchNode> {
 	upperQuarterFinal1: MatchNode;
@@ -10,14 +11,26 @@ export class AFLBracket implements Bracket<MatchNode> {
 	lowerBracketRound1: MatchNode;
 	lowerBracketRound2: MatchNode;
 
+	eliminationBracket: EliminationBracket;
+
 	// by definition, there are 8 seeds for this bracket
-	constructor() {
+	constructor(initialize: boolean = true) {
 		[
 			this.upperQuarterFinal1,
 			this.upperQuarterFinal2,
 			this.lowerBracketRound1,
 			this.lowerBracketRound2,
 		] = AFLBracket.createAFLBracket();
+
+		this.eliminationBracket = new EliminationBracket();
+
+		if (initialize) {
+			const seeds = [1, 2, 3, 4, 5, 6, 7, 8];
+			this.upperQuarterFinal1.match.matchRecord = FullRecordFactory(seeds[0], seeds[3]);
+			this.upperQuarterFinal2.match.matchRecord = FullRecordFactory(seeds[1], seeds[2]);
+			this.lowerBracketRound1.match.matchRecord = FullRecordFactory(seeds[4], seeds[7]);
+			this.lowerBracketRound2.match.matchRecord = FullRecordFactory(seeds[5], seeds[6]);
+		}
 	}
 
 	getBracketNode(nodeName: string): MatchNode {
@@ -72,7 +85,7 @@ export class AFLBracket implements Bracket<MatchNode> {
 	setMatchRecordWithValue(
 		matchId: string,
 		upperSeedWins: number,
-		lowerSeedWins: number
+		lowerSeedWins: number,
 	): boolean {
 		const mr = this.getMatchRecord(matchId);
 		if (!mr) {
@@ -123,5 +136,73 @@ export class AFLBracket implements Bracket<MatchNode> {
 		upperQuarterFinal2.lowerRound = lowerQuarterFinal2;
 
 		return [upperQuarterFinal1, upperQuarterFinal2, lowerBracketRound1, lowerBracketRound2];
+	}
+
+	getAllMatchNodes(): MatchNode[] {
+		const lbqf1 = this.lowerBracketRound1.upperRound as MatchNode;
+		const lbqf2 = this.lowerBracketRound2.upperRound as MatchNode;
+		const sf1 = this.upperQuarterFinal2.upperRound as MatchNode;
+		const sf2 = this.upperQuarterFinal1.upperRound as MatchNode;
+		const gf = sf1.upperRound as MatchNode;
+
+		return [
+			this.upperQuarterFinal1,
+			this.upperQuarterFinal2,
+			this.lowerBracketRound1,
+			this.lowerBracketRound2,
+			lbqf1,
+			lbqf2,
+			sf1,
+			sf2,
+			gf,
+		];
+	}
+
+	buildBracket(matchNodes: MatchNode[]) {
+		const [uqf1, uqf2, lbr1, lbr2, lbqf1, lbqf2, sf1, sf2, gf] = matchNodes;
+		lbr1.upperRound = lbqf1;
+		lbqf1.upperRound = sf1;
+		sf1.upperRound = gf;
+
+		lbr2.upperRound = lbqf2;
+		lbqf2.upperRound = sf2;
+		sf2.upperRound = gf;
+
+		uqf1.upperRound = sf2;
+		uqf2.upperRound = sf1;
+
+		uqf1.lowerRound = lbqf1;
+		uqf2.lowerRound = lbqf2;
+
+		this.upperQuarterFinal1 = uqf1;
+		this.upperQuarterFinal2 = uqf2;
+		this.lowerBracketRound1 = lbr1;
+		this.lowerBracketRound2 = lbr2;
+	}
+
+	clearAllMatchRecords() {
+		this.upperQuarterFinal1.match.matchRecord = undefined;
+		this.upperQuarterFinal2.match.matchRecord = undefined;
+		levelOrderTraversal(this.lowerBracketRound1, (node) => {
+			node.match.matchRecord = undefined;
+		});
+		levelOrderTraversal(this.lowerBracketRound2, (node) => {
+			node.match.matchRecord = undefined;
+		});
+	}
+
+	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
+		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getBracketNode(roundNodeName);
+		if (res) {
+			this.updateFlow(roundNode);
+		}
+		return res;
+	}
+
+	// this will only be called if called on a node with a FullRecord
+	updateFlow(root: MatchNode): void {
+		this.eliminationBracket.updateFlow(root);
 	}
 }

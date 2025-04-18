@@ -1,14 +1,14 @@
-import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
+import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
 import { SwissBracketFlow } from "../swiss_bracket/swiss_backet_flow.ts";
 import { populateMatchRecord } from "../util/util.ts";
 
 export class RLCS2025Major {
 	swissBracket: SwissBracketFlow;
-	aflBracket: AFLBracketFlow;
+	aflBracket: AFLBracket;
 
 	constructor() {
 		this.swissBracket = new SwissBracketFlow(16, 3);
-		this.aflBracket = new AFLBracketFlow(false);
+		this.aflBracket = new AFLBracket(false);
 	}
 
 	updateFlow(

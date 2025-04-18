@@ -8,7 +8,7 @@ import {
 } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
-import { AFLBracketFlow } from "../afl_bracket/afl_bracket_flow.ts";
+import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -208,7 +208,7 @@ export function postOrderTraversal<NodeType extends BracketNode>(
 
 export function populateMatchRecord(
 	promotedSeeds: (Seed | undefined)[],
-	aflBracket: AFLBracketFlow,
+	aflBracket: AFLBracket,
 	index1: number,
 	index2: number,
 	matchNodeId: string
