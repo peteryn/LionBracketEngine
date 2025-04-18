@@ -1,15 +1,30 @@
 import { Bracket } from "../models/bracket.ts";
 import { Match } from "../models/match.ts";
 import { MatchNode } from "../models/match_node.ts";
-import { MatchRecord } from "../models/match_record.ts";
-import { levelOrderTraversal } from "../util/util.ts";
+import { FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts";
+import { getLoser, getWinner, isFilledMatch, levelOrderTraversal } from "../util/util.ts";
+import { EliminationBracket } from "../models/EliminationBracket.ts";
 
 export class GSLBracket implements Bracket<MatchNode> {
 	upperMatches: MatchNode[] = [];
 	lowerMatches: MatchNode[] = [];
+	eliminationBracket: EliminationBracket;
 
-	constructor() {
+	constructor(seeds?: Seed[]) {
 		[this.upperMatches, this.lowerMatches] = GSLBracket.createGSLBracket();
+		this.eliminationBracket = new EliminationBracket();
+
+		if (!seeds) {
+			this.upperMatches[0].match.matchRecord = FullRecordFactory(1, 8);
+			this.upperMatches[1].match.matchRecord = FullRecordFactory(4, 5);
+			this.upperMatches[2].match.matchRecord = FullRecordFactory(2, 7);
+			this.upperMatches[3].match.matchRecord = FullRecordFactory(3, 6);
+		} else {
+			this.upperMatches[0].match.matchRecord = FullRecordFactory(seeds[0], seeds[7]);
+			this.upperMatches[1].match.matchRecord = FullRecordFactory(seeds[3], seeds[4]);
+			this.upperMatches[2].match.matchRecord = FullRecordFactory(seeds[1], seeds[6]);
+			this.upperMatches[3].match.matchRecord = FullRecordFactory(seeds[2], seeds[5]);
+		}
 	}
 
 	static createGSLBracket() {
@@ -141,7 +156,7 @@ export class GSLBracket implements Bracket<MatchNode> {
 	setMatchRecordWithValue(
 		matchId: string,
 		upperSeedWins: number,
-		lowerSeedWins: number
+		lowerSeedWins: number,
 	): boolean {
 		const mr = this.getMatchRecord(matchId);
 		if (!mr) {
@@ -157,5 +172,40 @@ export class GSLBracket implements Bracket<MatchNode> {
 		}
 
 		return this.setMatchRecord(matchId, mr);
+	}
+
+	updateFlow(root: MatchNode): void {
+		this.eliminationBracket.updateFlow(root);
+	}
+
+	setMatchRecordAndFlow(matchId: string, upperSeedWins: number, lowerSeedWins: number): boolean {
+		const res = this.setMatchRecordWithValue(matchId, upperSeedWins, lowerSeedWins);
+		const roundNodeName = matchId.split(".")[0];
+		const roundNode = this.getBracketNode(roundNodeName);
+		if (res) {
+			this.updateFlow(roundNode);
+		}
+		return res;
+	}
+
+	getPromoted(): (Seed | undefined)[] {
+		const res: (Seed | undefined)[] = [];
+		const upperFinal = this.getBracketNode("UpperFinal");
+		if (isFilledMatch(upperFinal.match)) {
+			res.push(getWinner(upperFinal.match));
+			res.push(getLoser(upperFinal.match));
+		} else {
+			res.push(undefined);
+			res.push(undefined);
+		}
+		const lowerFinal = this.getBracketNode("LowerFinal");
+		if (isFilledMatch(lowerFinal.match)) {
+			res.push(getWinner(lowerFinal.match));
+			res.push(getLoser(lowerFinal.match));
+		} else {
+			res.push(undefined);
+			res.push(undefined);
+		}
+		return res;
 	}
 }

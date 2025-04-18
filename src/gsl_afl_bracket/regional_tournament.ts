@@ -1,16 +1,16 @@
 import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
-import { GSLBracketFlow } from "../gsl_bracket/gsl_bracket_flow.ts";
+import { GSLBracket } from "../gsl_bracket/gsl_bracket.ts";
 import { Seed } from "../models/match_record.ts";
 import { populateMatchRecord } from "../util/util.ts";
 
 export class RegionalTournament {
-	GSL_A: GSLBracketFlow;
-	GSL_B: GSLBracketFlow;
+	GSL_A: GSLBracket;
+	GSL_B: GSLBracket;
 	AFL: AFLBracket;
 
 	constructor() {
-		this.GSL_A = new GSLBracketFlow([1, 3, 5, 7, 9, 11, 13, 15]);
-		this.GSL_B = new GSLBracketFlow([2, 4, 6, 8, 10, 12, 14, 16]);
+		this.GSL_A = new GSLBracket([1, 3, 5, 7, 9, 11, 13, 15]);
+		this.GSL_B = new GSLBracket([2, 4, 6, 8, 10, 12, 14, 16]);
 		this.AFL = new AFLBracket(false);
 	}
 
