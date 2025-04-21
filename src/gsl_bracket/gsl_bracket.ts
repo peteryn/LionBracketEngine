@@ -21,7 +21,7 @@ const GSL_nodes = [
 
 export type GSLNodeTypes = typeof GSL_nodes[number];
 
-export class GSLBracket implements Bracket<GenericMatchNode<GSLNodeTypes>, GSLNodeTypes> {
+export class GSLBracket implements Bracket<GSLNodeTypes> {
 	upperMatches: GenericMatchNode<GSLNodeTypes>[] = [];
 	lowerMatches: GenericMatchNode<GSLNodeTypes>[] = [];
 	eliminationBracket: EliminationBracket<GSLNodeTypes>;

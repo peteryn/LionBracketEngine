@@ -129,7 +129,7 @@ export function testTournament(tournamentPath: string) {
 }
 
 export function checkMatchNodeSeeds<NodeNames extends string>(
-	bracket: Bracket<GenericMatchNode<NodeNames>, NodeNames>,
+	bracket: Bracket<NodeNames>,
 	matchNodeName: NodeNames,
 	expectedUpperSeed: number,
 	expectedLowerSeed: number,
@@ -141,7 +141,7 @@ export function checkMatchNodeSeeds<NodeNames extends string>(
 	assertEquals(matchRecord.lowerSeed, expectedLowerSeed);
 }
 export function checkMatchNodeSeedWins<NodeNames extends string>(
-	bracket: Bracket<GenericMatchNode<NodeNames>, NodeNames>,
+	bracket: Bracket<NodeNames>,
 	matchNodeName: NodeNames,
 	expectedUpperSeedWins: number,
 	expectedLowerSeedWins: number,

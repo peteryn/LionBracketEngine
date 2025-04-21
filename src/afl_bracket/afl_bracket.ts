@@ -19,7 +19,7 @@ export const AFL_nodes = [
 export type AFLNodeTypes = typeof AFL_nodes[number];
 
 // export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes>, FlowBracket<GenericMatchNode<AFLNodeTypes>> {
-export class AFLBracket implements Bracket<GenericMatchNode<AFLNodeTypes>, AFLNodeTypes> {
+export class AFLBracket implements Bracket<AFLNodeTypes> {
 	upperQuarterFinal1: GenericMatchNode<AFLNodeTypes>;
 	upperQuarterFinal2: GenericMatchNode<AFLNodeTypes>;
 	lowerBracketRound1: GenericMatchNode<AFLNodeTypes>;

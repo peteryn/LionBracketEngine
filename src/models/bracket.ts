@@ -1,8 +1,12 @@
 import { BracketNode } from "./bracket_node.ts";
 import { Match } from "./match.ts";
 import { MatchRecord } from "./match_record.ts";
+import { GenericMatchNode } from "./generic_match_node.ts";
 
-export interface Bracket<NodeType extends BracketNode, NodeName extends string> {
+export interface Bracket<
+	NodeName extends string,
+	NodeType extends BracketNode = GenericMatchNode<NodeName>,
+> {
 	getBracketNode(nodeName: NodeName): NodeType;
 
 	// getMatch(matchId: string): Match;
@@ -11,5 +15,9 @@ export interface Bracket<NodeType extends BracketNode, NodeName extends string> 
 
 	setMatchRecord(nodeName: NodeName, matchRecord: MatchRecord): void;
 
-	setMatchRecordWithValue(nodeName: NodeName, upperSeedWins: number, lowerSeedWins: number): boolean;
+	setMatchRecordWithValue(
+		nodeName: NodeName,
+		upperSeedWins: number,
+		lowerSeedWins: number,
+	): boolean;
 }
