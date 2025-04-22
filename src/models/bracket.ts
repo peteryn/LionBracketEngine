@@ -1,5 +1,4 @@
 import { BracketNode } from "./bracket_node.ts";
-import { Match } from "./match.ts";
 import { MatchRecord } from "./match_record.ts";
 import { GenericMatchNode } from "./generic_match_node.ts";
 
@@ -8,8 +7,6 @@ export interface Bracket<
 	NodeType extends BracketNode = GenericMatchNode<NodeName>,
 > {
 	getBracketNode(nodeName: NodeName): NodeType;
-
-	// getMatch(matchId: string): Match;
 
 	getMatchRecord(nodeName: NodeName): MatchRecord | undefined;
 
@@ -20,4 +17,10 @@ export interface Bracket<
 		upperSeedWins: number,
 		lowerSeedWins: number,
 	): boolean;
+
+	updateFlow(root: NodeType): void;
+
+	getAllMatchNodes(): NodeType[];
+
+	buildBracket(matchNodes: NodeType[]): void;
 }

@@ -107,6 +107,36 @@ export class GSLBracket implements Bracket<GSLNodeTypes> {
 		return [uqf1, uqf2, uqf3, uqf4, usf1, usf2, uf, lqf1, lqf2, lsf1, lsf2, lf];
 	}
 
+	buildBracket(matchNodes: GenericMatchNode<GSLNodeTypes>[]): void {
+		const [uqf1, uqf2, uqf3, uqf4, usf1, usf2, uf, lqf1, lqf2, lsf1, lsf2, lf] = matchNodes;
+		this.upperMatches = [uqf1, uqf2, uqf3, uqf4];
+		this.lowerMatches = [lqf1, lqf2];
+
+		uqf1.upperRound = usf1;
+		uqf2.upperRound = usf1;
+
+		uqf3.upperRound = usf2;
+		uqf4.upperRound = usf2;
+
+		usf1.upperRound = uf;
+		usf2.upperRound = uf;
+
+		lqf1.upperRound = lsf1;
+		lqf2.upperRound = lsf2;
+
+		lsf1.upperRound = lf;
+		lsf2.upperRound = lf;
+
+		uqf1.lowerRound = lqf1;
+		uqf2.lowerRound = lqf1;
+
+		uqf3.lowerRound = lqf2;
+		uqf4.lowerRound = lqf2;
+
+		usf1.lowerRound = lsf2;
+		uqf2.lowerRound = lqf1;
+	}
+
 	getBracketNode(nodeName: GSLNodeTypes): GenericMatchNode<GSLNodeTypes> {
 		const allNodes = this.getAllMatchNodes();
 		let resultNode: GenericMatchNode<GSLNodeTypes> | undefined;
