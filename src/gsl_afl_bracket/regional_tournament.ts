@@ -1,16 +1,16 @@
 import { AFLBracket, AFLNodeTypes } from "../afl_bracket/afl_bracket.ts";
-import { GSLBracket, GSLNodeTypes } from "../gsl_bracket/gsl_bracket.ts";
+import { GSLBracket, GslNodeNames } from "../gsl_bracket/gsl_bracket.ts";
 import { Seed } from "../models/match_record.ts";
 import { initializeAFLBracket } from "../util/util.ts";
 
 export type GSA_A_Bracket = {
 	bracket: "GSL_A";
-	nodeName: GSLNodeTypes;
+	nodeName: GslNodeNames;
 };
 
 export type GSA_B_Bracket = {
 	bracket: "GSL_B";
-	nodeName: GSLNodeTypes;
+	nodeName: GslNodeNames;
 };
 
 export type AFL_Bracket = {
@@ -69,11 +69,11 @@ export class RegionalTournament {
 		}
 	}
 
-	GSL_A_updateFunction(nodeName: GSLNodeTypes, upperSeedWins: number, lowerSeedWins: number) {
+	GSL_A_updateFunction(nodeName: GslNodeNames, upperSeedWins: number, lowerSeedWins: number) {
 		this.updateFlow({ bracket: "GSL_A", nodeName: nodeName }, upperSeedWins, lowerSeedWins);
 	}
 
-	GSL_B_updateFunction(nodeName: GSLNodeTypes, upperSeedWins: number, lowerSeedWins: number) {
+	GSL_B_updateFunction(nodeName: GslNodeNames, upperSeedWins: number, lowerSeedWins: number) {
 		this.updateFlow({ bracket: "GSL_B", nodeName: nodeName }, upperSeedWins, lowerSeedWins);
 	}
 

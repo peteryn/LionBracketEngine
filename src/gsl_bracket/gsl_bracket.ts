@@ -3,40 +3,41 @@ import { Seed } from "../models/match_record.ts";
 import { getLoser, getWinner, isFilledMatch } from "../util/util.ts";
 import { BASE_GSL_NODES, BaseGslBracket, FINAL_GSL_NODES } from "./base_gsl_bracket.ts";
 
-export type GSLNodeTypes = typeof BASE_GSL_NODES[number] | typeof FINAL_GSL_NODES[number];
+export type GslNodeNames = typeof BASE_GSL_NODES[number] | typeof FINAL_GSL_NODES[number];
+export type GslMatchNode = GenericMatchNode<GslNodeNames>;
 
-export class GSLBracket extends BaseGslBracket<GSLNodeTypes> {
-	protected createBracketStructure(): [GenericMatchNode<GSLNodeTypes>[], GenericMatchNode<GSLNodeTypes>[]] {
-		const upperMatches: GenericMatchNode<GSLNodeTypes>[] = [];
-		const lowerMatches: GenericMatchNode<GSLNodeTypes>[] = [];
+export class GSLBracket extends BaseGslBracket<GslNodeNames> {
+	protected createBracketStructure(): [GslMatchNode[], GslMatchNode[]] {
+		const upperMatches: GslMatchNode[] = [];
+		const lowerMatches: GslMatchNode[] = [];
 
-		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal1", true));
-		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal2", false));
-		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal3", true));
-		upperMatches.push(new GenericMatchNode<GSLNodeTypes>("UpperQuarterFinal4", false));
+		upperMatches.push(new GenericMatchNode<GslNodeNames>("UpperQuarterFinal1", true));
+		upperMatches.push(new GenericMatchNode<GslNodeNames>("UpperQuarterFinal2", false));
+		upperMatches.push(new GenericMatchNode<GslNodeNames>("UpperQuarterFinal3", true));
+		upperMatches.push(new GenericMatchNode<GslNodeNames>("UpperQuarterFinal4", false));
 
-		const upperSemiFinal1 = new GenericMatchNode<GSLNodeTypes>("UpperSemiFinal1", true);
+		const upperSemiFinal1 = new GenericMatchNode<GslNodeNames>("UpperSemiFinal1", true);
 		upperMatches[0].upperRound = upperSemiFinal1;
 		upperMatches[1].upperRound = upperSemiFinal1;
 
-		const upperSemiFinal2 = new GenericMatchNode<GSLNodeTypes>("UpperSemiFinal2", false);
+		const upperSemiFinal2 = new GenericMatchNode<GslNodeNames>("UpperSemiFinal2", false);
 		upperMatches[2].upperRound = upperSemiFinal2;
 		upperMatches[3].upperRound = upperSemiFinal2;
 
-		const upperFinal = new GenericMatchNode<GSLNodeTypes>("UpperFinal", true);
+		const upperFinal = new GenericMatchNode<GslNodeNames>("UpperFinal", true);
 		upperSemiFinal1.upperRound = upperFinal;
 		upperSemiFinal2.upperRound = upperFinal;
 
-		lowerMatches.push(new GenericMatchNode<GSLNodeTypes>("LowerQuarterFinal1", false));
-		lowerMatches.push(new GenericMatchNode<GSLNodeTypes>("LowerQuarterFinal2", false));
+		lowerMatches.push(new GenericMatchNode<GslNodeNames>("LowerQuarterFinal1", false));
+		lowerMatches.push(new GenericMatchNode<GslNodeNames>("LowerQuarterFinal2", false));
 
-		const lowerSemiFinal1 = new GenericMatchNode<GSLNodeTypes>("LowerSemiFinal1", true);
+		const lowerSemiFinal1 = new GenericMatchNode<GslNodeNames>("LowerSemiFinal1", true);
 		lowerMatches[0].upperRound = lowerSemiFinal1;
 
-		const lowerSemiFinal2 = new GenericMatchNode<GSLNodeTypes>("LowerSemiFinal2", false);
+		const lowerSemiFinal2 = new GenericMatchNode<GslNodeNames>("LowerSemiFinal2", false);
 		lowerMatches[1].upperRound = lowerSemiFinal2;
 
-		const lowerFinal = new GenericMatchNode<GSLNodeTypes>("LowerFinal", true);
+		const lowerFinal = new GenericMatchNode<GslNodeNames>("LowerFinal", true);
 		lowerSemiFinal1.upperRound = lowerFinal;
 		lowerSemiFinal2.upperRound = lowerFinal;
 
@@ -57,20 +58,20 @@ export class GSLBracket extends BaseGslBracket<GSLNodeTypes> {
 		const uqf2 = this.upperMatches[1];
 		const uqf3 = this.upperMatches[2];
 		const uqf4 = this.upperMatches[3];
-		const usf1 = uqf1.upperRound as GenericMatchNode<GSLNodeTypes>;
-		const usf2 = uqf3.upperRound as GenericMatchNode<GSLNodeTypes>;
-		const uf = usf1.upperRound as GenericMatchNode<GSLNodeTypes>;
+		const usf1 = uqf1.upperRound as GslMatchNode;
+		const usf2 = uqf3.upperRound as GslMatchNode;
+		const uf = usf1.upperRound as GslMatchNode;
 
 		const lqf1 = this.lowerMatches[0];
 		const lqf2 = this.lowerMatches[1];
-		const lsf1 = lqf1.upperRound as GenericMatchNode<GSLNodeTypes>;
-		const lsf2 = lqf2.upperRound as GenericMatchNode<GSLNodeTypes>;
-		const lf = lsf1.upperRound as GenericMatchNode<GSLNodeTypes>;
+		const lsf1 = lqf1.upperRound as GslMatchNode;
+		const lsf2 = lqf2.upperRound as GslMatchNode;
+		const lf = lsf1.upperRound as GslMatchNode;
 
 		return [uqf1, uqf2, uqf3, uqf4, usf1, usf2, uf, lqf1, lqf2, lsf1, lsf2, lf];
 	}
 
-	buildBracket(matchNodes: GenericMatchNode<GSLNodeTypes>[]): void {
+	buildBracket(matchNodes: GslMatchNode[]): void {
 		const [uqf1, uqf2, uqf3, uqf4, usf1, usf2, uf, lqf1, lqf2, lsf1, lsf2, lf] = matchNodes;
 		this.upperMatches = [uqf1, uqf2, uqf3, uqf4];
 		this.lowerMatches = [lqf1, lqf2];
@@ -112,7 +113,7 @@ export class GSLBracket extends BaseGslBracket<GSLNodeTypes> {
 		return res;
 	}
 
-	protected addPromotedOrUndefined(node: GenericMatchNode<GSLNodeTypes>): (Seed | undefined)[] {
+	protected addPromotedOrUndefined(node: GslMatchNode): (Seed | undefined)[] {
 		const res = [];
 		switch (node.matchRecord?.type) {
 			case "FullRecord": {
