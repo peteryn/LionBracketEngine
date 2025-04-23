@@ -9,7 +9,7 @@ import {
 } from "../models/match_record.ts";
 import { RoundNode } from "../models/round_node.ts";
 import { SwissMatch } from "../models/match.ts";
-import { AFLBracket, AFLNodeTypes } from "../afl_bracket/afl_bracket.ts";
+import { AflBracket, AflNodeNames } from "../afl_bracket/afl_bracket.ts";
 
 export function cartesianProduct<Type>(a: Type[], b: Type[]) {
 	return a.flatMap((x) => b.map((y) => [x, y]));
@@ -204,10 +204,10 @@ export function postOrderTraversal<NodeType extends BracketNode>(
 
 export function initializeAFLBracket(
 	promotedSeeds: (Seed | undefined)[],
-	aflBracket: AFLBracket,
+	aflBracket: AflBracket,
 	index1: number,
 	index2: number,
-	matchNodeId: AFLNodeTypes,
+	matchNodeId: AflNodeNames,
 ) {
 	if (promotedSeeds[index1] && promotedSeeds[index2]) {
 		aflBracket.setMatchRecord(

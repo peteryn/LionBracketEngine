@@ -1,14 +1,14 @@
-import { AFLBracket } from "../afl_bracket/afl_bracket.ts";
+import { AflBracket } from "../afl_bracket/afl_bracket.ts";
 import { SwissBracketFlow } from "../swiss_bracket/swiss_backet_flow.ts";
 import { initializeAFLBracket } from "../util/util.ts";
 
 export class RLCS2025Major {
 	swissBracket: SwissBracketFlow;
-	aflBracket: AFLBracket;
+	aflBracket: AflBracket;
 
 	constructor() {
 		this.swissBracket = new SwissBracketFlow(16, 3);
-		this.aflBracket = new AFLBracket(false);
+		this.aflBracket = new AflBracket(false);
 	}
 
 	updateFlow(
