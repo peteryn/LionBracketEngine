@@ -1,49 +1,12 @@
-import { Bracket } from "../models/bracket.ts";
-import { FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts";
-import { getLoser, getWinner, isFilledMatch, levelOrderTraversal } from "../util/util.ts";
-import { EliminationBracket } from "../models/EliminationBracket.ts";
 import { GenericMatchNode } from "../models/generic_match_node.ts";
+import { Seed } from "../models/match_record.ts";
+import { getLoser, getWinner, isFilledMatch } from "../util/util.ts";
+import { BASE_GSL_NODES, BaseGslBracket, FINAL_GSL_NODES } from "./base_gsl_bracket.ts";
 
-const GSL_nodes = [
-	"UpperQuarterFinal1",
-	"UpperQuarterFinal2",
-	"UpperQuarterFinal3",
-	"UpperQuarterFinal4",
-	"UpperSemiFinal1",
-	"UpperSemiFinal2",
-	"UpperFinal",
-	"LowerQuarterFinal1",
-	"LowerQuarterFinal2",
-	"LowerSemiFinal1",
-	"LowerSemiFinal2",
-	"LowerFinal",
-] as const;
+export type GSLNodeTypes = typeof BASE_GSL_NODES[number] | typeof FINAL_GSL_NODES[number];
 
-export type GSLNodeTypes = typeof GSL_nodes[number];
-
-export class GSLBracket implements Bracket<GSLNodeTypes> {
-	upperMatches: GenericMatchNode<GSLNodeTypes>[] = [];
-	lowerMatches: GenericMatchNode<GSLNodeTypes>[] = [];
-	eliminationBracket: EliminationBracket<GSLNodeTypes>;
-
-	constructor(seeds?: Seed[]) {
-		[this.upperMatches, this.lowerMatches] = GSLBracket.createGSLBracket();
-		this.eliminationBracket = new EliminationBracket();
-
-		if (!seeds) {
-			this.upperMatches[0].matchRecord = FullRecordFactory(1, 8);
-			this.upperMatches[1].matchRecord = FullRecordFactory(4, 5);
-			this.upperMatches[2].matchRecord = FullRecordFactory(2, 7);
-			this.upperMatches[3].matchRecord = FullRecordFactory(3, 6);
-		} else {
-			this.upperMatches[0].matchRecord = FullRecordFactory(seeds[0], seeds[7]);
-			this.upperMatches[1].matchRecord = FullRecordFactory(seeds[3], seeds[4]);
-			this.upperMatches[2].matchRecord = FullRecordFactory(seeds[1], seeds[6]);
-			this.upperMatches[3].matchRecord = FullRecordFactory(seeds[2], seeds[5]);
-		}
-	}
-
-	static createGSLBracket() {
+export class GSLBracket extends BaseGslBracket<GSLNodeTypes> {
+	protected createBracketStructure(): [GenericMatchNode<GSLNodeTypes>[], GenericMatchNode<GSLNodeTypes>[]] {
 		const upperMatches: GenericMatchNode<GSLNodeTypes>[] = [];
 		const lowerMatches: GenericMatchNode<GSLNodeTypes>[] = [];
 
@@ -134,68 +97,7 @@ export class GSLBracket implements Bracket<GSLNodeTypes> {
 		uqf4.lowerRound = lqf2;
 
 		usf1.lowerRound = lsf2;
-		uqf2.lowerRound = lqf1;
-	}
-
-	getBracketNode(nodeName: GSLNodeTypes): GenericMatchNode<GSLNodeTypes> {
-		const allNodes = this.getAllMatchNodes();
-		let resultNode: GenericMatchNode<GSLNodeTypes> | undefined;
-		for (const node of allNodes) {
-			if (node.name === nodeName) {
-				resultNode = node;
-				break;
-			}
-		}
-		return resultNode as GenericMatchNode<GSLNodeTypes>;
-	}
-
-	getMatchRecord(nodeName: GSLNodeTypes): MatchRecord | undefined {
-		const matchRecord = this.getBracketNode(nodeName).matchRecord;
-		return structuredClone(matchRecord);
-	}
-
-	setMatchRecord(nodeName: GSLNodeTypes, matchRecord: MatchRecord) {
-		this.getBracketNode(nodeName).matchRecord = structuredClone(matchRecord);
-	}
-
-	setMatchRecordWithValue(
-		nodeName: GSLNodeTypes,
-		upperSeedWins: number,
-		lowerSeedWins: number,
-	): boolean {
-		const mr = this.getMatchRecord(nodeName);
-		if (!mr) {
-			return false;
-		}
-
-		switch (mr.type) {
-			case "UpperRecord":
-			case "LowerRecord":
-				return false;
-			case "FullRecord":
-				mr.upperSeedWins = upperSeedWins;
-				mr.lowerSeedWins = lowerSeedWins;
-		}
-
-		this.setMatchRecord(nodeName, mr);
-		return true;
-	}
-
-	updateFlow(root: GenericMatchNode<GSLNodeTypes>): void {
-		this.eliminationBracket.updateFlow(root);
-	}
-
-	setMatchRecordAndFlow(
-		nodeName: GSLNodeTypes,
-		upperSeedWins: number,
-		lowerSeedWins: number,
-	): boolean {
-		const res = this.setMatchRecordWithValue(nodeName, upperSeedWins, lowerSeedWins);
-		const roundNode = this.getBracketNode(nodeName);
-		if (res) {
-			this.updateFlow(roundNode);
-		}
-		return res;
+		usf2.lowerRound = lsf1;
 	}
 
 	getPromoted(): (Seed | undefined)[] {
@@ -210,7 +112,7 @@ export class GSLBracket implements Bracket<GSLNodeTypes> {
 		return res;
 	}
 
-	private addPromotedOrUndefined(node: GenericMatchNode<GSLNodeTypes>): (Seed | undefined)[] {
+	protected addPromotedOrUndefined(node: GenericMatchNode<GSLNodeTypes>): (Seed | undefined)[] {
 		const res = [];
 		switch (node.matchRecord?.type) {
 			case "FullRecord": {
