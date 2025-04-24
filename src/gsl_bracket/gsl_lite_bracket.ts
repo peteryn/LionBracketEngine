@@ -1,6 +1,6 @@
 import { GenericMatchNode } from "../models/generic_match_node.ts";
 import { MatchRecord, Seed } from "../models/match_record.ts";
-import { getWinner, isFilledMatch } from "../util/util.ts";
+import { getSeedOrUndefined, getWinner, isFilledMatch } from "../util/util.ts";
 import { BASE_GSL_NODES, BaseGslBracket } from "./base_gsl_bracket.ts";
 
 export type GslLiteNodeNames = typeof BASE_GSL_NODES[number];
@@ -93,38 +93,22 @@ export class GslLiteBracket extends BaseGslBracket<GslLiteNodeNames> {
 		const res: (Seed | undefined)[] = [];
 
 		const upperSemiFinal1 = this.getBracketNode("UpperSemiFinal1");
-		const upperSemiFinal1Seed = this.getSeedOrUndefined(upperSemiFinal1.matchRecord);
+		const upperSemiFinal1Seed = getSeedOrUndefined(upperSemiFinal1.matchRecord);
 
 		const upperSemiFinal2 = this.getBracketNode("UpperSemiFinal2");
-		const upperSemiFinal2Seed = this.getSeedOrUndefined(upperSemiFinal2.matchRecord);
+		const upperSemiFinal2Seed = getSeedOrUndefined(upperSemiFinal2.matchRecord);
 
 		res.push(...this.chooseHigherSeedOrUndefined(upperSemiFinal1Seed, upperSemiFinal2Seed));
 
 		const lowerSemiFinal1 = this.getBracketNode("LowerSemiFinal1");
-		const lowerSemiFinal1Seed = this.getSeedOrUndefined(lowerSemiFinal1.matchRecord);
+		const lowerSemiFinal1Seed = getSeedOrUndefined(lowerSemiFinal1.matchRecord);
 
 		const lowerSemiFinal2 = this.getBracketNode("LowerSemiFinal2");
-		const lowerSemiFinal2Seed = this.getSeedOrUndefined(lowerSemiFinal2.matchRecord);
+		const lowerSemiFinal2Seed = getSeedOrUndefined(lowerSemiFinal2.matchRecord);
 
 		res.push(...this.chooseHigherSeedOrUndefined(lowerSemiFinal1Seed, lowerSemiFinal2Seed));
 
 		return res;
-	}
-
-	protected getSeedOrUndefined(matchRecord: MatchRecord | undefined) {
-		let seed: Seed | undefined;
-		switch (matchRecord?.type) {
-			case "FullRecord": {
-				if (isFilledMatch(matchRecord)) {
-					seed = getWinner(matchRecord);
-				}
-				break;
-			}
-			default: {
-				seed = undefined;
-			}
-		}
-		return seed;
 	}
 
 	protected chooseHigherSeedOrUndefined(seed1: Seed | undefined, seed2: Seed | undefined) {

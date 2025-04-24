@@ -218,3 +218,21 @@ export function initializeAFLBracket(
 		aflBracket.setMatchRecord(matchNodeId, UpperRecordFactory(promotedSeeds[index1]));
 	}
 }
+
+
+
+export function getSeedOrUndefined(matchRecord: MatchRecord | undefined) {
+	let seed: Seed | undefined;
+	switch (matchRecord?.type) {
+		case "FullRecord": {
+			if (isFilledMatch(matchRecord)) {
+				seed = getWinner(matchRecord);
+			}
+			break;
+		}
+		default: {
+			seed = undefined;
+		}
+	}
+	return seed;
+}
