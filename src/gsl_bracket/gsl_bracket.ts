@@ -6,7 +6,7 @@ import { BASE_GSL_NODES, BaseGslBracket, FINAL_GSL_NODES } from "./base_gsl_brac
 export type GslNodeNames = typeof BASE_GSL_NODES[number] | typeof FINAL_GSL_NODES[number];
 export type GslMatchNode = GenericMatchNode<GslNodeNames>;
 
-export class GSLBracket extends BaseGslBracket<GslNodeNames> {
+export class GslBracket extends BaseGslBracket<GslNodeNames> {
 	protected createBracketStructure(): [GslMatchNode[], GslMatchNode[]] {
 		const upperMatches: GslMatchNode[] = [];
 		const lowerMatches: GslMatchNode[] = [];

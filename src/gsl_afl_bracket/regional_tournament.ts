@@ -1,5 +1,5 @@
 import { AflBracket, AflNodeNames } from "../afl_bracket/afl_bracket.ts";
-import { GSLBracket, GslNodeNames } from "../gsl_bracket/gsl_bracket.ts";
+import { GslBracket, GslNodeNames } from "../gsl_bracket/gsl_bracket.ts";
 import { Seed } from "../models/match_record.ts";
 import { initializeAFLBracket } from "../util/util.ts";
 import { GslLiteBracket, GslLiteNodeNames } from "../gsl_bracket/gsl_lite_bracket.ts";

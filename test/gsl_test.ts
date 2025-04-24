@@ -1,9 +1,9 @@
 import { assertEquals } from "@std/assert/equals";
-import { GSLBracket } from "../src/gsl_bracket/gsl_bracket.ts";
+import { GslBracket } from "../src/gsl_bracket/gsl_bracket.ts";
 import { checkMatchNodeSeeds } from "./util/testFunctions.ts";
 
 Deno.test(function gslTest1() {
-	const gslBracket = new GSLBracket();
+	const gslBracket = new GslBracket();
 	gslBracket.setMatchRecordAndFlow("UpperQuarterFinal1", 1, 0);
 	gslBracket.setMatchRecordAndFlow("UpperQuarterFinal2", 1, 0);
 	gslBracket.setMatchRecordAndFlow("UpperQuarterFinal3", 1, 0);
