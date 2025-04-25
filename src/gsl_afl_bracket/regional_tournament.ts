@@ -1,8 +1,8 @@
-import { AflBracket, AflNodeNames } from "../afl_bracket/afl_bracket.ts";
+import { AflBracket, AflMatchNode, AflNodeNames } from "../afl_bracket/afl_bracket.ts";
 import { GslBracket, GslNodeNames } from "../gsl_bracket/gsl_bracket.ts";
 import { Seed } from "../models/match_record.ts";
 import { initializeAFLBracket } from "../util/util.ts";
-import { GslLiteBracket, GslLiteNodeNames } from "../gsl_bracket/gsl_lite_bracket.ts";
+import { GslLiteBracket, GslLiteMatchNode, GslLiteNodeNames } from "../gsl_bracket/gsl_lite_bracket.ts";
 
 export type GslBracketA = {
 	bracket: "GSL_A";
@@ -80,5 +80,19 @@ export class RegionalTournament {
 
 	AFL_updateFunction(nodeName: AflNodeNames, upperSeedWins: number, lowerSeedWins: number) {
 		this.updateFlow({ bracket: "AFL", nodeName: nodeName }, upperSeedWins, lowerSeedWins);
+	}
+
+	getAllMatchNodes() {
+		const res: [gslA: GslLiteMatchNode[], gslB: GslLiteMatchNode[], afl: AflMatchNode[]] = [[], [], []]
+		res[0] = this.gslA.getAllMatchNodes();
+		res[1] = this.gslB.getAllMatchNodes();
+		res[2] = this.afl.getAllMatchNodes();
+		return res
+	}
+
+	buildBracket(nodes: [gslA: GslLiteMatchNode[], gslB: GslLiteMatchNode[], afl: AflMatchNode[]]) {
+		this.gslA.buildBracket(nodes[0]);
+		this.gslB.buildBracket(nodes[1]);
+		this.afl.buildBracket(nodes[2]);
 	}
 }
