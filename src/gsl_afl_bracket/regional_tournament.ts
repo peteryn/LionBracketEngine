@@ -51,6 +51,10 @@ export class RegionalTournament {
 			}
 		}
 
+		this.updatePromoted(bracket);
+	}
+
+	updatePromoted(bracket: BracketType) {
 		if (bracket.bracket === "GSL_A" || bracket.bracket === "GSL_B") {
 			this.afl.clearAllMatchRecords();
 			// [1, 3, 5, 7]
