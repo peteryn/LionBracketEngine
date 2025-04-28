@@ -217,17 +217,39 @@ Deno.test(
 
 Deno.test(
 	function lowerQuarterFinalShouldBeClearedCorrectlyFor2TeamsWhenLowerBracketRound1IsReset() {
-		const afl_bracket = new AflBracket();
-		afl_bracket.setMatchRecordAndFlow("UpperQuarterFinal1", 3, 0);
-		afl_bracket.setMatchRecordAndFlow("LowerBracketRound1", 3, 0);
+		const aflBracket = new AflBracket();
+		aflBracket.setMatchRecordAndFlow("UpperQuarterFinal1", 3, 0);
+		aflBracket.setMatchRecordAndFlow("LowerBracketRound1", 3, 0);
 
-		const lqf1 = afl_bracket.getBracketNode("LowerQuarterFinal1");
-		afl_bracket.setMatchRecordAndFlow("LowerBracketRound1", 0, 0);
+		const lqf1 = aflBracket.getBracketNode("LowerQuarterFinal1");
+		aflBracket.setMatchRecordAndFlow("LowerBracketRound1", 0, 0);
 		assertEquals(lqf1.matchRecord?.type, "UpperRecord");
 		const lqf1MR2 = lqf1.matchRecord as UpperRecord;
 		assertEquals(lqf1MR2.upperSeed, 4);
 	},
 );
+
+Deno.test(function futureMatchesShouldBeClearedWhenLowerBracketRound1IsTied() {
+	const aflBracket = new AflBracket();
+	aflBracket.setMatchRecordAndFlow("UpperQuarterFinal1", 1, 0);
+	aflBracket.setMatchRecordAndFlow("UpperQuarterFinal2", 1, 0);
+	aflBracket.setMatchRecordAndFlow("LowerBracketRound1", 1, 0);
+	aflBracket.setMatchRecordAndFlow("LowerBracketRound2", 1, 0);
+	aflBracket.setMatchRecordAndFlow("LowerQuarterFinal1", 1, 0);
+	aflBracket.setMatchRecordAndFlow("LowerQuarterFinal2", 1, 0);
+	aflBracket.setMatchRecordAndFlow("SemiFinal1", 1, 0);
+	aflBracket.setMatchRecordAndFlow("SemiFinal2", 1, 0);
+
+	checkMatchNodeSeeds(aflBracket, "GrandFinal", 2, 1);
+	aflBracket.setMatchRecordAndFlow("LowerBracketRound1", 1, 1);
+	const lqf1 = aflBracket.getBracketNode("LowerQuarterFinal1");
+	assertEquals(lqf1.matchRecord?.type, "UpperRecord");
+	const lqf1MR = lqf1.matchRecord as UpperRecord;
+	assertEquals(lqf1MR.upperSeed, 4);
+
+	const sf1 = aflBracket.getBracketNode("SemiFinal1");
+	assertEquals(sf1.matchRecord, undefined);
+});
 
 Deno.test(function getAllMatchNodesTest() {
 	const afl_bracket = new AflBracket();

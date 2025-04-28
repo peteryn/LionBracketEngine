@@ -92,6 +92,7 @@ export class EliminationBracket<NodeNames extends string> {
 		}
 
 		const update = (node: GenericMatchNode<NodeNames>) => {
+			console.log(node.name);
 			const mr = node.matchRecord;
 			if (!mr) {
 				return;
@@ -115,14 +116,14 @@ export class EliminationBracket<NodeNames extends string> {
 							lowerSeed: mr.lowerSeed,
 							// potentially want to reset this to 0 if we deem their previous
 							// guess invalid when the match up changes
-							lowerSeedWins: mr.lowerSeedWins,
+							lowerSeedWins: 0,
 						};
 					}
 					if (mr.lowerSeed === lowerSeed || mr.lowerSeed === upperSeed) {
 						node.matchRecord = {
 							type: "UpperRecord",
 							upperSeed: mr.upperSeed,
-							upperSeedWins: mr.upperSeedWins,
+							upperSeedWins: 0,
 						};
 					}
 			}
