@@ -3,6 +3,7 @@ import { getMatchId, Match } from "../models/match.ts";
 import {
 	FullRecord,
 	FullRecordFactory,
+	LowerRecordFactory,
 	MatchRecord,
 	type Seed,
 	UpperRecordFactory,
@@ -216,10 +217,10 @@ export function initializeAFLBracket(
 		);
 	} else if (promotedSeeds[index1]) {
 		aflBracket.setMatchRecord(matchNodeId, UpperRecordFactory(promotedSeeds[index1]));
+	} else if (promotedSeeds[index2]) {
+		aflBracket.setMatchRecord(matchNodeId, LowerRecordFactory(promotedSeeds[index2]));
 	}
 }
-
-
 
 export function getSeedOrUndefined(matchRecord: MatchRecord | undefined) {
 	let seed: Seed | undefined;
