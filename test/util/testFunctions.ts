@@ -5,7 +5,7 @@ import { assertEquals } from "@std/assert/equals";
 import { SwissBracketFlow } from "../../src/swiss_bracket/swiss_backet_flow.ts";
 import { getMatchId } from "../../src/models/match.ts";
 import { Bracket } from "../../src/models/bracket.ts";
-import { FullRecord } from "../../src/models/match_record.ts";
+import { FullRecord, LowerRecord, UpperRecord } from "../../src/models/match_record.ts";
 import { GenericMatchNode } from "../../src/models/generic_match_node.ts";
 
 export function checkVersusData(
@@ -151,4 +151,26 @@ export function checkMatchNodeSeedWins<NodeNames extends string>(
 	const matchRecord = matchNode.matchRecord as FullRecord;
 	assertEquals(matchRecord.upperSeedWins, expectedUpperSeedWins);
 	assertEquals(matchRecord.lowerSeedWins, expectedLowerSeedWins);
+}
+
+export function checkForUpperRecordSeed<NodeNames extends string>(
+	bracket: Bracket<NodeNames>,
+	matchNodeName: NodeNames,
+	expectedUpperSeed: number,
+) {
+	const node = bracket.getBracketNode(matchNodeName);
+	assertEquals(node.matchRecord?.type, "UpperRecord");
+	const mr = node.matchRecord as UpperRecord;
+	assertEquals(mr.upperSeed, expectedUpperSeed);
+}
+
+export function checkForLowerRecordSeed<NodeNames extends string>(
+	bracket: Bracket<NodeNames>,
+	matchNodeName: NodeNames,
+	expectedLowerSeed: number,
+) {
+	const node = bracket.getBracketNode(matchNodeName);
+	assertEquals(node.matchRecord?.type, "LowerRecord");
+	const mr = node.matchRecord as LowerRecord;
+	assertEquals(mr.lowerSeed, expectedLowerSeed);
 }

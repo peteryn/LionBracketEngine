@@ -1,4 +1,4 @@
-import { levelOrderTraversal } from "../util/util.ts";
+import { isFilledMatch, levelOrderTraversal } from "../util/util.ts";
 import { FullRecord, MatchRecord, Seed } from "./match_record.ts";
 import { GenericMatchNode } from "./generic_match_node.ts";
 
@@ -14,8 +14,16 @@ export class EliminationBracket<NodeNames extends string> {
 			case "LowerRecord":
 				break;
 			case "FullRecord":
-				this.clearDependents(root.upperRound, matchRecord.upperSeed, matchRecord.lowerSeed);
-				this.clearDependents(root.lowerRound, matchRecord.upperSeed, matchRecord.lowerSeed);
+				// this.clearDependents(root.upperRound, matchRecord.upperSeed, matchRecord.lowerSeed);
+				// this.clearDependents(root.lowerRound, matchRecord.upperSeed, matchRecord.lowerSeed);
+				this.clearDependents2(root.upperRound, [
+					matchRecord.upperSeed,
+					matchRecord.lowerSeed,
+				]);
+				this.clearDependents2(root.lowerRound, [
+					matchRecord.upperSeed,
+					matchRecord.lowerSeed,
+				]);
 				this.handleScores(root, matchRecord);
 		}
 	}
@@ -92,7 +100,6 @@ export class EliminationBracket<NodeNames extends string> {
 		}
 
 		const update = (node: GenericMatchNode<NodeNames>) => {
-			console.log(node.name);
 			const mr = node.matchRecord;
 			if (!mr) {
 				return;
@@ -129,5 +136,65 @@ export class EliminationBracket<NodeNames extends string> {
 			}
 		};
 		levelOrderTraversal<GenericMatchNode<NodeNames>>(root, update);
+	}
+
+	clearDependents2(
+		root: GenericMatchNode<NodeNames> | undefined,
+		possibleSeeds: Seed[],
+	) {
+		if (!root) {
+			return;
+		}
+		const mr = root.matchRecord;
+		if (!mr) {
+			return;
+		}
+
+		switch (mr.type) {
+			case "UpperRecord": {
+				possibleSeeds.forEach((seed) => {
+					if (mr.upperSeed === seed) {
+						root.matchRecord = undefined;
+					}
+				});
+				break;
+			}
+			case "LowerRecord": {
+				possibleSeeds.forEach((seed) => {
+					if (mr.lowerSeed === seed) {
+						root.matchRecord = undefined;
+					}
+				});
+				break;
+			}
+			case "FullRecord": {
+				const recurse = isFilledMatch(mr);
+				const potentialSeeds = structuredClone(possibleSeeds);
+				possibleSeeds.forEach((seed) => {
+					if (mr.upperSeed === seed) {
+						root.matchRecord = {
+							type: "LowerRecord",
+							lowerSeed: mr.lowerSeed,
+							// potentially want to reset this to 0 if we deem their previous
+							// guess invalid when the match up changes
+							lowerSeedWins: 0,
+						};
+						potentialSeeds.push(mr.lowerSeed);
+					}
+					if (mr.lowerSeed === seed) {
+						root.matchRecord = {
+							type: "UpperRecord",
+							upperSeed: mr.upperSeed,
+							upperSeedWins: 0,
+						};
+						potentialSeeds.push(mr.upperSeed);
+					}
+				});
+				if (recurse) {
+					this.clearDependents2(root.upperRound, potentialSeeds);
+					this.clearDependents2(root.lowerRound, potentialSeeds);
+				}
+			}
+		}
 	}
 }
