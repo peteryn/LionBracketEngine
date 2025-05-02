@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert/equals";
-import { RegionalTournament } from "../src/gsl_afl_bracket/regional_tournament.ts";
+import { RegionalTournament } from "../src/tournaments/regional_tournament.ts";
 import { checkMatchNodeSeeds } from "./util/testFunctions.ts";
 
 Deno.test(function upperSeedVictories() {
