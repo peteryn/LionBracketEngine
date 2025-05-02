@@ -1,6 +1,6 @@
 import { Bracket } from "../models/bracket.ts";
 import { GenericMatchNode } from "../models/generic_match_node.ts";
-import { EliminationBracket } from "../models/EliminationBracket.ts";
+import { EliminationBracket } from "../models/elimination_bracket.ts";
 import { FullRecordFactory, MatchRecord, Seed } from "../models/match_record.ts";
 
 export const BASE_GSL_NODES = [

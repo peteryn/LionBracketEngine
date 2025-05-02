@@ -1,7 +1,7 @@
 import { Bracket } from "../models/bracket.ts";
 import { FullRecordFactory, MatchRecord } from "../models/match_record.ts";
 import { levelOrderTraversal } from "../util/util.ts";
-import { EliminationBracket } from "../models/EliminationBracket.ts";
+import { EliminationBracket } from "../models/elimination_bracket.ts";
 import { GenericMatchNode } from "../models/generic_match_node.ts";
 
 export const AFL_NODES = [

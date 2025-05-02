@@ -1,4 +1,4 @@
-import { isFilledMatch, levelOrderTraversal } from "../util/util.ts";
+import { isFilledMatch } from "../util/util.ts";
 import { FullRecord, MatchRecord, Seed } from "./match_record.ts";
 import { GenericMatchNode } from "./generic_match_node.ts";
 
@@ -14,13 +14,11 @@ export class EliminationBracket<NodeNames extends string> {
 			case "LowerRecord":
 				break;
 			case "FullRecord":
-				// this.clearDependents(root.upperRound, matchRecord.upperSeed, matchRecord.lowerSeed);
-				// this.clearDependents(root.lowerRound, matchRecord.upperSeed, matchRecord.lowerSeed);
-				this.clearDependents2(root.upperRound, [
+				this.clearDependents(root.upperRound, [
 					matchRecord.upperSeed,
 					matchRecord.lowerSeed,
 				]);
-				this.clearDependents2(root.lowerRound, [
+				this.clearDependents(root.lowerRound, [
 					matchRecord.upperSeed,
 					matchRecord.lowerSeed,
 				]);
@@ -92,54 +90,6 @@ export class EliminationBracket<NodeNames extends string> {
 
 	clearDependents(
 		root: GenericMatchNode<NodeNames> | undefined,
-		upperSeed: Seed,
-		lowerSeed: Seed,
-	) {
-		if (!root) {
-			return;
-		}
-
-		const update = (node: GenericMatchNode<NodeNames>) => {
-			const mr = node.matchRecord;
-			if (!mr) {
-				return;
-			}
-
-			switch (mr.type) {
-				case "UpperRecord":
-					if (mr.upperSeed === upperSeed || mr.upperSeed === lowerSeed) {
-						node.matchRecord = undefined;
-					}
-					break;
-				case "LowerRecord":
-					if (mr.lowerSeed === lowerSeed || mr.lowerSeed === upperSeed) {
-						node.matchRecord = undefined;
-					}
-					break;
-				case "FullRecord":
-					if (mr.upperSeed === upperSeed || mr.upperSeed === lowerSeed) {
-						node.matchRecord = {
-							type: "LowerRecord",
-							lowerSeed: mr.lowerSeed,
-							// potentially want to reset this to 0 if we deem their previous
-							// guess invalid when the match up changes
-							lowerSeedWins: 0,
-						};
-					}
-					if (mr.lowerSeed === lowerSeed || mr.lowerSeed === upperSeed) {
-						node.matchRecord = {
-							type: "UpperRecord",
-							upperSeed: mr.upperSeed,
-							upperSeedWins: 0,
-						};
-					}
-			}
-		};
-		levelOrderTraversal<GenericMatchNode<NodeNames>>(root, update);
-	}
-
-	clearDependents2(
-		root: GenericMatchNode<NodeNames> | undefined,
 		possibleSeeds: Seed[],
 	) {
 		if (!root) {
@@ -191,8 +141,8 @@ export class EliminationBracket<NodeNames extends string> {
 					}
 				});
 				if (recurse) {
-					this.clearDependents2(root.upperRound, potentialSeeds);
-					this.clearDependents2(root.lowerRound, potentialSeeds);
+					this.clearDependents(root.upperRound, potentialSeeds);
+					this.clearDependents(root.lowerRound, potentialSeeds);
 				}
 			}
 		}

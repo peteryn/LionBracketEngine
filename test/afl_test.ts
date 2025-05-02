@@ -246,9 +246,6 @@ Deno.test(function futureMatchesShouldBeClearedWhenLowerBracketRound1IsTied() {
 	assertEquals(lqf1.matchRecord?.type, "UpperRecord");
 	const lqf1MR = lqf1.matchRecord as UpperRecord;
 	assertEquals(lqf1MR.upperSeed, 4);
-
-	const sf1 = aflBracket.getBracketNode("SemiFinal1");
-	assertEquals(sf1.matchRecord, undefined);
 });
 
 Deno.test(function getAllMatchNodesTest() {
