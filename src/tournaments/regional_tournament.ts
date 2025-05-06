@@ -30,8 +30,8 @@ export class RegionalTournament {
 	afl: AflBracket;
 
 	constructor() {
-		this.gslA = new GslLiteBracket([1, 2, 3, 4, 5, 6, 7, 8]);
-		this.gslB = new GslLiteBracket([9, 10, 11, 12, 13, 14, 15, 16]);
+		this.gslA = new GslLiteBracket([1, 3, 5, 7, 9, 11, 13, 15]);
+		this.gslB = new GslLiteBracket([2, 4, 6, 8, 10, 12, 14, 16]);
 		this.afl = new AflBracket(false);
 	}
 
