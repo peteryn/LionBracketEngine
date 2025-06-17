@@ -21,9 +21,9 @@ Deno.test(function upperSeedVictories() {
 
 	const GSL_A_results = tournament.gslA.getPromoted();
 	assertEquals(GSL_A_results[0], 1);
-	assertEquals(GSL_A_results[1], 2);
-	assertEquals(GSL_A_results[2], 3);
-	assertEquals(GSL_A_results[3], 4);
+	assertEquals(GSL_A_results[1], 3);
+	assertEquals(GSL_A_results[2], 5);
+	assertEquals(GSL_A_results[3], 7);
 
 	tournament.GSL_B_updateFunction("UpperQuarterFinal1", 1, 0);
 	tournament.GSL_B_updateFunction("UpperQuarterFinal2", 1, 0);
@@ -40,18 +40,18 @@ Deno.test(function upperSeedVictories() {
 	tournament.GSL_B_updateFunction("LowerSemiFinal2", 1, 0);
 
 	const GSL_B_results = tournament.gslB.getPromoted();
-	assertEquals(GSL_B_results[0], 9);
-	assertEquals(GSL_B_results[1], 10);
-	assertEquals(GSL_B_results[2], 11);
-	assertEquals(GSL_B_results[3], 12);
+	assertEquals(GSL_B_results[0], 2);
+	assertEquals(GSL_B_results[1], 4);
+	assertEquals(GSL_B_results[2], 6);
+	assertEquals(GSL_B_results[3], 8);
 
 	// 1 2
 	// 9 10
-	checkMatchNodeSeeds(tournament.afl, "UpperQuarterFinal1", 1, 10);
-	checkMatchNodeSeeds(tournament.afl, "UpperQuarterFinal2", 9, 2);
+	checkMatchNodeSeeds(tournament.afl, "UpperQuarterFinal1", 1, 4);
+	checkMatchNodeSeeds(tournament.afl, "UpperQuarterFinal2", 2, 3);
 
 	// 3 4
 	// 11 12
-	checkMatchNodeSeeds(tournament.afl, "LowerBracketRound1", 3, 12);
-	checkMatchNodeSeeds(tournament.afl, "LowerBracketRound2", 11, 4);
+	checkMatchNodeSeeds(tournament.afl, "LowerBracketRound1", 5, 8);
+	checkMatchNodeSeeds(tournament.afl, "LowerBracketRound2", 6, 7);
 });
