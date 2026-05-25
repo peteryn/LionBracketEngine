@@ -1,0 +1,23 @@
+{
+  "name": "lionbracketengine",
+  "version": "0.0.1",
+  "description": "a library for storing tournament bracket data structures",
+  "homepage": "https://github.com/peteryn/LionBracketEngine#readme",
+  "bugs": {
+    "url": "https://github.com/peteryn/LionBracketEngine/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peteryn/LionBracketEngine.git"
+  },
+  "license": "ISC",
+  "author": "Peter Yuan",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
